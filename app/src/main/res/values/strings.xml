@@ -9,4 +9,6 @@
     <string name="generar_orden_de_arrastre">Generar Orden de Arrastre</string>
     <string name="ver_infracciones_registradas">Ver Infracciones Registradas</string>
     <string name="hola_agente">!Hola¡ Agente:</string>
+    <string name="firma">Firma:</string>
+    <string name="borrar_firma">Borrar:</string>
 </resources>

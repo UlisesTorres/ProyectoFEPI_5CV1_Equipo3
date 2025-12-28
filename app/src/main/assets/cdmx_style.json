@@ -1,0 +1,43 @@
+{
+  "version": 8,
+  "name": "CDMX_Local",
+  "glyphs": "",
+  "sprite": "",
+  "sources": {
+    "openmaptiles": {
+      "type": "vector",
+      "url": "mbtiles://{file_path}"
+    }
+  },
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "paint": { "background-color": "#f8f4f0" }
+    },
+    {
+      "id": "water",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "water",
+      "paint": { "fill-color": "#a2daf2" }
+    },
+    {
+      "id": "roads",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "paint": {
+        "line-color": "#ffffff",
+        "line-width": 2
+      }
+    },
+    {
+      "id": "buildings",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "building",
+      "paint": { "fill-color": "#dcdcdc" }
+    }
+  ]
+}
