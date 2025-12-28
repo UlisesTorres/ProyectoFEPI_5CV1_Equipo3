@@ -12,17 +12,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
         <activity
-            android:name=".MainActivity"
+            android:name=".view.main.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.MyApplication">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Pantalla_Infracciones" />
+        <activity android:name=".view.infracciones.InfraccionesActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".view.transito.TransitoActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

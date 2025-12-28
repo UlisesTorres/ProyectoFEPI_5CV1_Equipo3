@@ -3,5 +3,14 @@
 
     <style name="Theme.MyApplication"
         parent="Theme.Material3.DayNight.NoActionBar">
+
+        <item name="colorPrimary">@color/guinda</item>
+        <item name="colorPrimaryContainer">@color/guinda_light</item>
+
+
+        <!-- Color de la barra de estado -->
+        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <!-- ICONOS OSCUROS (hora, batería) -->
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 </resources>

@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">PGUIT-CDMX</string>
+    <string name="infraccion_cometida">Infracción Cometida</string>
+    <string name="usuario">Usuario</string>
+    <string name="contrase_a">Contraseña</string>
+    <string name="bienvenido">!Bienvenido¡</string>
+    <string name="iniciar_sesion">Iniciar Sesión</string>
+    <string name="generar_infracci_n">Generar Infracción</string>
+    <string name="generar_orden_de_arrastre">Generar Orden de Arrastre</string>
+    <string name="ver_infracciones_registradas">Ver Infracciones Registradas</string>
+    <string name="hola_agente">!Hola¡ Agente:</string>
 </resources>

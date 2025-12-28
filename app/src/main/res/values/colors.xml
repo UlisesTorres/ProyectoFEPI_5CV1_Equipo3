@@ -7,4 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="guinda">#800020</color>
+    <color name="guinda_dark">#5A0015</color>
+    <color name="guinda_light">#A00030</color>
 </resources>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="guinda">#B03A4A</color> <!-- más claro para fondo oscuro -->
+    <color name="on_guinda">#FFFFFF</color>
+
+    <style name="Theme.MyApplication"
+        parent="Theme.Material3.DayNight.NoActionBar">
+
+
+        <item name="colorPrimary">@color/guinda</item>
+        <item name="colorOnPrimary">@color/on_guinda</item>
+
+        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+    </style>
+
+</resources>

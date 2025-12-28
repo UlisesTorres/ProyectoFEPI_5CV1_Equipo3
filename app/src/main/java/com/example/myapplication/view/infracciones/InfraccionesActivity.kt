@@ -1,11 +1,12 @@
-package com.example.myapplication
+package com.example.myapplication.view.infracciones
 
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.activity.ComponentActivity
+import com.example.myapplication.R
 
-class Pantalla_Infracciones : ComponentActivity() {
+class InfraccionesActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_infracciones)
@@ -32,4 +33,3 @@ class Pantalla_Infracciones : ComponentActivity() {
         spinner.adapter = adapter
     }
 }
-
