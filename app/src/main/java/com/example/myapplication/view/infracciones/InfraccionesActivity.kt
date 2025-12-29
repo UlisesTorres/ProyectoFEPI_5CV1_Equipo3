@@ -1,5 +1,6 @@
 package com.example.myapplication.view.infracciones
 
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -29,28 +30,48 @@ class InfraccionesActivity : ComponentActivity(), InfraccionesContract.View {
     private var mapLibreMap: MapLibreMap? = null
     private var marcadorInfraccion: Marker? = null
 
+    private lateinit var tvFecha: TextView
+
     // MVP Variables
     private lateinit var presenter: InfraccionesPresenter
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // 1. SIEMPRE PRIMERO: Configurar el diseño y MapLibre
         MapLibre.getInstance(this)
         setContentView(R.layout.activity_infracciones)
 
-        // 1. Inicializar MVP
-        val model = InfraccionesModel(this)
-        presenter = InfraccionesPresenter(this, model)
-
-        // 2. Inicializar Vistas
+        // 2. INICIALIZAR VISTAS (Después de setContentView)
+        tvFecha = findViewById(R.id.tvFFija)
         signaturePad = findViewById(R.id.SigFirma)
         btnLimpiar = findViewById(R.id.btnBorrarfirma)
         spinnerInfracciones = findViewById(R.id.spinnerInfracciones)
         mapView = findViewById(R.id.map)
-        tvDireccion = findViewById(R.id.tvDireccionInfraccion) // Asegúrate que este ID existe en tu XML
+        tvDireccion = findViewById(R.id.tvDireccionInfraccion)
+
+        // 3. INICIALIZAR MVP
+        val model = InfraccionesModel(this)
+        presenter = InfraccionesPresenter(this, model)
+
+        // 4. USAR EL PRESENTER Y CONFIGURAR
+        presenter.cargarFechaInfraccion() // Ahora sí, el presenter ya existe
 
         setupSpinner()
         setupFirma()
         setupMapa(savedInstanceState)
+
+        // Bloqueadores de Scroll (Touch Listeners)
+        mapView.setOnTouchListener { v, event ->
+            v.parent.requestDisallowInterceptTouchEvent(true)
+            false
+        }
+
+        signaturePad.setOnTouchListener { v, event ->
+            v.parent.requestDisallowInterceptTouchEvent(true)
+            false
+        }
     }
 
     private fun setupMapa(savedInstanceState: Bundle?) {
@@ -157,4 +178,7 @@ class InfraccionesActivity : ComponentActivity(), InfraccionesContract.View {
     override fun onPause() { super.onPause(); mapView.onPause() }
     override fun onStop() { super.onStop(); mapView.onStop() }
     override fun onDestroy() { super.onDestroy(); mapView.onDestroy() }
+    override fun mostrarFechaActual(fecha: String) {
+        tvFecha.text = fecha
+    }
 }

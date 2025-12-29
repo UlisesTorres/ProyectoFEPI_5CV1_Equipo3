@@ -6,9 +6,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/icono_nvo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/icono_nvo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
         <activity
@@ -24,7 +24,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".view.infracciones.InfraccionesActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="true"
+            />
         <activity android:name=".view.transito.TransitoActivity"
             android:screenOrientation="portrait"/>
     </application>

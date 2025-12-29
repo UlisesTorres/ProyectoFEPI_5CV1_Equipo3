@@ -25,7 +25,7 @@
         android:layout_marginStart="72dp"
         android:layout_marginTop="44dp"
         android:layout_marginEnd="72dp"
-        android:text="@string/generar_infracci_n"
+        android:text="@string/nuevainfracci"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.592"

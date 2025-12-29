@@ -3,6 +3,9 @@ package com.example.myapplication.presenter.infracciones
 // IMPORTANTE: Cambiamos el LatLng de Google por el de MapLibre
 import org.maplibre.android.geometry.LatLng
 import com.example.myapplication.model.infracciones.InfraccionesModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 interface InfraccionesContract {
     interface View {
@@ -11,6 +14,7 @@ interface InfraccionesContract {
         fun mostrarMensaje(mensaje: String)
         fun bloquearEnvio()
         fun limpiarFormulario()
+        fun mostrarFechaActual(fecha: String)
     }
 }
 
@@ -35,5 +39,11 @@ class InfraccionesPresenter(
             view.bloquearEnvio()
             return
         }
+    }
+
+    fun cargarFechaInfraccion() {
+        val formato = SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.getDefault())
+        val fechaHoy = formato.format(Date())
+        view.mostrarFechaActual(fechaHoy)
     }
 }

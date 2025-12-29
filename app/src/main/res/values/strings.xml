@@ -11,4 +11,10 @@
     <string name="hola_agente">!Hola¡ Agente:</string>
     <string name="firma">Firma:</string>
     <string name="borrar_firma">Borrar:</string>
+    <string name="placas_del_vehiculo">Placas del vehiculo</string>
+    <string name="ubicacion_del_incidente">Ubicacion del incidente</string>
+    <string name="todo">TODO</string>
+    <string name="direccion">Direccion</string>
+    <string name="fecha_del_la_infracci_n">Fecha del la Infracción</string>
+    <string name="nuevainfracci">Nueva Infracción</string>
 </resources>
