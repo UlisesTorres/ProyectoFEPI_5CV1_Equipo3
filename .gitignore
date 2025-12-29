@@ -13,3 +13,9 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+!app/src/main/assets/fonts/
+!app/src/main/assets/fonts/**/*.pbf
+!app/src/main/assets/*.mbtiles
+!app/src/main/assets/*.json
+

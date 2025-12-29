@@ -30,10 +30,10 @@
         android:id="@+id/map"
         android:layout_width="364dp"
         android:layout_height="232dp"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="53dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerInfracciones" >
+        app:layout_constraintTop_toBottomOf="@+id/spinnerInfracciones">
 
     </org.maplibre.android.maps.MapView>
 
@@ -41,26 +41,25 @@
         android:id="@+id/SigFirma"
         android:layout_width="342dp"
         android:layout_height="147dp"
-        android:layout_marginStart="34dp"
-        android:layout_marginTop="18dp"
-        app:minWidth="3dp"
-        app:maxWidth="5dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="52dp"
         android:background="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6"
-        app:penColor="@android:color/black"
-    />
+        app:maxWidth="5dp"
+        app:minWidth="3dp"
+        app:penColor="@android:color/black" />
 
     <TextView
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="59dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="20dp"
         android:text="@string/firma"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/map" />
+        app:layout_constraintTop_toBottomOf="@+id/tvDireccionInfraccion" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnBorrarfirma"
@@ -79,8 +78,22 @@
         android:layout_alignEnd="@id/map"
         android:layout_alignBottom="@id/map"
         android:layout_margin="16dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="16dp"
         android:src="@android:drawable/ic_menu_mylocation"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/map" />
+
+    <EditText
+        android:id="@+id/tvDireccionInfraccion"
+        android:layout_width="302dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="Direccion"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/map" />
 
 

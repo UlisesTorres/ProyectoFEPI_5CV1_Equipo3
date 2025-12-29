@@ -1,12 +1,14 @@
 package com.example.myapplication.view.infracciones
 
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import androidx.activity.ComponentActivity
 import com.example.myapplication.R
+import com.example.myapplication.model.infracciones.InfraccionesModel
+import com.example.myapplication.presenter.infracciones.InfraccionesContract
+import com.example.myapplication.presenter.infracciones.InfraccionesPresenter
 import com.github.gcacace.signaturepad.views.SignaturePad
 import org.maplibre.android.MapLibre
 import org.maplibre.android.camera.CameraUpdateFactory
@@ -15,40 +17,40 @@ import org.maplibre.android.maps.MapView
 import org.maplibre.android.maps.MapLibreMap
 import org.maplibre.android.annotations.MarkerOptions
 import org.maplibre.android.annotations.Marker
-import java.io.File
-import java.io.FileOutputStream
 
-class InfraccionesActivity : ComponentActivity() {
+class InfraccionesActivity : ComponentActivity(), InfraccionesContract.View {
 
     private lateinit var signaturePad: SignaturePad
     private lateinit var btnLimpiar: Button
-    //private lateinit var btnEnviar: Button
     private lateinit var spinnerInfracciones: Spinner
     private lateinit var mapView: MapView
+    private lateinit var tvDireccion: TextView // Tu nuevo Label para la dirección
 
     private var mapLibreMap: MapLibreMap? = null
     private var marcadorInfraccion: Marker? = null
+
+    // MVP Variables
+    private lateinit var presenter: InfraccionesPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         MapLibre.getInstance(this)
         setContentView(R.layout.activity_infracciones)
 
-        // 1. Inicializar vistas (OJO: verifica que los IDs coincidan con tu XML)
+        // 1. Inicializar MVP
+        val model = InfraccionesModel(this)
+        presenter = InfraccionesPresenter(this, model)
+
+        // 2. Inicializar Vistas
         signaturePad = findViewById(R.id.SigFirma)
         btnLimpiar = findViewById(R.id.btnBorrarfirma)
-        //btnEnviar = findViewById(R.id.btnEnviarInfraccion)
         spinnerInfracciones = findViewById(R.id.spinnerInfracciones)
         mapView = findViewById(R.id.map)
+        tvDireccion = findViewById(R.id.tvDireccionInfraccion) // Asegúrate que este ID existe en tu XML
 
         setupSpinner()
         setupFirma()
         setupMapa(savedInstanceState)
-
-        // Botón Enviar: Recupera datos, guarda firma y limpia
-        //btnEnviar.setOnClickListener {
-          //  procesarInfraccion()
-        //}
     }
 
     private fun setupMapa(savedInstanceState: Bundle?) {
@@ -56,26 +58,24 @@ class InfraccionesActivity : ComponentActivity() {
         mapView.getMapAsync { map ->
             this.mapLibreMap = map
 
-            val absolutePath = getMapFilePath()
+            // El Modelo ahora nos da la ruta del archivo
+            val absolutePath = InfraccionesModel(this).prepararMapaLocal()
             val styleJson = assets.open("cdmx_style.json").bufferedReader().use { it.readText() }
             val finalStyle = styleJson.replace("{file_path}", absolutePath)
 
             map.setStyle(org.maplibre.android.maps.Style.Builder().fromJson(finalStyle)) { style ->
-                // Centro inicial: CDMX
                 val cdmxCenter = LatLng(19.4326, -99.1332)
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(cdmxCenter, 14.0))
 
-                // Restaurar Marcador Inicial
-                marcadorInfraccion = map.addMarker(MarkerOptions().position(cdmxCenter).title("Lugar de Infracción"))
+                // Inicializamos marcador pidiéndole la dirección al Presenter
+                presenter.procesarClickMapa(cdmxCenter)
 
-                // Restaurar funcionalidad de Click en el mapa para mover el marcador
                 map.addOnMapClickListener { point ->
-                    marcadorInfraccion?.let { map.removeMarker(it) }
-                    marcadorInfraccion = map.addMarker(MarkerOptions().position(point))
+                    // AVISAMOS AL PRESENTER
+                    presenter.procesarClickMapa(point)
                     true
                 }
 
-                // Restaurar funcionalidad del botón de Mi Ubicación
                 findViewById<ImageButton>(R.id.btnMyLocation).setOnClickListener {
                     activarUbicacion(style)
                 }
@@ -83,64 +83,64 @@ class InfraccionesActivity : ComponentActivity() {
         }
     }
 
+    // --- IMPLEMENTACIÓN DE INFRACCIONESCONTRACT.VIEW ---
+
+    override fun actualizarDireccionEnPantalla(direccion: String) {
+        tvDireccion.text = direccion
+    }
+
+    override fun moverMarcador(latLng: LatLng) {
+        marcadorInfraccion?.let { mapLibreMap?.removeMarker(it) }
+        marcadorInfraccion = mapLibreMap?.addMarker(MarkerOptions().position(latLng).title("Lugar de Infracción"))
+    }
+
+    override fun mostrarMensaje(mensaje: String) {
+        Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun limpiarFormulario() {
+        signaturePad.clear()
+        spinnerInfracciones.setSelection(0)
+    }
+
+    override fun bloquearEnvio() {
+        // btnEnviar.isEnabled = false
+    }
+
+    // --- MÉTODOS DE APOYO Y CICLO DE VIDA ---
+
     private fun activarUbicacion(style: org.maplibre.android.maps.Style) {
         if (!style.isFullyLoaded) return
         val locationComponent = mapLibreMap?.locationComponent
 
         if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            // 1. Configuramos una petición de ubicación activa
+            val request = org.maplibre.android.location.engine.LocationEngineRequest.Builder(1000L) // cada 1 segundo
+                .setPriority(org.maplibre.android.location.engine.LocationEngineRequest.PRIORITY_HIGH_ACCURACY)
+                .build()
+
             val options = org.maplibre.android.location.LocationComponentActivationOptions
                 .builder(this, style)
                 .useDefaultLocationEngine(true)
+                .locationEngineRequest(request) // Le decimos que no solo pida la última, sino que busque nuevas
                 .build()
 
-            locationComponent?.activateLocationComponent(options)
-            locationComponent?.isLocationComponentEnabled = true
+            try {
+                locationComponent?.activateLocationComponent(options)
+                locationComponent?.isLocationComponentEnabled = true
 
-            // Seguir al usuario con la cámara
-            locationComponent?.cameraMode = org.maplibre.android.location.modes.CameraMode.TRACKING
-            locationComponent?.renderMode = org.maplibre.android.location.modes.RenderMode.COMPASS
+                // 2. Intentamos seguir al usuario
+                locationComponent?.cameraMode = org.maplibre.android.location.modes.CameraMode.TRACKING
+                locationComponent?.renderMode = org.maplibre.android.location.modes.RenderMode.COMPASS
+
+            } catch (e: Exception) {
+                Log.e("GPS_ERROR", "Error al activar componente: ${e.message}")
+                mostrarMensaje("Esperando señal GPS...")
+            }
         } else {
             requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1000)
         }
-    }
-
-    private fun procesarInfraccion() {
-        if (signaturePad.isEmpty) {
-            Toast.makeText(this, "Firma requerida", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // Obtener datos
-        val tipo = spinnerInfracciones.selectedItem.toString()
-        val lat = marcadorInfraccion?.position?.latitude ?: 0.0
-        val lng = marcadorInfraccion?.position?.longitude ?: 0.0
-
-        // Guardar firma como imagen
-        val firmaBitmap = signaturePad.signatureBitmap
-        val file = File(filesDir, "firma_${System.currentTimeMillis()}.png")
-        FileOutputStream(file).use { out -> firmaBitmap.compress(Bitmap.CompressFormat.PNG, 100, out) }
-
-        Log.d("INFRACCION", "Tipo: $tipo | Ubicación: $lat, $lng | Archivo: ${file.absolutePath}")
-
-        Toast.makeText(this, "Infracción guardada localmente", Toast.LENGTH_LONG).show()
-
-        // Limpiar formulario después de enviar
-        signaturePad.clear()
-        spinnerInfracciones.setSelection(0)
-    }
-
-    private fun getMapFilePath(): String {
-        val fileName = "mexico-city.mbtiles"
-        val file = File(filesDir, fileName)
-        if (!file.exists() || file.length() == 0L) {
-            assets.open(fileName).use { input ->
-                FileOutputStream(file).use { output ->
-                    input.copyTo(output)
-                    output.flush()
-                }
-            }
-        }
-        return file.absolutePath
     }
 
     private fun setupSpinner() {
@@ -150,11 +150,8 @@ class InfraccionesActivity : ComponentActivity() {
         spinnerInfracciones.adapter = adapter
     }
 
-    private fun setupFirma() {
-        btnLimpiar.setOnClickListener { signaturePad.clear() }
-    }
+    private fun setupFirma() { btnLimpiar.setOnClickListener { signaturePad.clear() } }
 
-    // Ciclo de vida obligatorio para MapView
     override fun onStart() { super.onStart(); mapView.onStart() }
     override fun onResume() { super.onResume(); mapView.onResume() }
     override fun onPause() { super.onPause(); mapView.onPause() }
