@@ -20,9 +20,6 @@ import org.maplibre.android.annotations.MarkerOptions
 import org.maplibre.android.annotations.Marker
 
 class InfraccionesActivity : ComponentActivity(), InfraccionesContract.View {
-
-    private lateinit var signaturePad: SignaturePad
-    private lateinit var btnLimpiar: Button
     private lateinit var spinnerInfracciones: Spinner
     private lateinit var mapView: MapView
     private lateinit var tvDireccion: TextView // Tu nuevo Label para la dirección
@@ -35,7 +32,7 @@ class InfraccionesActivity : ComponentActivity(), InfraccionesContract.View {
     // MVP Variables
     private lateinit var presenter: InfraccionesPresenter
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -45,8 +42,6 @@ class InfraccionesActivity : ComponentActivity(), InfraccionesContract.View {
 
         // 2. INICIALIZAR VISTAS (Después de setContentView)
         tvFecha = findViewById(R.id.tvFFija)
-        signaturePad = findViewById(R.id.SigFirma)
-        btnLimpiar = findViewById(R.id.btnBorrarfirma)
         spinnerInfracciones = findViewById(R.id.spinnerInfracciones)
         mapView = findViewById(R.id.map)
         tvDireccion = findViewById(R.id.tvDireccionInfraccion)
@@ -59,7 +54,6 @@ class InfraccionesActivity : ComponentActivity(), InfraccionesContract.View {
         presenter.cargarFechaInfraccion() // Ahora sí, el presenter ya existe
 
         setupSpinner()
-        setupFirma()
         setupMapa(savedInstanceState)
 
         // Bloqueadores de Scroll (Touch Listeners)
@@ -67,10 +61,16 @@ class InfraccionesActivity : ComponentActivity(), InfraccionesContract.View {
             v.parent.requestDisallowInterceptTouchEvent(true)
             false
         }
+        val btnSiguiente = findViewById<Button>(R.id.btnSiguiente)
+        btnSiguiente.setOnClickListener {
+            val intent = android.content.Intent(this, EvidenciaActivity::class.java)
 
-        signaturePad.setOnTouchListener { v, event ->
-            v.parent.requestDisallowInterceptTouchEvent(true)
-            false
+            // Empacamos la información
+            intent.putExtra("PLACAS", findViewById<EditText>(R.id.editTextText2).text.toString())
+            intent.putExtra("DIRECCION", tvDireccion.text.toString())
+
+            // IMPORTANTE: Lanzar la actividad
+            startActivity(intent)
         }
     }
 
@@ -120,7 +120,6 @@ class InfraccionesActivity : ComponentActivity(), InfraccionesContract.View {
     }
 
     override fun limpiarFormulario() {
-        signaturePad.clear()
         spinnerInfracciones.setSelection(0)
     }
 
@@ -164,20 +163,32 @@ class InfraccionesActivity : ComponentActivity(), InfraccionesContract.View {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        // 1. NO llamar a super.onSaveInstanceState(outState)
+        // Esto evita que el sistema intente guardar el estado del MapView y las vistas pesadas.
+
+        // 2. Si necesitas guardar datos manuales, hazlo aquí:
+        outState.putString("DIRECCION_GUARDADA", tvDireccion.text.toString())
+
+        // 3. Opcionalmente llamar al super al final con un bundle limpio
+        super.onSaveInstanceState(Bundle())
+    }
+
     private fun setupSpinner() {
         val infracciones = listOf("Exceso de velocidad", "Lugar prohibido", "Semáforo", "Celular")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, infracciones)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerInfracciones.adapter = adapter
     }
-
-    private fun setupFirma() { btnLimpiar.setOnClickListener { signaturePad.clear() } }
-
     override fun onStart() { super.onStart(); mapView.onStart() }
     override fun onResume() { super.onResume(); mapView.onResume() }
     override fun onPause() { super.onPause(); mapView.onPause() }
     override fun onStop() { super.onStop(); mapView.onStop() }
-    override fun onDestroy() { super.onDestroy(); mapView.onDestroy() }
+    override fun onDestroy() {
+        mapLibreMap = null // Importante para que el recolector de basura actúe
+        mapView.onDestroy()
+        super.onDestroy()
+    }
     override fun mostrarFechaActual(fecha: String) {
         tvFecha.text = fecha
     }

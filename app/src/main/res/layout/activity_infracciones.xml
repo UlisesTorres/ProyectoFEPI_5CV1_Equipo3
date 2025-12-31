@@ -1,26 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:paddingBottom="32dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="32dp">
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="116dp"
-            android:text="@string/infraccion_cometida"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="50dp"
+        android:text="@string/infraccion_cometida"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
         <Spinner
             android:id="@+id/spinnerInfracciones"
@@ -75,6 +71,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
             android:layout_marginTop="16dp"
+            android:saveEnabled="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView8" />
@@ -103,51 +100,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/map" />
 
-        <TextView
-            android:id="@+id/textView6"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSiguiente"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="20dp"
-            android:text="@string/firma"
-            android:textSize="18sp"
+            android:layout_marginStart="150dp"
+            android:layout_marginTop="28dp"
+            android:text="@string/sig"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvDireccionInfraccion" />
-
-        <com.github.gcacace.signaturepad.views.SignaturePad
-            android:id="@+id/SigFirma"
-            android:layout_width="0dp"
-            android:layout_height="180dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginTop="8dp"
-            android:background="@android:color/darker_gray"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView6"
-            app:maxWidth="5dp"
-            app:minWidth="3dp"
-            app:penColor="@android:color/black" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnBorrarfirma"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="24dp"
-            android:text="@string/borrar_firma"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/SigFirma" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="130dp"
-            android:layout_marginTop="82dp"
-            android:text="@string/generar_infracci_n"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/SigFirma" />
 
         <TextView
             android:id="@+id/tvFechaInfraccion"
@@ -172,4 +133,3 @@
             app:layout_constraintTop_toBottomOf="@+id/tvFechaInfraccion" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>

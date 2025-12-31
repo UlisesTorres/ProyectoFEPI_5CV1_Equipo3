@@ -17,4 +17,8 @@
     <string name="direccion">Direccion</string>
     <string name="fecha_del_la_infracci_n">Fecha del la Infracción</string>
     <string name="nuevainfracci">Nueva Infracción</string>
+    <string name="sig">Siguiente</string>
+    <string name="firma_del_oficial">Firma del Oficial</string>
+    <string name="finalizar_y_guardar">FINALIZAR Y GUARDAR</string>
+    <string name="evidencia_fotogr_fica">Evidencia Fotográfica</string>
 </resources>
