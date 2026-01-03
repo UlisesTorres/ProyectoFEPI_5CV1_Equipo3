@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.example.myapplication.R
 import com.example.myapplication.presenter.main.MainPresenter
-import com.example.myapplication.view.transito.TransitoActivity
+import com.example.myapplication.view.infracciones.TransitoActivity
 
 class LoginActivity : ComponentActivity(), MainContract.View {
     private lateinit var presenter: MainPresenter

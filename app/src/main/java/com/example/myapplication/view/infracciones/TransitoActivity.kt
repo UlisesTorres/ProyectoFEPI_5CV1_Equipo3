@@ -1,14 +1,13 @@
-package com.example.myapplication.view.transito
+package com.example.myapplication.view.infracciones
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.activity.ComponentActivity
-import com.example.myapplication.R
 import androidx.appcompat.app.AlertDialog
-import com.example.myapplication.view.infracciones.InfraccionesActivity
-import com.example.myapplication.view.Login.LoginActivity
 import androidx.core.content.edit
+import com.example.myapplication.R
+import com.example.myapplication.view.Login.LoginActivity
 
 class TransitoActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
