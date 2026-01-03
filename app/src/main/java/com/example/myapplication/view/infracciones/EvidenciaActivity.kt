@@ -14,7 +14,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import com.example.myapplication.R
-import com.example.myapplication.view.infracciones.TransitoActivity
 import com.github.gcacace.signaturepad.views.SignaturePad
 import java.io.File
 
