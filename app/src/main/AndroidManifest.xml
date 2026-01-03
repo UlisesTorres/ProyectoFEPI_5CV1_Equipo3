@@ -38,6 +38,12 @@
             android:name=".view.infracciones.EvidenciaActivity"
             android:screenOrientation="portrait"
             android:exported="false" />
+        <activity android:name=".view.supervisor.SupervisorActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".view.corralones.CorralonesActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".view.operador_grua.Operador_GruaActivity"
+            android:screenOrientation="portrait"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
