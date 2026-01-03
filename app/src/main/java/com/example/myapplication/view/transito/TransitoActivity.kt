@@ -8,6 +8,7 @@ import com.example.myapplication.R
 import androidx.appcompat.app.AlertDialog
 import com.example.myapplication.view.infracciones.InfraccionesActivity
 import com.example.myapplication.view.Login.LoginActivity
+import androidx.core.content.edit
 
 class TransitoActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +40,7 @@ class TransitoActivity: ComponentActivity() {
 
     private fun procederCerrarSesion() {
         val prefs = getSharedPreferences("SesionOficial", MODE_PRIVATE)
-        prefs.edit().clear().apply()
+        prefs.edit { clear() }
 
         // FLAG_ACTIVITY_CLEAR_TASK limpia el historial para que no puedan volver atrás
         val intent = Intent(this, LoginActivity::class.java)
