@@ -1,4 +1,4 @@
-package com.example.myapplication.view.main
+package com.example.myapplication.view.Login
 
 interface MainContract {
     interface View {

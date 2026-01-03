@@ -14,7 +14,8 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="50dp"
         android:text="@string/infraccion_cometida"
-        android:textSize="18sp"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,7 +37,8 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="22dp"
             android:text="@string/placas_del_vehiculo"
-            android:textSize="18sp"
+            android:textSize="20sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/spinnerInfracciones" />
 
@@ -60,7 +62,8 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="45dp"
             android:text="@string/ubicacion_del_incidente"
-            android:textSize="18sp"
+            android:textSize="20sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvFFija" />
 
@@ -117,7 +120,8 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="20dp"
             android:text="@string/fecha_del_la_infracci_n"
-            android:textSize="18sp"
+            android:textSize="20sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextText2" />
 

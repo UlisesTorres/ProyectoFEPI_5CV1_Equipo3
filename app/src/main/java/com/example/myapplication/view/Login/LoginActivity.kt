@@ -1,4 +1,4 @@
-package com.example.myapplication.view.main
+package com.example.myapplication.view.Login
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,7 +10,7 @@ import com.example.myapplication.R
 import com.example.myapplication.presenter.main.MainPresenter
 import com.example.myapplication.view.transito.TransitoActivity
 
-class MainActivity : ComponentActivity(), MainContract.View {
+class LoginActivity : ComponentActivity(), MainContract.View {
     private lateinit var presenter: MainPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {

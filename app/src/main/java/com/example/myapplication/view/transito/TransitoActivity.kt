@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.activity.ComponentActivity
 import com.example.myapplication.R
+import androidx.appcompat.app.AlertDialog
 import com.example.myapplication.view.infracciones.InfraccionesActivity
+import com.example.myapplication.view.Login.LoginActivity
 
 class TransitoActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,5 +20,33 @@ class TransitoActivity: ComponentActivity() {
             startActivity(intent)
         }
 
+
+        val btnCerrarSesion = findViewById<Button>(R.id.btnCerrarSesion)
+        btnCerrarSesion.setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle("Cerrar Sesión")
+                .setMessage("¿Estás seguro de que deseas salir?")
+                .setPositiveButton("Cerrar Sesión") { _, _ ->
+                    // Llamamos a la función para limpiar y salir
+                    procederCerrarSesion()
+                }
+                .setNegativeButton("Cancelar", null)
+                .show()
+        }
+
+
     }
+
+    private fun procederCerrarSesion() {
+        val prefs = getSharedPreferences("SesionOficial", MODE_PRIVATE)
+        prefs.edit().clear().apply()
+
+        // FLAG_ACTIVITY_CLEAR_TASK limpia el historial para que no puedan volver atrás
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+        startActivity(intent)
+        finish()
+    }
+
 }

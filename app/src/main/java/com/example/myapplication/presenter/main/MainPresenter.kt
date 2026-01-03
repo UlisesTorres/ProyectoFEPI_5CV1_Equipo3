@@ -1,6 +1,6 @@
 package com.example.myapplication.presenter.main
 
-import com.example.myapplication.view.main.MainContract
+import com.example.myapplication.view.Login.MainContract
 
 class MainPresenter(private val view: MainContract.View) : MainContract.Presenter {
 

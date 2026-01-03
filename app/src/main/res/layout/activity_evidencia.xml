@@ -22,6 +22,7 @@
         android:layout_height="247dp"
         android:layout_marginTop="16dp"
         android:background="#F0F0F0"
+        android:contentDescription="@string/lista_de_fotos_capturadas"
         app:layout_constraintEnd_toStartOf="@+id/btnTomarFoto"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTituloEvidencia">
@@ -41,11 +42,13 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:background="?attr/selectableItemBackground"
+        android:contentDescription="@string/camara"
         android:src="@android:drawable/ic_menu_camera"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="@+id/scrollFotos"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/scrollFotos" />
+        app:layout_constraintTop_toTopOf="@+id/scrollFotos"
+        app:tint="#212121" />
 
     <TextView
         android:id="@+id/tvTituloFirma"
@@ -53,7 +56,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="@string/firma_del_oficial"
-        android:textSize="18sp"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/scrollFotos" />
 
@@ -78,7 +82,8 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnFinalizarInfraccion"
-        android:layout_width="0dp"
+        android:layout_width="320dp"
+        android:minHeight="48dp"
         android:layout_height="60dp"
         android:layout_marginTop="24dp"
         android:text="@string/finalizar_y_guardar"
