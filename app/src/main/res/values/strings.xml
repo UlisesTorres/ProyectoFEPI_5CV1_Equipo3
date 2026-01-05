@@ -36,4 +36,16 @@
     <string name="datos_de_la_infracci_n">Datos de la infracción</string>
     <string name="datos_del_veh_culo">Datos del vehículo</string>
     <string name="orden_de_arrastre">Orden de Arrastre</string>
+    <string name="registro_de_ingreso_a_corral_n">Registro de Ingreso a Corralón</string>
+    <string name="finalizar_registro">Finalizar Registro</string>
+    <string name="panel_de_control_corral_n">Panel de Control - Corralón</string>
+    <string name="panel_de_control_operador_de_gr_a">Panel de Control - Operador de Grúa</string>
+    <string name="veh_culo_a_recoger">VEHÍCULO A RECOGER</string>
+    <string name="arrastre_en_curso">Arrastre en Curso</string>
+    <string name="ubicaci_n_de_recogida">Ubicación de Recogida</string>
+    <string name="direcci_n_exacta">Dirección exacta</string>
+    <string name="regresar">Regresar</string>
+    <string name="detalles_de_la_solicitud_de_arrastre">Detalles de la Solicitud de Arrastre</string>
+    <string name="panel_de_control_agente">Panel de Control - Agente:</string>
+    <string name="qu_acci_n_desea_realizar_hoy">¿Qué acción desea realizar hoy?</string>
 </resources>

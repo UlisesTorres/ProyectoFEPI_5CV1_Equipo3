@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="@string/orden_de_arrastre"
+            android:text="@string/registro_de_ingreso_a_corral_n"
             android:textAlignment="center"
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
@@ -41,8 +41,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:hint="@string/folio_de_infracci_n"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnBuscarFolio"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/labelSeccionInfraccion">
 
@@ -52,6 +53,18 @@
                 android:layout_height="wrap_content"
                 android:inputType="textCapCharacters" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBuscarFolio"
+            style="@style/Widget.MaterialComponents.Button.Icon"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            app:icon="@android:drawable/ic_menu_search"
+            app:iconGravity="textStart"
+            android:padding="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tilFolio"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tilFolio" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilPlaca"
@@ -68,6 +81,8 @@
                 android:id="@+id/etPlaca"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:focusable="false"
+                android:clickable="true"
                 android:inputType="textCapCharacters" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -198,7 +213,7 @@
             android:id="@+id/btnGuardarOrden"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/guardar_orden"
+            android:text="@string/finalizar_registro"
             app:layout_constraintBottom_toBottomOf="@+id/btnCancelarCorralon"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

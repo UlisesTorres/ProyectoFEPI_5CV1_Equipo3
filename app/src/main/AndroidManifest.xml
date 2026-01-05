@@ -44,6 +44,16 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".view.operador_grua.Operador_GruaActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".view.corralones.CorralonesActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".view.corralones.RegistrarIngresoActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".view.operador_grua.Arrastre_En_CursoActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".view.operador_grua.Solicitud_ArrastreActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".view.operador_grua.Historial_ArrastresActivity"
+            android:screenOrientation="portrait"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

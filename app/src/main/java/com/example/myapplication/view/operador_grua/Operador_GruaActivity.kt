@@ -1,14 +1,33 @@
 package com.example.myapplication.view.operador_grua
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.example.myapplication.R
+import com.example.myapplication.view.corralones.RegistrarIngresoActivity
 
 class Operador_GruaActivity : ComponentActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Aquí se hace la unión:
-        setContentView(R.layout.activity_operador_grua)
+        setContentView(R.layout.activity_operador_grua_principal)
+
+        val btnArrastre = findViewById<Button>(R.id.btnArrastreActivo)
+        val btnSolicitud = findViewById<Button>(R.id.btnVerPeticiones)
+        val btnHistorial = findViewById<Button>(R.id.btnHistorialGrua)
+
+        btnArrastre.setOnClickListener {
+            startActivity(Intent(this, Arrastre_En_CursoActivity::class.java))
+        }
+
+        btnSolicitud.setOnClickListener {
+            startActivity(Intent(this, Solicitud_ArrastreActivity::class.java))
+        }
+
+        btnHistorial.setOnClickListener {
+            startActivity(Intent(this, Historial_ArrastresActivity::class.java))
+        }
     }
 }

@@ -1,14 +1,14 @@
-package com.example.myapplication.view.Transito
+package com.example.myapplication.view.operador_grua
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import com.example.myapplication.R
 
-class Orden_ArrastreActivity: ComponentActivity() {
+class Solicitud_ArrastreActivity: ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Aquí se hace la unión:
-        setContentView(R.layout.activity_ingreso_corralon)
+        setContentView(R.layout.activity_solicitudes_nuevas)
     }
 }

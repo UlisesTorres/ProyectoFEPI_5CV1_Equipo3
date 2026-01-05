@@ -7,73 +7,88 @@
     android:padding="24dp">
 
     <TextView
-        android:id="@+id/tvSaludoAgente"
+        android:id="@+id/tvSaludoOperador"
         style="@style/TextAppearance.MaterialComponents.Headline4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/panel_de_control_agente"
+        android:text="@string/panel_de_control_corral_n"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tvSubtituloAgente"
+        android:id="@+id/tvSubtituloCorralon"
         style="@style/TextAppearance.MaterialComponents.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="@string/qu_acci_n_desea_realizar_hoy"
+        android:text="Gestión de depósitos y vehículos"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSaludoAgente" />
+        app:layout_constraintTop_toBottomOf="@+id/tvSaludoOperador" />
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="32dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSubtituloAgente">
+        app:layout_constraintTop_toBottomOf="@+id/tvSubtituloCorralon">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnGenerarInfraccion"
+            android:id="@+id/btnIngresoVehiculo"
             android:layout_width="match_parent"
             android:layout_height="75dp"
-            android:layout_marginBottom="20dp"
-            android:text="@string/nuevainfracci"
+            android:layout_marginBottom="16dp"
+            android:text="Registrar Ingreso"
             android:textAllCaps="false"
             android:textSize="18sp"
             android:textStyle="bold"
             app:cornerRadius="40dp"
-            app:icon="@android:drawable/ic_menu_edit"
+            app:icon="@android:drawable/ic_input_add"
             app:iconGravity="textStart"
             app:iconPadding="15dp"
             app:iconSize="28dp" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnGenerarArrastre"
+            android:id="@+id/btnInventario"
             android:layout_width="match_parent"
             android:layout_height="75dp"
-            android:layout_marginBottom="20dp"
-            android:text="@string/generar_orden_de_arrastre"
+            android:layout_marginBottom="16dp"
+            android:text="Inventario en Depósito"
             android:textAllCaps="false"
             android:textSize="18sp"
             android:textStyle="bold"
             app:cornerRadius="40dp"
-            app:icon="@android:drawable/ic_menu_directions"
+            app:icon="@android:drawable/ic_menu_agenda"
             app:iconGravity="textStart"
             app:iconPadding="15dp"
             app:iconSize="28dp" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnInfraccionRegistrada"
+            android:id="@+id/btnSalidaVehiculo"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_marginBottom="16dp"
+            android:text="Liberar / Salida"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:cornerRadius="40dp"
+            app:icon="@android:drawable/ic_menu_share"
+            app:iconGravity="textStart"
+            app:iconPadding="15dp"
+            app:iconSize="28dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnHistorialMovimientos"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="75dp"
-            android:layout_marginBottom="20dp"
-            android:text="@string/ver_infracciones_registradas"
+            android:layout_marginBottom="16dp"
+            android:text="Historial de Movimientos"
             android:textAllCaps="false"
             android:textSize="18sp"
             app:cornerRadius="40dp"
@@ -91,7 +106,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:text="@string/cerrar_sesi_n"
+        android:text="Cerrar Sesión"
         app:icon="@android:drawable/ic_lock_power_off"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

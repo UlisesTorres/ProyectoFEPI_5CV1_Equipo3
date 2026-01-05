@@ -36,8 +36,8 @@ class TransitoActivity: ComponentActivity() {
 
         val btnGenerarArrastre = findViewById<Button>(R.id.btnGenerarArrastre)
         btnGenerarArrastre.setOnClickListener {
-            val intent = Intent(this, Orden_ArrastreActivity::class.java)
-            startActivity(intent)
+            //val intent = Intent(this, Orden_ArrastreActivity::class.java)
+            //startActivity(intent)
         }
 
 

@@ -8,9 +8,10 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.example.myapplication.R
 import com.example.myapplication.presenter.Login.LoginPresenter
-import com.example.myapplication.view.Transito.TransitoActivity
+import com.example.myapplication.view.corralones.CorralonesActivity
 import com.example.myapplication.view.operador_grua.Operador_GruaActivity
 import com.example.myapplication.view.supervisor.SupervisorActivity
+import com.example.myapplication.view.Transito.TransitoActivity
 
 class LoginActivity : ComponentActivity(), MainContract.View {
     private lateinit var presenter: LoginPresenter
@@ -22,8 +23,8 @@ class LoginActivity : ComponentActivity(), MainContract.View {
         presenter = LoginPresenter(this)
 
         val btnIS = findViewById<Button>(R.id.btnIniciarSesion)
-        val etUser = findViewById<EditText>(R.id.editTextText)
-        val etPass = findViewById<EditText>(R.id.editTextTextPassword)
+        val etUser = findViewById<EditText>(R.id.etUsuario)
+        val etPass = findViewById<EditText>(R.id.etPassword)
 
         btnIS.setOnClickListener {
             val user = etUser.text.toString()
@@ -48,6 +49,7 @@ class LoginActivity : ComponentActivity(), MainContract.View {
 
     override fun navegarAGestor() {
         Toast.makeText(this, "Entrando como Gestor de Corralon", Toast.LENGTH_SHORT).show()
+        startActivity(Intent(this, CorralonesActivity::class.java))
     }
 
     override fun mostrarError(mensaje: String) {
