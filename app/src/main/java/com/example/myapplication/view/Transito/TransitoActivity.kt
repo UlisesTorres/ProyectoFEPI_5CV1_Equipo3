@@ -1,4 +1,4 @@
-package com.example.myapplication.view.infracciones
+package com.example.myapplication.view.Transito
 
 import android.content.Intent
 import android.os.Bundle
@@ -32,6 +32,12 @@ class TransitoActivity: ComponentActivity() {
                 }
                 .setNegativeButton("Cancelar", null)
                 .show()
+        }
+
+        val btnGenerarArrastre = findViewById<Button>(R.id.btnGenerarArrastre)
+        btnGenerarArrastre.setOnClickListener {
+            val intent = Intent(this, Orden_ArrastreActivity::class.java)
+            startActivity(intent)
         }
 
 

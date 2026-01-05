@@ -24,4 +24,16 @@
     <string name="cerrar_sesi_n">Cerrar Sesión</string>
     <string name="camara">Cámara</string>
     <string name="lista_de_fotos_capturadas">Lista de fotos capturadas</string>
+    <string name="guardar_orden">Guardar Orden</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="estado_f_sico_e_inventario">Estado físico e Inventario</string>
+    <string name="datos_del_corral_n">Datos del corralón</string>
+    <string name="marca_modelo">Marca / Modelo</string>
+    <string name="fecha_y_hora_de_ingreso">Fecha y hora de ingreso</string>
+    <string name="placa">Placa</string>
+    <string name="folio_de_infracci_n">Folio de infracción</string>
+    <string name="color">Color</string>
+    <string name="datos_de_la_infracci_n">Datos de la infracción</string>
+    <string name="datos_del_veh_culo">Datos del vehículo</string>
+    <string name="orden_de_arrastre">Orden de Arrastre</string>
 </resources>

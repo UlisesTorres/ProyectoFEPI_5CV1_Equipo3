@@ -1,4 +1,4 @@
-package com.example.myapplication.view.infracciones
+package com.example.myapplication.view.Transito
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory

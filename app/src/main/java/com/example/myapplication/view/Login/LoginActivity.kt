@@ -7,17 +7,19 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.example.myapplication.R
-import com.example.myapplication.presenter.main.MainPresenter
-import com.example.myapplication.view.infracciones.TransitoActivity
+import com.example.myapplication.presenter.Login.LoginPresenter
+import com.example.myapplication.view.Transito.TransitoActivity
+import com.example.myapplication.view.operador_grua.Operador_GruaActivity
+import com.example.myapplication.view.supervisor.SupervisorActivity
 
 class LoginActivity : ComponentActivity(), MainContract.View {
-    private lateinit var presenter: MainPresenter
+    private lateinit var presenter: LoginPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        presenter = MainPresenter(this)
+        presenter = LoginPresenter(this)
 
         val btnIS = findViewById<Button>(R.id.btnIniciarSesion)
         val etUser = findViewById<EditText>(R.id.editTextText)
@@ -36,14 +38,16 @@ class LoginActivity : ComponentActivity(), MainContract.View {
 
     override fun navegarAGruas() {
         Toast.makeText(this, "Entrando como Operador de Grúa", Toast.LENGTH_SHORT).show()
+        startActivity(Intent(this, Operador_GruaActivity::class.java))
     }
 
     override fun navegarASupervisor() {
         Toast.makeText(this, "Entrando como Supervisor", Toast.LENGTH_SHORT).show()
+        startActivity(Intent(this, SupervisorActivity::class.java))
     }
 
     override fun navegarAGestor() {
-        Toast.makeText(this, "Entrando como Gestor", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Entrando como Gestor de Corralon", Toast.LENGTH_SHORT).show()
     }
 
     override fun mostrarError(mensaje: String) {

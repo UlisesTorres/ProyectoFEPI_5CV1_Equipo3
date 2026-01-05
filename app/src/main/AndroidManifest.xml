@@ -27,20 +27,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.infracciones.InfraccionesActivity"
+        <activity android:name=".view.Transito.InfraccionesActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             android:exported="true"
             />
-        <activity android:name=".view.infracciones.TransitoActivity"
+        <activity android:name=".view.Transito.TransitoActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".view.infracciones.EvidenciaActivity"
+            android:name=".view.Transito.EvidenciaActivity"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity android:name=".view.supervisor.SupervisorActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".view.corralones.CorralonesActivity"
+        <activity android:name=".view.Transito.Orden_ArrastreActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".view.operador_grua.Operador_GruaActivity"
             android:screenOrientation="portrait"/>

@@ -1,4 +1,4 @@
-package com.example.myapplication.view.infracciones
+package com.example.myapplication.view.Transito
 
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
@@ -10,7 +10,6 @@ import com.example.myapplication.R
 import com.example.myapplication.model.infracciones.InfraccionesModel
 import com.example.myapplication.presenter.infracciones.InfraccionesContract
 import com.example.myapplication.presenter.infracciones.InfraccionesPresenter
-import com.github.gcacace.signaturepad.views.SignaturePad
 import org.maplibre.android.MapLibre
 import org.maplibre.android.camera.CameraUpdateFactory
 import org.maplibre.android.geometry.LatLng
