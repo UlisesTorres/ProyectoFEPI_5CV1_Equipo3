@@ -1,6 +1,202 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:padding="24dp"
+    tools:ignore="HardcodedText,UnusedNamespace">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- TÍTULO PRINCIPAL -->
+        <TextView
+            android:id="@+id/tvTituloSupervisor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Panel de Supervisor"
+            android:textAlignment="center"
+            style="@style/TextAppearance.MaterialComponents.Headline6"
+            android:textStyle="bold"
+            android:paddingBottom="24dp" />
+
+        <!-- SECCIÓN: FILTROS DE BÚSQUEDA -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Filtros de búsqueda"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:textColor="?attr/colorPrimary"
+            android:textStyle="bold"
+            android:paddingBottom="8dp" />
+
+        <!-- Fecha desde -->
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Fecha desde">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etFechaDesde"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="date"
+                android:focusable="false"
+                android:clickable="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Fecha hasta -->
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Fecha hasta">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etFechaHasta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="date"
+                android:focusable="false"
+                android:clickable="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Oficial / Agente -->
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="ID / nombre del agente">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etAgente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName|textCapWords" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Estatus -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Estatus de infracción:"
+            android:textSize="14sp"
+            android:layout_marginTop="16dp" />
+
+        <Spinner
+            android:id="@+id/spEstatus"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:background="@android:drawable/btn_dropdown" />
+
+        <!-- Botones de filtros -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="16dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLimpiarFiltros"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Limpiar"
+                android:layout_marginEnd="12dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAplicarFiltros"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Aplicar filtros" />
+        </LinearLayout>
+
+        <!-- SECCIÓN: RESUMEN (OPCIONAL) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Resumen"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:textColor="?attr/colorPrimary"
+            android:textStyle="bold"
+            android:layout_marginTop="24dp"
+            android:paddingBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <TextView
+                android:id="@+id/tvTotalInfracciones"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Total: 0"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tvValidadas"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Validadas: 0"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tvPendientes"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Pendientes: 0"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- SECCIÓN: LISTA DE INFRACCIONES -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Infracciones encontradas"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:textColor="?attr/colorPrimary"
+            android:textStyle="bold"
+            android:layout_marginTop="24dp"
+            android:paddingBottom="8dp" />
+
+        <!-- Si usas RecyclerView en el Kotlin, puedes usar este ID -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvInfraccionesSupervisor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            tools:listitem="@android:layout/simple_list_item_2" />
+
+        <!-- Botón para exportar / generar reporte -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnExportarReporte"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Exportar reporte" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
