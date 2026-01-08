@@ -54,6 +54,15 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".view.operador_grua.Historial_ArrastresActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".view.Transito.HistorialActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".view.corralones.InventarioActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".view.corralones.LiberarActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".view.corralones.HistorialCorralonActivity"
+            android:screenOrientation="portrait"/>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

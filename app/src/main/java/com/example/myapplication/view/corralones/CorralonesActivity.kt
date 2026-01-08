@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.example.myapplication.R
 import com.example.myapplication.view.Login.LoginActivity
+import com.example.myapplication.view.Transito.HistorialActivity
 
 class CorralonesActivity : ComponentActivity() {
 
@@ -25,20 +26,22 @@ class CorralonesActivity : ComponentActivity() {
 
         btnIngreso.setOnClickListener {
             // Aquí navegarías a la pantalla de registro de ingreso
-            Toast.makeText(this, "Abriendo Registro de Ingreso", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, RegistrarIngresoActivity::class.java))
         }
 
         btnInventario.setOnClickListener {
-            Toast.makeText(this, "Consultando Inventario", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, InventarioActivity::class.java)
+            startActivity(intent)
         }
 
         btnSalida.setOnClickListener {
-            Toast.makeText(this, "Abriendo Liberaciones", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, LiberarActivity::class.java)
+            startActivity(intent)
         }
 
         btnHistorial.setOnClickListener {
-            Toast.makeText(this, "Abriendo Historial", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, HistorialCorralonActivity::class.java)
+            startActivity(intent)
         }
 
         btnCerrarSesion.setOnClickListener {

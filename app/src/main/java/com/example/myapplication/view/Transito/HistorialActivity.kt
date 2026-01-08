@@ -4,11 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import com.example.myapplication.R
 
-class Orden_ArrastreActivity: ComponentActivity() {
+class HistorialActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_infracciones_registradas)
 
-        // Aquí se hace la unión:
-        setContentView(R.layout.activity_orden_arrastre)
     }
+
 }
