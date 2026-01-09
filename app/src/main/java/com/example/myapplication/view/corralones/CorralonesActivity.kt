@@ -3,11 +3,11 @@ package com.example.myapplication.view.corralones
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.Toast
+
 import androidx.activity.ComponentActivity
 import com.example.myapplication.R
 import com.example.myapplication.view.Login.LoginActivity
-import com.example.myapplication.view.Transito.HistorialActivity
+
 
 class CorralonesActivity : ComponentActivity() {
 
