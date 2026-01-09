@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/tvSaludoParquimetros"
+        style="@style/TextAppearance.MaterialComponents.Headline4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="@string/personal_de_parquimetros"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvSubtituloParquimetros"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/verificaci_n_y_reporte_de_incidencias"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSaludoParquimetros" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/btnCerrarSesion"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSubtituloParquimetros">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnConsultarPlaca"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:layout_marginBottom="24dp"
+            android:text="@string/verificar_estatus"
+            android:textAllCaps="false"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:cornerRadius="20dp"
+            app:icon="@android:drawable/ic_menu_search"
+            app:iconGravity="textStart"
+            app:iconPadding="15dp"
+            app:iconSize="32dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnReportarInfraccion"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:text="@string/solicitar_gr_a"
+            android:textAllCaps="false"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:backgroundTint="#D32F2F"
+            app:cornerRadius="20dp"
+            app:icon="@android:drawable/stat_notify_error"
+            app:iconGravity="textStart"
+            app:iconPadding="15dp"
+            app:iconSize="32dp" />
+
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCerrarSesion"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/cerrar_sesi_n"
+        android:textColor="#757575"
+        app:icon="@android:drawable/ic_lock_power_off"
+        app:iconTint="#757575"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

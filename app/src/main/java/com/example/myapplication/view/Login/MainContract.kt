@@ -6,6 +6,7 @@ interface MainContract {
         fun navegarAGruas()
         fun navegarASupervisor()
         fun navegarAGestor()
+        fun navegarAParquimetro()
         fun mostrarError(mensaje: String)
     }
 

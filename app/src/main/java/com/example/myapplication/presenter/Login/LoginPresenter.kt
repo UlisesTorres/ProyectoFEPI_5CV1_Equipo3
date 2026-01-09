@@ -10,6 +10,7 @@ class LoginPresenter(private val view: MainContract.View) : MainContract.Present
             usuario == "gruero" && pass == "123" -> view.navegarAGruas()
             usuario == "super" && pass == "123" -> view.navegarASupervisor()
             usuario == "gestor" && pass == "123" -> view.navegarAGestor()
+            usuario == "parqui" && pass == "123" -> view.navegarAParquimetro()
             else -> view.mostrarError("Usuario o contraseña incorrectos")
         }
     }

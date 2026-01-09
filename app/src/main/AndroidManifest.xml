@@ -63,6 +63,10 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".view.corralones.HistorialCorralonActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".view.parquimetros.ParquimetroActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".view.parquimetros.EstatusActivity"
+            android:screenOrientation="portrait"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

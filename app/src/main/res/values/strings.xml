@@ -57,4 +57,8 @@
     <string name="registro_de_ingresos_y_liberaciones">Registro de ingresos y liberaciones</string>
     <string name="sin_movimientos_registrados">Sin movimientos registrados</string>
     <string name="los_registros_de_entrada_y_salida_aparecer_n_aqu">Los registros de entrada y salida aparecerán aquí</string>
+    <string name="personal_de_parquimetros">Personal de Parquimetros</string>
+    <string name="verificaci_n_y_reporte_de_incidencias">Verificación y Reporte de Incidencias</string>
+    <string name="verificar_estatus">Verificar Estatus</string>
+    <string name="solicitar_gr_a">Solicitar Grúa</string>
 </resources>
