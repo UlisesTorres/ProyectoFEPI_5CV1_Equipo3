@@ -1,15 +1,12 @@
-package com.example.myapplication.view.parquimetros
+package com.example.myapplication.view.configuracion
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import com.example.myapplication.R
 
-
-class EstatusActivity: ComponentActivity(){
+class ConfiguracionActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_estatus)
-
+        setContentView(R.layout.activity_configuracion)
     }
-
 }

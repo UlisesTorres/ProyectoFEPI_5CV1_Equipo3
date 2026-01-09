@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.activity.ComponentActivity
 import com.example.myapplication.R
+import com.example.myapplication.view.configuracion.ConfiguracionActivity
 
 
 class ParquimetroActivity: ComponentActivity(){
@@ -16,6 +17,12 @@ class ParquimetroActivity: ComponentActivity(){
         val btnConsulta = findViewById<Button>(R.id.btnConsultarPlaca)
         btnConsulta.setOnClickListener {
             val intent = Intent(this, EstatusActivity::class.java)
+            startActivity(intent)
+        }
+
+        val btnConfiguracion = findViewById<Button>(R.id.btnConfiguracion)
+        btnConfiguracion.setOnClickListener {
+            val intent = Intent(this, ConfiguracionActivity::class.java)
             startActivity(intent)
         }
 

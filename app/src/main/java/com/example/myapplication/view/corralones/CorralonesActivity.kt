@@ -7,6 +7,7 @@ import android.widget.Button
 import androidx.activity.ComponentActivity
 import com.example.myapplication.R
 import com.example.myapplication.view.Login.LoginActivity
+import com.example.myapplication.view.configuracion.ConfiguracionActivity
 
 
 class CorralonesActivity : ComponentActivity() {
@@ -20,7 +21,7 @@ class CorralonesActivity : ComponentActivity() {
         val btnInventario = findViewById<Button>(R.id.btnInventario)
         val btnSalida = findViewById<Button>(R.id.btnSalidaVehiculo)
         val btnHistorial = findViewById<Button>(R.id.btnHistorialMovimientos)
-        val btnCerrarSesion = findViewById<Button>(R.id.btnCerrarSesion)
+        val btnConfig = findViewById<Button>(R.id.btnConfiguracion)
 
         // 2. Configurar los eventos de clic (Listeners)
 
@@ -44,17 +45,9 @@ class CorralonesActivity : ComponentActivity() {
             startActivity(intent)
         }
 
-        btnCerrarSesion.setOnClickListener {
-            procederCerrarSesion()
+        btnConfig.setOnClickListener {
+            val intent = Intent(this, ConfiguracionActivity::class.java)
+            startActivity(intent)
         }
-    }
-
-    private fun procederCerrarSesion() {
-        // Lógica simple para regresar al Login
-        val intent = Intent(this, LoginActivity::class.java)
-        // Limpiar el historial de pantallas para que no pueda regresar con el botón atrás
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
-        finish()
     }
 }

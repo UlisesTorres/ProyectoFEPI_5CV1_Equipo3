@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="24dp">
@@ -32,7 +31,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/btnCerrarSesion"
+        app:layout_constraintBottom_toTopOf="@+id/btnConfiguracion"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvSubtituloParquimetros">
@@ -57,7 +56,7 @@
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
             android:layout_height="85dp"
-            android:text="@string/solicitar_gr_a"
+            android:text="@string/solicitar_ayuda_a_policia_de_transito"
             android:textAllCaps="false"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -71,15 +70,15 @@
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnCerrarSesion"
+        android:id="@+id/btnConfiguracion"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:text="@string/cerrar_sesi_n"
-        android:textColor="#757575"
-        app:icon="@android:drawable/ic_lock_power_off"
-        app:iconTint="#757575"
+        android:text="@string/mi_cuenta_configuraci_n"
+        android:textColor="#424242"
+        app:icon="@android:drawable/ic_menu_manage"
+        app:iconTint="#424242"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

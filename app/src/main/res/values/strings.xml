@@ -61,4 +61,12 @@
     <string name="verificaci_n_y_reporte_de_incidencias">Verificación y Reporte de Incidencias</string>
     <string name="verificar_estatus">Verificar Estatus</string>
     <string name="solicitar_gr_a">Solicitar Grúa</string>
+    <string name="pagado_activo">PAGADO / ACTIVO</string>
+    <string name="ingrese_la_placa_ej_abc_123">Ingrese la placa (Ej: ABC-123)</string>
+    <string name="vence_a_las_18_30_hrs">Vence a las: 18:30 hrs</string>
+    <string name="estado_del_tiempo">ESTADO DEL TIEMPO:</string>
+    <string name="tiempo_restante_45_min">Tiempo restante: 45 min</string>
+    <string name="consulta_de_placa">Consulta de Placa</string>
+    <string name="solicitar_ayuda_a_policia_de_transito">Solicitar Ayuda a Policia de Transito</string>
+    <string name="mi_cuenta_configuraci_n">Mi Cuenta / Configuración</string>
 </resources>

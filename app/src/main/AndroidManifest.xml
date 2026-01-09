@@ -67,6 +67,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".view.parquimetros.EstatusActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".view.configuracion.ConfiguracionActivity"
+            android:screenOrientation="portrait"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

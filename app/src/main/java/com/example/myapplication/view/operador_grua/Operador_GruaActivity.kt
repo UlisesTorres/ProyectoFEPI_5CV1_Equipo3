@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.example.myapplication.R
+import com.example.myapplication.view.configuracion.ConfiguracionActivity
 import com.example.myapplication.view.corralones.RegistrarIngresoActivity
 
 class Operador_GruaActivity : ComponentActivity(){
@@ -17,6 +18,7 @@ class Operador_GruaActivity : ComponentActivity(){
         val btnArrastre = findViewById<Button>(R.id.btnArrastreActivo)
         val btnSolicitud = findViewById<Button>(R.id.btnVerPeticiones)
         val btnHistorial = findViewById<Button>(R.id.btnHistorialGrua)
+        val btnConfigu = findViewById<Button>(R.id.btnConfiguracion)
 
         btnArrastre.setOnClickListener {
             startActivity(Intent(this, Arrastre_En_CursoActivity::class.java))
@@ -28,6 +30,9 @@ class Operador_GruaActivity : ComponentActivity(){
 
         btnHistorial.setOnClickListener {
             startActivity(Intent(this, Historial_ArrastresActivity::class.java))
+        }
+        btnConfigu.setOnClickListener {
+            startActivity(Intent(this, ConfiguracionActivity::class.java))
         }
     }
 }

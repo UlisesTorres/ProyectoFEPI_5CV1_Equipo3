@@ -5,9 +5,8 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.edit
 import com.example.myapplication.R
-import com.example.myapplication.view.Login.LoginActivity
+import com.example.myapplication.view.configuracion.ConfiguracionActivity
 
 class TransitoActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,17 +20,10 @@ class TransitoActivity: ComponentActivity() {
         }
 
 
-        val btnCerrarSesion = findViewById<Button>(R.id.btnCerrarSesion)
-        btnCerrarSesion.setOnClickListener {
-            AlertDialog.Builder(this)
-                .setTitle("Cerrar Sesión")
-                .setMessage("¿Estás seguro de que deseas salir?")
-                .setPositiveButton("Cerrar Sesión") { _, _ ->
-                    // Llamamos a la función para limpiar y salir
-                    procederCerrarSesion()
-                }
-                .setNegativeButton("Cancelar", null)
-                .show()
+        val btnConfig = findViewById<Button>(R.id.btnConfiguracion)
+        btnConfig.setOnClickListener {
+            val intent = Intent(this, ConfiguracionActivity::class.java)
+            startActivity(intent)
         }
 
         val btnGenerarArrastre = findViewById<Button>(R.id.btnGenerarArrastre)
@@ -48,17 +40,4 @@ class TransitoActivity: ComponentActivity() {
 
 
     }
-
-    private fun procederCerrarSesion() {
-        val prefs = getSharedPreferences("SesionOficial", MODE_PRIVATE)
-        prefs.edit { clear() }
-
-        // FLAG_ACTIVITY_CLEAR_TASK limpia el historial para que no puedan volver atrás
-        val intent = Intent(this, LoginActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-
-        startActivity(intent)
-        finish()
-    }
-
 }
