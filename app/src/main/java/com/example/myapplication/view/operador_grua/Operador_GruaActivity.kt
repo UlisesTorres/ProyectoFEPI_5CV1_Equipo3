@@ -5,32 +5,57 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.activity.ComponentActivity
 import com.example.myapplication.R
+import com.example.myapplication.presenter.operador_grua.OperadorGruaPresenter
 import com.example.myapplication.view.configuracion.ConfiguracionActivity
 
-class Operador_GruaActivity : ComponentActivity(){
+class Operador_GruaActivity : ComponentActivity(), OperadorGruaContract.View {
+
+    private lateinit var presenter: OperadorGruaContract.Presenter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_operador_grua_principal)
 
-        val btnArrastre = findViewById<Button>(R.id.btnArrastreActivo)
-        val btnSolicitud = findViewById<Button>(R.id.btnVerPeticiones)
-        val btnHistorial = findViewById<Button>(R.id.btnHistorialGrua)
-        val btnConfigu = findViewById<Button>(R.id.btnConfiguracion)
+        presenter = OperadorGruaPresenter(this)
 
-        btnArrastre.setOnClickListener {
-            startActivity(Intent(this, Arrastre_En_CursoActivity::class.java))
+        // Asignación de botones y eventos
+        findViewById<Button>(R.id.btnArrastreActivo).setOnClickListener {
+            presenter.clickArrastre()
         }
 
-        btnSolicitud.setOnClickListener {
-            startActivity(Intent(this, Solicitud_ArrastreActivity::class.java))
+        findViewById<Button>(R.id.btnVerPeticiones).setOnClickListener {
+            presenter.clickSolicitudes()
         }
 
-        btnHistorial.setOnClickListener {
-            startActivity(Intent(this, Historial_ArrastresActivity::class.java))
+        findViewById<Button>(R.id.btnHistorialGrua).setOnClickListener {
+            presenter.clickHistorial()
         }
-        btnConfigu.setOnClickListener {
-            startActivity(Intent(this, ConfiguracionActivity::class.java))
+
+        findViewById<Button>(R.id.btnConfiguracion).setOnClickListener {
+            presenter.clickConfiguracion()
         }
+    }
+
+    // --- Implementación de navegación ---
+
+    override fun navegarAArrastreEnCurso() {
+        startActivity(Intent(this, Arrastre_En_CursoActivity::class.java))
+    }
+
+    override fun navegarASolicitudes() {
+        startActivity(Intent(this, Solicitud_ArrastreActivity::class.java))
+    }
+
+    override fun navegarAHistorial() {
+        startActivity(Intent(this, Historial_ArrastresActivity::class.java))
+    }
+
+    override fun navegarAConfiguracion() {
+        startActivity(Intent(this, ConfiguracionActivity::class.java))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.destruir()
     }
 }

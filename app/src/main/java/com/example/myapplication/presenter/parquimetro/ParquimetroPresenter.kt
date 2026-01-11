@@ -1,0 +1,19 @@
+package com.example.myapplication.presenter.parquimetro
+
+import com.example.myapplication.view.parquimetros.ParquimetroContract
+
+class ParquimetroPresenter(private var view: ParquimetroContract.View?) : ParquimetroContract.Presenter {
+
+    override fun alHacerClickConsultar() {
+        // Aquí podrías validar si el usuario tiene permisos o si hay internet antes de navegar
+        view?.navegarAStatus()
+    }
+
+    override fun alHacerClickConfiguracion() {
+        view?.navegarAConfiguracion()
+    }
+
+    override fun destruir() {
+        view = null // Evitamos fugas de memoria (memory leaks)
+    }
+}

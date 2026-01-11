@@ -6,47 +6,52 @@ import android.widget.Button
 
 import androidx.activity.ComponentActivity
 import com.example.myapplication.R
+import com.example.myapplication.presenter.corralones.CorralonPresenter
 import com.example.myapplication.view.configuracion.ConfiguracionActivity
 
 
-class CorralonesActivity : ComponentActivity() {
+class CorralonesActivity : ComponentActivity(), CorralonContract.View {
+
+    private lateinit var presenter: CorralonContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_corralones_principal)
 
-        // 1. Asociar los botones del XML con variables de Kotlin
-        val btnIngreso = findViewById<Button>(R.id.btnIngresoVehiculo)
-        val btnInventario = findViewById<Button>(R.id.btnInventario)
-        val btnSalida = findViewById<Button>(R.id.btnSalidaVehiculo)
-        val btnHistorial = findViewById<Button>(R.id.btnHistorialMovimientos)
-        val btnConfig = findViewById<Button>(R.id.btnConfiguracion)
+        presenter = CorralonPresenter(this)
 
-        // 2. Configurar los eventos de clic (Listeners)
+        // Inicializar botones y asignar eventos al presenter
+        findViewById<Button>(R.id.btnIngresoVehiculo).setOnClickListener { presenter.alClickIngreso() }
+        findViewById<Button>(R.id.btnInventario).setOnClickListener { presenter.alClickInventario() }
+        findViewById<Button>(R.id.btnSalidaVehiculo).setOnClickListener { presenter.alClickSalida() }
+        findViewById<Button>(R.id.btnHistorialMovimientos).setOnClickListener { presenter.alClickHistorial() }
+        findViewById<Button>(R.id.btnConfiguracion).setOnClickListener { presenter.alClickConfiguracion() }
+    }
 
-        btnIngreso.setOnClickListener {
-            // Aquí navegarías a la pantalla de registro de ingreso
-            startActivity(Intent(this, RegistrarIngresoActivity::class.java))
-        }
+    // --- Implementación de navegación ---
 
-        btnInventario.setOnClickListener {
-            val intent = Intent(this, InventarioActivity::class.java)
-            startActivity(intent)
-        }
+    override fun navegarAIngreso() {
+        startActivity(Intent(this, RegistrarIngresoActivity::class.java))
+    }
 
-        btnSalida.setOnClickListener {
-            val intent = Intent(this, LiberarActivity::class.java)
-            startActivity(intent)
-        }
+    override fun navegarAInventario() {
+        startActivity(Intent(this, InventarioActivity::class.java))
+    }
 
-        btnHistorial.setOnClickListener {
-            val intent = Intent(this, HistorialCorralonActivity::class.java)
-            startActivity(intent)
-        }
+    override fun navegarALiberacion() {
+        startActivity(Intent(this, LiberarActivity::class.java))
+    }
 
-        btnConfig.setOnClickListener {
-            val intent = Intent(this, ConfiguracionActivity::class.java)
-            startActivity(intent)
-        }
+    override fun navegarAHistorial() {
+        startActivity(Intent(this, HistorialCorralonActivity::class.java))
+    }
+
+    override fun navegarAConfiguracion() {
+        startActivity(Intent(this, ConfiguracionActivity::class.java))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.destruir()
     }
 }

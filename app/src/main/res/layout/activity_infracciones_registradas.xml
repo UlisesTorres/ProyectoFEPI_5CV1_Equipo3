@@ -12,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/infracciones_registradas"
+        android:text="Infracciones Registradas"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="@string/registro_hist_rico_de_multas_aplicadas"
+        android:text="Registro histórico de multas"
         android:textColor="#757575"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,6 +50,17 @@
         app:layout_constraintTop_toBottomOf="@+id/dividerHistorial"
         tools:listitem="@android:layout/simple_list_item_activated_1" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabRefresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:contentDescription="Actualizar"
+        android:src="@android:drawable/stat_notify_sync"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@android:color/white" />
+
     <LinearLayout
         android:id="@+id/layoutHistorialVacio"
         android:layout_width="wrap_content"
@@ -63,37 +74,16 @@
         app:layout_constraintTop_toBottomOf="@+id/dividerHistorial">
 
         <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:alpha="0.2"
-            android:src="@android:drawable/ic_menu_edit"
-            app:tint="?attr/colorPrimary" />
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:alpha="0.3"
+            android:src="@android:drawable/ic_menu_search" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/sin_infracciones_registradas"
-            android:textStyle="bold"
-            android:textColor="#999999"
-            android:textSize="18sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/las_multas_que_levantes_aparecer_n_aqu"
-            android:textColor="#BBBBBB"
-            android:textSize="14sp" />
+            android:text="Sin infracciones"
+            android:textStyle="bold" />
     </LinearLayout>
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabRefresh"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_marginBottom="38dp"
-        android:contentDescription="Actualizar"
-        android:src="@android:drawable/stat_notify_sync"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:tint="@android:color/white" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

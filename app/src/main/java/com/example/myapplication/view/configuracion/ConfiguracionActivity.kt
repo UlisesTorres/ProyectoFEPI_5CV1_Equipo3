@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.R
+import com.example.myapplication.model.configuracion.ConfiguracionModel
 import com.example.myapplication.presenter.configuracion.ConfiguracionPresenter
 import com.example.myapplication.view.login.LoginActivity
 
@@ -17,7 +18,7 @@ class ConfiguracionActivity: AppCompatActivity(), ConfiguracionContract.View{
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_configuracion)
 
-        presenter = ConfiguracionPresenter(this)
+        presenter = ConfiguracionPresenter(this, ConfiguracionModel())
 
         val btnSesion = findViewById<Button>(R.id.btnCerrarSesion)
 
@@ -43,5 +44,10 @@ class ConfiguracionActivity: AppCompatActivity(), ConfiguracionContract.View{
         builder.setNegativeButton("Cancelar",null)
         val dialog = builder.create()
         dialog.show()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.destruir()
     }
 }
