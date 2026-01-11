@@ -21,7 +21,7 @@ class ConfiguracionPresenter(
         }
     }
 
-    // Importante: método para evitar memory leaks
+    // Importante: metodo para evitar memory leaks
     fun destruir() {
         view = null
     }
