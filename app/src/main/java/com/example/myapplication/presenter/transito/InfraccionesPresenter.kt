@@ -1,10 +1,11 @@
-package com.example.myapplication.presenter.infracciones
+package com.example.myapplication.presenter.transito
 
 import com.example.myapplication.model.infracciones.InfraccionesModel
-import com.example.myapplication.view.transito.InfraccionesContract // <--- Verifica esta ruta
+import com.example.myapplication.view.transito.InfraccionesContract
 import org.maplibre.android.geometry.LatLng
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 class InfraccionesPresenter(
     private val view: InfraccionesContract.View,
@@ -30,9 +31,11 @@ class InfraccionesPresenter(
             return
         }
 
+        view.ocultarTeclado() // <--- Paso vital
+        view.navegarAEvidencia(placas, "Dirección actual obtenida")
         // Si llegamos aquí, es que hay placas.
         // Pedimos la dirección (que ya tenemos guardada o la obtenemos de la vista)
         // Supongamos que pasamos la dirección actual:
-        view.navegarAEvidencia(placas, "Dirección actual obtenida")
+
     }
 }

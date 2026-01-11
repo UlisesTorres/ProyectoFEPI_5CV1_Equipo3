@@ -11,6 +11,7 @@ interface InfraccionesContract {
         fun bloquearEnvio()
         fun mostrarFechaActual(fecha: String)
         fun navegarAEvidencia(placas: String, direccion: String)
+        fun ocultarTeclado()
     }
 
     interface Presenter {

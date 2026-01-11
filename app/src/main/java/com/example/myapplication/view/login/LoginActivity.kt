@@ -29,7 +29,7 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
 
         presenter = LoginPresenter(this)
 
-        val servicio = RetrofitClient.instance
+        val servicio = RetrofitClient.apiService
 
         servicio.testConexion().enqueue(object : Callback<okhttp3.ResponseBody> {
             override fun onResponse(call: Call<okhttp3.ResponseBody>, response: Response<okhttp3.ResponseBody>) {

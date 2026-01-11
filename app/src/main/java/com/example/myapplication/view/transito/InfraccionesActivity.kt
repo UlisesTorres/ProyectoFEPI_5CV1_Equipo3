@@ -1,14 +1,16 @@
 package com.example.myapplication.view.transito
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.R
 import com.example.myapplication.model.infracciones.InfraccionesModel
-import com.example.myapplication.presenter.infracciones.InfraccionesPresenter
+import com.example.myapplication.presenter.transito.InfraccionesPresenter
 import org.maplibre.android.MapLibre
 import org.maplibre.android.camera.CameraUpdateFactory
 import org.maplibre.android.geometry.LatLng
@@ -25,6 +27,7 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
     private lateinit var tvDireccion: TextView
     private lateinit var tvFecha: TextView
     private lateinit var etPlacas: EditText
+
 
     // Mapa
     private var mapLibreMap: MapLibreMap? = null
@@ -140,6 +143,14 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
         findViewById<Button>(R.id.btnSiguiente).isEnabled = false
     }
 
+    override fun ocultarTeclado() {
+        val view = this.currentFocus
+        if (view != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+    }
+
     // --- LÓGICA DE UBICACIÓN Y CICLO DE VIDA ---
 
     private fun activarUbicacion(style: org.maplibre.android.maps.Style) {
@@ -164,6 +175,8 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerInfracciones.adapter = adapter
     }
+
+
 
     // Ciclo de vida del MapView (Vital para que no se trabe)
     override fun onStart() { super.onStart(); mapView.onStart() }
