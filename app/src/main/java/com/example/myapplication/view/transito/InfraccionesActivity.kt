@@ -1,14 +1,13 @@
-package com.example.myapplication.view.Transito
+package com.example.myapplication.view.transito
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.widget.*
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.R
 import com.example.myapplication.model.infracciones.InfraccionesModel
-import com.example.myapplication.presenter.infracciones.InfraccionesContract
 import com.example.myapplication.presenter.infracciones.InfraccionesPresenter
 import org.maplibre.android.MapLibre
 import org.maplibre.android.camera.CameraUpdateFactory
@@ -18,58 +17,66 @@ import org.maplibre.android.maps.MapLibreMap
 import org.maplibre.android.annotations.MarkerOptions
 import org.maplibre.android.annotations.Marker
 
-class InfraccionesActivity : ComponentActivity(), InfraccionesContract.View {
+class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
+
+    // Vistas
     private lateinit var spinnerInfracciones: Spinner
     private lateinit var mapView: MapView
-    private lateinit var tvDireccion: TextView // Tu nuevo Label para la dirección
+    private lateinit var tvDireccion: TextView
+    private lateinit var tvFecha: TextView
+    private lateinit var etPlacas: EditText
 
+    // Mapa
     private var mapLibreMap: MapLibreMap? = null
     private var marcadorInfraccion: Marker? = null
 
-    private lateinit var tvFecha: TextView
+    // MVP: Usamos la interfaz del contrato
+    private lateinit var presenter: InfraccionesContract.Presenter
 
-    // MVP Variables
-    private lateinit var presenter: InfraccionesPresenter
-
-    @SuppressLint("ClickableViewAccessibility", "MissingInflatedId")
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 1. SIEMPRE PRIMERO: Configurar el diseño y MapLibre
+        // 1. Configuración de MapLibre y Diseño
         MapLibre.getInstance(this)
         setContentView(R.layout.activity_infracciones)
 
-        // 2. INICIALIZAR VISTAS (Después de setContentView)
+        // 2. Inicializar Vistas
         tvFecha = findViewById(R.id.tvFFija)
         spinnerInfracciones = findViewById(R.id.spinnerInfracciones)
         mapView = findViewById(R.id.map)
         tvDireccion = findViewById(R.id.tvDireccionInfraccion)
+        etPlacas = findViewById(R.id.editTextText2)
+        val btnSiguiente = findViewById<Button>(R.id.btnSiguiente)
+        val btnMyLocation = findViewById<ImageButton>(R.id.btnMyLocation)
 
-        // 3. INICIALIZAR MVP
+        // 3. Inicializar MVP
+        // Nota: Asegúrate de que InfraccionesModel esté en el paquete correcto
         val model = InfraccionesModel(this)
         presenter = InfraccionesPresenter(this, model)
 
-        // 4. USAR EL PRESENTER Y CONFIGURAR
-        presenter.cargarFechaInfraccion() // Ahora sí, el presenter ya existe
-
+        // 4. Configuración Inicial
+        presenter.cargarFechaInfraccion()
         setupSpinner()
         setupMapa(savedInstanceState)
 
-        // Bloqueadores de Scroll (Touch Listeners)
+        // 5. Listeners de Usuario
+        btnSiguiente.setOnClickListener {
+            val placas = etPlacas.text.toString()
+            val tipo = spinnerInfracciones.selectedItem.toString()
+            // El presenter decide si los datos son válidos
+            presenter.validarYGuardarInfraccion(placas, tipo)
+
+        }
+
+        btnMyLocation.setOnClickListener {
+            mapLibreMap?.getStyle { style -> activarUbicacion(style) }
+        }
+
+        // Bloqueo de scroll para que el mapa no se mueva al hacer scroll en la pantalla
         mapView.setOnTouchListener { v, event ->
             v.parent.requestDisallowInterceptTouchEvent(true)
             false
-        }
-        val btnSiguiente = findViewById<Button>(R.id.btnSiguiente)
-        btnSiguiente.setOnClickListener {
-            val intent = android.content.Intent(this, EvidenciaActivity::class.java)
-
-            // Empacamos la información
-            intent.putExtra("PLACAS", findViewById<EditText>(R.id.editTextText2).text.toString())
-            intent.putExtra("DIRECCION", tvDireccion.text.toString())
-
-            // IMPORTANTE: Lanzar la actividad
-            startActivity(intent)
         }
     }
 
@@ -78,7 +85,7 @@ class InfraccionesActivity : ComponentActivity(), InfraccionesContract.View {
         mapView.getMapAsync { map ->
             this.mapLibreMap = map
 
-            // El Modelo ahora nos da la ruta del archivo
+            // Obtenemos el estilo local a través del modelo
             val absolutePath = InfraccionesModel(this).prepararMapaLocal()
             val styleJson = assets.open("cdmx_style.json").bufferedReader().use { it.readText() }
             val finalStyle = styleJson.replace("{file_path}", absolutePath)
@@ -87,23 +94,16 @@ class InfraccionesActivity : ComponentActivity(), InfraccionesContract.View {
                 val cdmxCenter = LatLng(19.4326, -99.1332)
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(cdmxCenter, 14.0))
 
-                // Inicializamos marcador pidiéndole la dirección al Presenter
-                presenter.procesarClickMapa(cdmxCenter)
-
+                // Click en el mapa para situar la infracción
                 map.addOnMapClickListener { point ->
-                    // AVISAMOS AL PRESENTER
                     presenter.procesarClickMapa(point)
                     true
-                }
-
-                findViewById<ImageButton>(R.id.btnMyLocation).setOnClickListener {
-                    activarUbicacion(style)
                 }
             }
         }
     }
 
-    // --- IMPLEMENTACIÓN DE INFRACCIONESCONTRACT.VIEW ---
+    // --- IMPLEMENTACIÓN DEL CONTRATO (View) ---
 
     override fun actualizarDireccionEnPantalla(direccion: String) {
         tvDireccion.text = direccion
@@ -111,7 +111,20 @@ class InfraccionesActivity : ComponentActivity(), InfraccionesContract.View {
 
     override fun moverMarcador(latLng: LatLng) {
         marcadorInfraccion?.let { mapLibreMap?.removeMarker(it) }
-        marcadorInfraccion = mapLibreMap?.addMarker(MarkerOptions().position(latLng).title("Lugar de Infracción"))
+        marcadorInfraccion = mapLibreMap?.addMarker(
+            MarkerOptions().position(latLng).title("Lugar de Infracción")
+        )
+    }
+
+    override fun mostrarFechaActual(fecha: String) {
+        tvFecha.text = fecha
+    }
+
+    override fun navegarAEvidencia(placas: String, direccion: String) {
+        val intent = Intent(this, EvidenciaActivity::class.java)
+        intent.putExtra("PLACAS", placas)
+        intent.putExtra("DIRECCION", direccion)
+        startActivity(intent)
     }
 
     override fun mostrarMensaje(mensaje: String) {
@@ -119,58 +132,30 @@ class InfraccionesActivity : ComponentActivity(), InfraccionesContract.View {
     }
 
     override fun limpiarFormulario() {
+        etPlacas.setText("")
         spinnerInfracciones.setSelection(0)
     }
 
     override fun bloquearEnvio() {
-        // btnEnviar.isEnabled = false
+        findViewById<Button>(R.id.btnSiguiente).isEnabled = false
     }
 
-    // --- MÉTODOS DE APOYO Y CICLO DE VIDA ---
+    // --- LÓGICA DE UBICACIÓN Y CICLO DE VIDA ---
 
     private fun activarUbicacion(style: org.maplibre.android.maps.Style) {
-        if (!style.isFullyLoaded) return
-        val locationComponent = mapLibreMap?.locationComponent
-
         if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            // 1. Configuramos una petición de ubicación activa
-            val request = org.maplibre.android.location.engine.LocationEngineRequest.Builder(1000L) // cada 1 segundo
-                .setPriority(org.maplibre.android.location.engine.LocationEngineRequest.PRIORITY_HIGH_ACCURACY)
-                .build()
-
+            val locationComponent = mapLibreMap?.locationComponent
             val options = org.maplibre.android.location.LocationComponentActivationOptions
                 .builder(this, style)
                 .useDefaultLocationEngine(true)
-                .locationEngineRequest(request) // Le decimos que no solo pida la última, sino que busque nuevas
                 .build()
 
-            try {
-                locationComponent?.activateLocationComponent(options)
-                locationComponent?.isLocationComponentEnabled = true
-
-                // 2. Intentamos seguir al usuario
-                locationComponent?.cameraMode = org.maplibre.android.location.modes.CameraMode.TRACKING
-                locationComponent?.renderMode = org.maplibre.android.location.modes.RenderMode.COMPASS
-
-            } catch (e: Exception) {
-                Log.e("GPS_ERROR", "Error al activar componente: ${e.message}")
-                mostrarMensaje("Esperando señal GPS...")
-            }
+            locationComponent?.activateLocationComponent(options)
+            locationComponent?.isLocationComponentEnabled = true
+            locationComponent?.cameraMode = org.maplibre.android.location.modes.CameraMode.TRACKING
         } else {
             requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1000)
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        // 1. NO llamar a super.onSaveInstanceState(outState)
-        // Esto evita que el sistema intente guardar el estado del MapView y las vistas pesadas.
-
-        // 2. Si necesitas guardar datos manuales, hazlo aquí:
-        outState.putString("DIRECCION_GUARDADA", tvDireccion.text.toString())
-
-        // 3. Opcionalmente llamar al super al final con un bundle limpio
-        super.onSaveInstanceState(Bundle())
     }
 
     private fun setupSpinner() {
@@ -179,16 +164,15 @@ class InfraccionesActivity : ComponentActivity(), InfraccionesContract.View {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerInfracciones.adapter = adapter
     }
+
+    // Ciclo de vida del MapView (Vital para que no se trabe)
     override fun onStart() { super.onStart(); mapView.onStart() }
     override fun onResume() { super.onResume(); mapView.onResume() }
     override fun onPause() { super.onPause(); mapView.onPause() }
     override fun onStop() { super.onStop(); mapView.onStop() }
     override fun onDestroy() {
-        mapLibreMap = null // Importante para que el recolector de basura actúe
+        mapLibreMap = null
         mapView.onDestroy()
         super.onDestroy()
-    }
-    override fun mostrarFechaActual(fecha: String) {
-        tvFecha.text = fecha
     }
 }

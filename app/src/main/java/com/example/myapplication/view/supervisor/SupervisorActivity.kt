@@ -7,8 +7,6 @@ import com.example.myapplication.R
 class SupervisorActivity : ComponentActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Aquí se hace la unión:
-        setContentView(R.layout.activity_supervisor)
+        setContentView(R.layout.activity_supervisor_principal)
     }
 }

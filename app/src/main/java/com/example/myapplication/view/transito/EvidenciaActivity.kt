@@ -1,4 +1,4 @@
-package com.example.myapplication.view.Transito
+package com.example.myapplication.view.transito
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory

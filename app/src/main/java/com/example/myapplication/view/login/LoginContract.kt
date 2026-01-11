@@ -1,6 +1,6 @@
-package com.example.myapplication.view.Login
+package com.example.myapplication.view.login
 
-interface MainContract {
+interface LoginContract {
     interface View {
         fun navegarATransito()
         fun navegarAGruas()

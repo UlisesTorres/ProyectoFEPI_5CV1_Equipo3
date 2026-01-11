@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
         <activity
-            android:name=".view.Login.LoginActivity"
+            android:name=".view.login.LoginActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -28,20 +28,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.Transito.InfraccionesActivity"
+        <activity android:name=".view.transito.InfraccionesActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             android:exported="true"
             />
-        <activity android:name=".view.Transito.TransitoActivity"
+        <activity android:name=".view.transito.TransitoActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".view.Transito.EvidenciaActivity"
+            android:name=".view.transito.EvidenciaActivity"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity android:name=".view.supervisor.SupervisorActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".view.Transito.Orden_ArrastreActivity"
+        <activity android:name=".view.transito.Orden_ArrastreActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".view.operador_grua.Operador_GruaActivity"
             android:screenOrientation="portrait"/>
@@ -55,7 +55,7 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".view.operador_grua.Historial_ArrastresActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".view.Transito.HistorialActivity"
+        <activity android:name=".view.transito.HistorialActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".view.corralones.InventarioActivity"
             android:screenOrientation="portrait"/>

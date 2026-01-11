@@ -7,7 +7,6 @@ import com.example.myapplication.R
 class Historial_ArrastresActivity: ComponentActivity()  {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_historial_arrastres)
     }
 }

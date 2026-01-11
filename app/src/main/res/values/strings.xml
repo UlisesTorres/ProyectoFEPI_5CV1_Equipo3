@@ -69,4 +69,7 @@
     <string name="consulta_de_placa">Consulta de Placa</string>
     <string name="solicitar_ayuda_a_policia_de_transito">Solicitar Ayuda a Policia de Transito</string>
     <string name="mi_cuenta_configuraci_n">Mi Cuenta / Configuración</string>
+    <string name="panel_de_control_supervisor">Panel de Control - Supervisor</string>
+    <string name="ver_infracciones_recientes">Ver infracciones recientes</string>
+    <string name="validar_infracciones">Validar Infracciones</string>
 </resources>

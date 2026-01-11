@@ -1,8 +1,8 @@
 package com.example.myapplication.presenter.Login
 
-import com.example.myapplication.view.Login.MainContract
+import com.example.myapplication.view.login.LoginContract
 
-class LoginPresenter(private val view: MainContract.View) : MainContract.Presenter {
+class LoginPresenter(private val view: LoginContract.View) : LoginContract.Presenter {
 
     override fun intentarLogin(usuario: String, pass: String) {
         when {

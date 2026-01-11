@@ -6,7 +6,6 @@ import android.widget.Button
 
 import androidx.activity.ComponentActivity
 import com.example.myapplication.R
-import com.example.myapplication.view.Login.LoginActivity
 import com.example.myapplication.view.configuracion.ConfiguracionActivity
 
 

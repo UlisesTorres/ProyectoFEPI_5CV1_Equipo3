@@ -8,8 +8,6 @@ class Arrastre_En_CursoActivity: ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Aquí se hace la unión:
         setContentView(R.layout.activity_arrastre_en_curso)
     }
 }

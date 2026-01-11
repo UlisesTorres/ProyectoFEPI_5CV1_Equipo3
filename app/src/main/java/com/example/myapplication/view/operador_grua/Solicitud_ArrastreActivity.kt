@@ -8,7 +8,6 @@ class Solicitud_ArrastreActivity: ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_solicitudes_nuevas)
     }
 }

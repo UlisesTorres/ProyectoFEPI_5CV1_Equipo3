@@ -1,4 +1,4 @@
-package com.example.myapplication.view.Login
+package com.example.myapplication.view.login
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,14 +13,13 @@ import com.example.myapplication.presenter.Login.LoginPresenter
 import com.example.myapplication.view.corralones.CorralonesActivity
 import com.example.myapplication.view.operador_grua.Operador_GruaActivity
 import com.example.myapplication.view.supervisor.SupervisorActivity
-import com.example.myapplication.view.Transito.TransitoActivity
+import com.example.myapplication.view.transito.TransitoActivity
 import com.example.myapplication.view.parquimetros.ParquimetroActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-// Cambiamos ComponentActivity por AppCompatActivity
-class LoginActivity : AppCompatActivity(), MainContract.View {
+class LoginActivity : AppCompatActivity(), LoginContract.View {
 
     private lateinit var presenter: LoginPresenter
 
@@ -38,13 +37,13 @@ class LoginActivity : AppCompatActivity(), MainContract.View {
                     Log.d("API_EXITO", "¡Conectado! El servidor respondió")
                     Toast.makeText(this@LoginActivity, "Conexión exitosa a Railway", Toast.LENGTH_SHORT).show()
                 } else {
-                    // Si sale código 403, revisa los permisos en Strapi (Users-permissions)
+                    // Código 403, revisa los permisos en Strapi
                     Log.e("API_ERROR", "Error del servidor: ${response.code()}")
                 }
             }
 
             override fun onFailure(call: Call<okhttp3.ResponseBody>, t: Throwable) {
-                // Si entra aquí, revisa tu URL en RetrofitClient o tu internet
+                // revisa URL en RetrofitClient o internet
                 Log.e("API_FALLO", "Fallo total: ${t.message}")
             }
         })
