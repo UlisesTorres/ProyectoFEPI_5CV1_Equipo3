@@ -123,10 +123,11 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
         tvFecha.text = fecha
     }
 
-    override fun navegarAEvidencia(placas: String, direccion: String) {
+    override fun navegarAEvidencia(placas: String, direccion: String, fechaISO: String) {
         val intent = Intent(this, EvidenciaActivity::class.java)
         intent.putExtra("PLACAS", placas)
         intent.putExtra("DIRECCION", direccion)
+        intent.putExtra("FECHA", fechaISO)
         startActivity(intent)
     }
 

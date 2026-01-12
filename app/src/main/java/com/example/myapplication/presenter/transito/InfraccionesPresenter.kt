@@ -9,33 +9,47 @@ import java.util.Locale
 
 class InfraccionesPresenter(
     private val view: InfraccionesContract.View,
-    private val model: InfraccionesModel
+    private val model: InfraccionesModel,
+    private var direccionActual: String? = null,
+    private var fechaISO: String = ""
 ) : InfraccionesContract.Presenter { // <--- Es vital que herede del Contrato
 
     override fun cargarFechaInfraccion() {
-        val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
-        val fechaActual = sdf.format(Date())
-        view.mostrarFechaActual(fechaActual)
+        val ahora = Date()
+
+        // 🔹 PARA STRAPI (ISO 8601)
+        // En InfraccionesPresenter.kt
+        val sdfISO = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
+        sdfISO.timeZone = java.util.TimeZone.getTimeZone("UTC")
+        fechaISO = sdfISO.format(ahora) // Esto genera: 2026-01-11T20:06:51.720Z
+
+        // 🔹 PARA LA UI (bonito)
+        val sdfUI = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+        val fechaUI = sdfUI.format(ahora)
+
+        view.mostrarFechaActual(fechaUI)
     }
 
     override fun procesarClickMapa(punto: LatLng) {
         view.moverMarcador(punto)
-        val direccion = model.obtenerDireccion(punto)
-        view.actualizarDireccionEnPantalla(direccion)
+        direccionActual = model.obtenerDireccion(punto)
+        view.actualizarDireccionEnPantalla(direccionActual!!)
     }
 
     override fun validarYGuardarInfraccion(placas: String, infraccionTipo: String) {
         if (placas.isEmpty()) {
             view.mostrarMensaje("¡Error! Debes ingresar las placas antes de continuar")
-            // No llamamos a navegar, por lo tanto, la app se queda ahí
             return
         }
 
-        view.ocultarTeclado() // <--- Paso vital
-        view.navegarAEvidencia(placas, "Dirección actual obtenida")
-        // Si llegamos aquí, es que hay placas.
-        // Pedimos la dirección (que ya tenemos guardada o la obtenemos de la vista)
-        // Supongamos que pasamos la dirección actual:
+        if (direccionActual.isNullOrEmpty()) {
+            view.mostrarMensaje("Debes seleccionar la ubicación en el mapa")
+            return
+        }
 
+        view.ocultarTeclado()
+
+        // ✅ AHORA SÍ, LA REAL
+        view.navegarAEvidencia(placas, direccionActual!!, fechaISO)
     }
 }

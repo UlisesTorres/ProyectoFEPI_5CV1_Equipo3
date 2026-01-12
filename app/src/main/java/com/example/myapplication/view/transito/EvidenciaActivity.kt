@@ -45,6 +45,7 @@ class EvidenciaActivity : ComponentActivity() {
     // CORRECCIÓN 1: Declarar estas variables aquí arriba para que funcionen en toda la clase
     private var placas: String? = null
     private var direccion: String? = null
+    private var fechaInfraccion: String? = null
 
     private val cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success) procesarYMostrarFoto()
@@ -57,6 +58,7 @@ class EvidenciaActivity : ComponentActivity() {
         // Recuperar datos del intent
         placas = intent.getStringExtra("PLACAS")
         direccion = intent.getStringExtra("DIRECCION")
+        fechaInfraccion = intent.getStringExtra("FECHA")
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -206,6 +208,8 @@ class EvidenciaActivity : ComponentActivity() {
         firma: File,
         fotos: List<File>
     ) {
+
+
         // 1️⃣ JSON PURO
         val jsonString = """
     {
@@ -213,10 +217,7 @@ class EvidenciaActivity : ComponentActivity() {
         "folio": "INF-${System.currentTimeMillis()}",
         "placa_vehiculo": "${placas ?: "S/P"}",
         "ubicacion_infraccion": "${direccion ?: "N/D"}",
-        "fecha_infraccion": "${SimpleDateFormat(
-            "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-            Locale.US
-        ).format(Date())}"
+        "fecha_infraccion": "$fechaInfraccion"
       }
     }
     """.trimIndent()

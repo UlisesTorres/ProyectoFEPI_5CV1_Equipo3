@@ -10,7 +10,7 @@ interface InfraccionesContract {
         fun limpiarFormulario()
         fun bloquearEnvio()
         fun mostrarFechaActual(fecha: String)
-        fun navegarAEvidencia(placas: String, direccion: String)
+        fun navegarAEvidencia(placas: String, direccion: String, fechaISO: String)
         fun ocultarTeclado()
     }
 
