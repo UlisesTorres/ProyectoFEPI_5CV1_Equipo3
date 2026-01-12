@@ -1,6 +1,7 @@
 package com.example.myapplication.network
 
 import com.example.myapplication.model.transito.InfraccionesResponse
+import com.example.myapplication.model.transito.OrdenArrastreRequest
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -17,4 +18,9 @@ interface InfraccionApiService {
 
     @GET("api/infraccions")
     fun getInfracciones(): Call<InfraccionesResponse>
+
+    @POST("api/generar-arrastres") // Asegúrate de que el nombre coincide con tu colección en Strapi
+    fun crearOrdenArrastre(
+        @Body body: OrdenArrastreRequest
+    ): Call<ResponseBody>
 }

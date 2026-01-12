@@ -16,6 +16,9 @@ data class InfraccionesResponse(
  * La clase InfraccionData ha sido eliminada porque era innecesaria.
  */
 data class InfraccionAttributes(
+    @SerializedName("id") // <-- AÑADIR ESTO
+    val id: Int,
+
     @SerializedName("folio")
     val folio: String,
 

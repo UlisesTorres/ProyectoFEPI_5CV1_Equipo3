@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    tools:context=".view.transito.DetalleInfraccionActivity">
+
+    <TextView
+        style="@style/TextAppearance.MaterialComponents.Headline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Detalle de la Infracción"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_detalle_folio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:textSize="18sp"
+        tools:text="Folio: INF-123456789" />
+
+    <TextView
+        android:id="@+id/tv_detalle_placa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textSize="18sp"
+        tools:text="Placa: ABC-123" />
+
+    <TextView
+        android:id="@+id/tv_detalle_fecha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textSize="18sp"
+        tools:text="Fecha: 2026-01-12" />
+
+    <!-- Puedes añadir más campos si los tienes, como la ubicación -->
+
+</LinearLayout>
+    

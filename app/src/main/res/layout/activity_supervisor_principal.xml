@@ -37,7 +37,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvSubtituloAgente">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnGenerarInfraccion"
+            android:id="@+id/btnVerInfracciones"
             android:layout_width="match_parent"
             android:layout_height="75dp"
             android:layout_marginBottom="20dp"
@@ -52,7 +52,7 @@
             app:iconSize="28dp" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnGenerarArrastre"
+            android:id="@+id/btnValidarInfraccion"
             android:layout_width="match_parent"
             android:layout_height="75dp"
             android:layout_marginBottom="20dp"

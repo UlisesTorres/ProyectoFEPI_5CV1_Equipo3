@@ -79,6 +79,12 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".view.configuracion.ConfiguracionActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".view.transito.SeleccionarInfraccionActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".view.transito.DetalleInfraccionActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".view.supervisor.SupervisorHistorialActivity"
+            android:screenOrientation="portrait"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

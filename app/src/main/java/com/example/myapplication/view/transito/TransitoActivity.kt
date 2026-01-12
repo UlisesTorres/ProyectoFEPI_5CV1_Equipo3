@@ -43,7 +43,7 @@ class TransitoActivity : ComponentActivity(), TransitoContract.View {
     }
 
     override fun navegarAGenerarArrastre() {
-        startActivity(Intent(this, Orden_ArrastreActivity::class.java))
+        startActivity(Intent(this, SeleccionarInfraccionActivity::class.java))
     }
 
     override fun navegarAHistorial() {
