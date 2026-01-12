@@ -16,9 +16,7 @@ import com.example.myapplication.view.operador_grua.Operador_GruaActivity
 import com.example.myapplication.view.supervisor.SupervisorActivity
 import com.example.myapplication.view.transito.TransitoActivity
 import com.example.myapplication.view.parquimetros.ParquimetroActivity
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+
 
 class LoginActivity : AppCompatActivity(), LoginContract.View {
 
@@ -47,14 +45,16 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
         }
     }
 
-    override fun loginExitoso(token: String, userId: Int) {
+    override fun loginExitoso(token: String, userId: Int, roleType: String) {
         val prefs = getSharedPreferences("AUTH_PREFS", Context.MODE_PRIVATE)
         prefs.edit().apply {
             putString("jwt_token", token)
             putInt("user_id", userId)
+            putString("user_role", roleType)
             apply()
         }
     }
+
 
     override fun navegarATransito() {
         startActivity(Intent(this, TransitoActivity::class.java))
