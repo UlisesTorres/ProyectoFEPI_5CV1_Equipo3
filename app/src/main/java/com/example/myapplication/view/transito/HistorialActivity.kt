@@ -53,7 +53,6 @@ class HistorialActivity : ComponentActivity(), HistorialInfraccionesContract.Vie
     private fun actualizarAdaptador(infracciones: List<InfraccionAttributes>) {
         val adapter = HistorialAdapter(infracciones) { infraccion ->
             // --- CORRECCIÓN #1: Pasa el objeto 'infraccion' completo ---
-            // No solo el folio, sino todo el objeto, como lo espera el Presenter.
             presenter.alSeleccionarInfraccion(infraccion)
         }
         recyclerView.adapter = adapter
@@ -73,7 +72,6 @@ class HistorialActivity : ComponentActivity(), HistorialInfraccionesContract.Vie
         layoutVacio.visibility = View.VISIBLE
     }
 
-    // --- CORRECCIÓN #2: El método ahora debe recibir el objeto completo ---
     override fun navegarADetalleInfraccion(infraccion: InfraccionAttributes) {
         // Implementamos la navegación que habíamos planeado
         val intent = Intent(this, DetalleInfraccionActivity::class.java).apply {
