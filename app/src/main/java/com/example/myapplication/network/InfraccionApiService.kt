@@ -1,5 +1,6 @@
 package com.example.myapplication.network
 
+import com.example.myapplication.model.transito.InfraccionesResponse
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -15,5 +16,5 @@ interface InfraccionApiService {
     ): Call<ResponseBody>
 
     @GET("api/infraccions")
-    fun getInfracciones(): Call<ResponseBody>
+    fun getInfracciones(): Call<InfraccionesResponse>
 }
