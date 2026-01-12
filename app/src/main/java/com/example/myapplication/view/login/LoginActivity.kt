@@ -1,5 +1,6 @@
 package com.example.myapplication.view.login
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -8,7 +9,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.R
-import com.example.myapplication.network.RetrofitClient
+import com.example.myapplication.network.RetrofitAuthClient
 import com.example.myapplication.presenter.Login.LoginPresenter
 import com.example.myapplication.view.corralones.CorralonesActivity
 import com.example.myapplication.view.operador_grua.Operador_GruaActivity
@@ -29,25 +30,6 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
 
         presenter = LoginPresenter(this)
 
-        val servicio = RetrofitClient.apiService
-
-        servicio.testConexion().enqueue(object : Callback<okhttp3.ResponseBody> {
-            override fun onResponse(call: Call<okhttp3.ResponseBody>, response: Response<okhttp3.ResponseBody>) {
-                if (response.isSuccessful) {
-                    Log.d("API_EXITO", "¡Conectado! El servidor respondió")
-                    Toast.makeText(this@LoginActivity, "Conexión exitosa a Railway", Toast.LENGTH_SHORT).show()
-                } else {
-                    // Código 403, revisa los permisos en Strapi
-                    Log.e("API_ERROR", "Error del servidor: ${response.code()}")
-                }
-            }
-
-            override fun onFailure(call: Call<okhttp3.ResponseBody>, t: Throwable) {
-                // revisa URL en RetrofitClient o internet
-                Log.e("API_FALLO", "Fallo total: ${t.message}")
-            }
-        })
-
         // Referencias a la interfaz
         val btnIS = findViewById<Button>(R.id.btnIniciarSesion)
         val etUser = findViewById<EditText>(R.id.etUsuario)
@@ -62,6 +44,15 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
             } else {
                 mostrarError("Por favor, llena todos los campos")
             }
+        }
+    }
+
+    override fun loginExitoso(token: String, userId: Int) {
+        val prefs = getSharedPreferences("AUTH_PREFS", Context.MODE_PRIVATE)
+        prefs.edit().apply {
+            putString("jwt_token", token)
+            putInt("user_id", userId)
+            apply()
         }
     }
 

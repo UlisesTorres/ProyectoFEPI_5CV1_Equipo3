@@ -16,7 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import com.example.myapplication.R
 import com.example.myapplication.network.InfraccionApiService
-import com.example.myapplication.network.RetrofitClient
+import com.example.myapplication.network.RetrofitSecureClient
 import com.github.gcacace.signaturepad.views.SignaturePad
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
@@ -225,7 +225,7 @@ class EvidenciaActivity : ComponentActivity() {
         val body = jsonString.toRequestBody("application/json".toMediaTypeOrNull())
 
         // 2️⃣ CREAR INFRACCIÓN
-        RetrofitClient.infraccionApiService
+        RetrofitSecureClient.infraccionApiService
             .crearInfraccion(body)
             .enqueue(object : retrofit2.Callback<ResponseBody> {
 
@@ -287,7 +287,7 @@ class EvidenciaActivity : ComponentActivity() {
             )
         )
 
-        RetrofitClient.uploadApiService.subirArchivo(
+        RetrofitSecureClient.uploadApiService.subirArchivo(
             filePart,
             "api::infraccion.infraccion".toRequestBody(),
             infraccionId.toString().toRequestBody(),
