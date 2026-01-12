@@ -19,8 +19,6 @@ interface ParquimetroContract {
         fun alHacerClickConsultar()
         fun alHacerClickConfiguracion()
 
-        // --- ¡AQUÍ ESTÁ LA CORRECCIÓN! ---
-        // Añade la definición del método que faltaba.
         fun alHacerClickReporte()
 
         fun destruir()
