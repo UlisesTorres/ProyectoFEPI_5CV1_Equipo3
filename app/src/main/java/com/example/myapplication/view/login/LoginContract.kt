@@ -2,8 +2,13 @@ package com.example.myapplication.view.login
 
 interface LoginContract {
     interface View {
-        // 🔹 Agrega esta línea para que el Presenter pueda pasar el Token a la Activity
-        fun loginExitoso(token: String, userId: Int, roleType: String)
+        fun loginExitoso(
+                token: String,
+                userId: Int,
+                roleName: String,
+                username: String,
+                email: String
+            )
         fun navegarATransito()
         fun navegarAGruas()
         fun navegarASupervisor()

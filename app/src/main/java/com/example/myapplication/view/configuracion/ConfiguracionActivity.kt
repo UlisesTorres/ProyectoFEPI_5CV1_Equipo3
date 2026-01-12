@@ -2,7 +2,9 @@ package com.example.myapplication.view.configuracion
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -18,11 +20,24 @@ class ConfiguracionActivity: AppCompatActivity(), ConfiguracionContract.View{
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_configuracion)
 
-        presenter = ConfiguracionPresenter(this, ConfiguracionModel())
+        presenter = ConfiguracionPresenter(this, ConfiguracionModel(this))
 
-        val btnSesion = findViewById<Button>(R.id.btnCerrarSesion)
+        val tvNombre = findViewById<TextView>(R.id.tvNombreUsuario)
+        val tvCorreo = findViewById<TextView>(R.id.tvCorreoUsuario)
+        val tvRol = findViewById<TextView>(R.id.tvRolUsuario)
+        val btnSync = findViewById<Button>(R.id.btnSincronizar)
 
-        btnSesion.setOnClickListener { presenter.clickCerrar() }
+        presenter.cargarDatosUsuario()
+        presenter.verificarServidor()
+
+        btnSync.setOnClickListener {
+            presenter.sincronizar()
+        }
+
+        val btnCerr = findViewById<Button>(R.id.btnCerrarSesion)
+        btnCerr.setOnClickListener {
+            presenter.clickCerrar()
+        }
     }
 
     override fun navegarAlLogin() {
@@ -44,6 +59,20 @@ class ConfiguracionActivity: AppCompatActivity(), ConfiguracionContract.View{
         builder.setNegativeButton("Cancelar",null)
         val dialog = builder.create()
         dialog.show()
+    }
+
+    override fun mostrarUsuario(nombre: String, correo: String, rol: String) {
+        findViewById<TextView>(R.id.tvNombreUsuario).text = nombre
+        findViewById<TextView>(R.id.tvCorreoUsuario).text = correo
+        findViewById<TextView>(R.id.tvRolUsuario).text = "ROL: ${rol.uppercase()}"
+    }
+
+    override fun mostrarEstadoServidor(conectado: Boolean) {
+        val indicador = findViewById<View>(R.id.viewServerStatus)
+        indicador.setBackgroundColor(
+            if (conectado) getColor(android.R.color.holo_green_dark)
+            else getColor(android.R.color.holo_red_dark)
+        )
     }
 
     override fun onDestroy() {

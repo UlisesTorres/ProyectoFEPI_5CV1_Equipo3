@@ -45,12 +45,20 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
         }
     }
 
-    override fun loginExitoso(token: String, userId: Int, roleType: String) {
+    override fun loginExitoso(
+        token: String,
+        userId: Int,
+        roleName: String,
+        username: String,
+        email: String
+    ) {
         val prefs = getSharedPreferences("AUTH_PREFS", Context.MODE_PRIVATE)
         prefs.edit().apply {
             putString("jwt_token", token)
             putInt("user_id", userId)
-            putString("user_role", roleType)
+            putString("role", roleName)
+            putString("username", username)
+            putString("email", email)
             apply()
         }
     }

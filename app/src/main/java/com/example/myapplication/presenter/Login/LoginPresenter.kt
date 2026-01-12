@@ -27,12 +27,13 @@ class LoginPresenter(private val view: LoginContract.View) : LoginContract.Prese
                     // 1. Extraemos el Token y el ID (Aquí NO buscamos el role porque Strapi no lo envía)
                     val jwt = json.getString("jwt")
                     val userId = json.getJSONObject("user").getInt("id")
-
+                    val username = json.getJSONObject("user").getString("username")
+                    val email = json.getJSONObject("user").getString("email")
                     // Configuramos el token para futuras peticiones seguras
                     RetrofitSecureClient.setToken(jwt)
 
                     // 2. Ahora vamos a traer el Rol Real antes de navegar
-                    obtenerRolRealYSaltar(jwt, userId)
+                    obtenerRolRealYSaltar(jwt, userId, username, email)
 
                 } else {
                     view.mostrarError("Credenciales inválidas")
@@ -45,36 +46,37 @@ class LoginPresenter(private val view: LoginContract.View) : LoginContract.Prese
         })
     }
 
-    private fun obtenerRolRealYSaltar(token: String, userId: Int) {
-        RetrofitAuthClient.authApiService.getMe("Bearer $token").enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if (response.isSuccessful) {
-                    val cuerpo = response.body()?.string()
-                    val json = JSONObject(cuerpo ?: "")
+    private fun obtenerRolRealYSaltar(
+        token: String,
+        userId: Int,
+        username: String,
+        email: String
+    ) {
+        RetrofitAuthClient.authApiService.getMe("Bearer $token")
+            .enqueue(object : Callback<ResponseBody> {
 
-                    // 🔹 USO DE optJSONObject PARA EVITAR CRASH
-                    val roleObj = json.optJSONObject("role")
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    if (response.isSuccessful) {
+                        val json = JSONObject(response.body()?.string() ?: "")
+                        val roleObj = json.optJSONObject("role")
 
-                    if (roleObj != null) {
-                        val roleName = roleObj.getString("name")
-                        Log.d("LOGIN_EXITO", "Rol encontrado: $roleName")
-                        view.loginExitoso(token, userId, roleName)
-                        decidirNavegacion(roleName)
-                    } else {
-                        // Si llega aquí, es porque Strapi respondió bien pero el campo 'role' sigue vacío
-                        Log.e("LOGIN_ERROR", "El JSON no contiene el objeto 'role'. JSON completo: $json")
-                        view.mostrarError("Error: El usuario no tiene un rol asignado o permitido.")
+                        if (roleObj != null) {
+                            val roleName = roleObj.getString("name")
+                            view.loginExitoso(token, userId, roleName, username, email)
+                            decidirNavegacion(roleName)
+                        } else {
+                            view.mostrarError("Usuario sin rol asignado")
+                        }
                     }
-                } else {
-                    Log.e("LOGIN_ERROR", "Error en getMe: ${response.code()}")
-                    view.mostrarError("Error al obtener permisos")
                 }
-            }
 
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                view.mostrarError("Error de conexión")
-            }
-        })
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    view.mostrarError("Error de conexión")
+                }
+            })
     }
 
     private fun decidirNavegacion(roleName: String) {

@@ -8,6 +8,22 @@ class ConfiguracionPresenter(
     private val model: ConfiguracionModel
 ) : ConfiguracionContract.Presenter {
 
+    override fun cargarDatosUsuario() {
+        val (nombre, correo, rol) = model.obtenerDatosUsuario()
+        view?.mostrarUsuario(nombre, correo, rol)
+    }
+
+    override fun verificarServidor() {
+        model.verificarServidor { conectado ->
+            view?.mostrarEstadoServidor(conectado)
+        }
+    }
+
+    override fun sincronizar() {
+        // Por ahora simulamos sincronización
+        view?.mostrarMensaje("Datos sincronizados correctamente")
+    }
+
     override fun clickCerrar() {
         view?.mostrarConfirmacionCierre()
     }
@@ -15,13 +31,12 @@ class ConfiguracionPresenter(
     override fun confirmarCierreSesion() {
         model.limpiarDatosSesion { exito ->
             if (exito) {
-                view?.mostrarMensaje("Sesión cerrada correctamente")
+                view?.mostrarMensaje("Sesión cerrada")
                 view?.navegarAlLogin()
             }
         }
     }
 
-    // Importante: metodo para evitar memory leaks
     fun destruir() {
         view = null
     }
