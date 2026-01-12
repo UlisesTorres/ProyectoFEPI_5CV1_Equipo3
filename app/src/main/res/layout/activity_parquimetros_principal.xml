@@ -56,7 +56,7 @@
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
             android:layout_height="85dp"
-            android:text="@string/solicitar_ayuda_a_policia_de_transito"
+            android:text="Reportar Vehiculo"
             android:textAllCaps="false"
             android:textSize="20sp"
             android:textStyle="bold"

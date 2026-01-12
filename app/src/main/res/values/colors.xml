@@ -10,4 +10,7 @@
     <color name="guinda">#800020</color>
     <color name="guinda_dark">#5A0015</color>
     <color name="guinda_light">#A00030</color>
+    <color name="verde_vigente">#4CAF50</color>
+    <color name="rojo_error">#F44336</color>
+
 </resources>

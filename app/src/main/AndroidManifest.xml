@@ -85,6 +85,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".view.supervisor.SupervisorHistorialActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".view.parquimetros.ReporteActivity"
+            android:screenOrientation="portrait"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

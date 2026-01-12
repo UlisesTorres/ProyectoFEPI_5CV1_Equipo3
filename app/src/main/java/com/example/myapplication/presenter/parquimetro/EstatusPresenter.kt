@@ -1,6 +1,7 @@
 package com.example.myapplication.presenter.parquimetro
 
 import com.example.myapplication.model.parquimetros.EstatusModel
+import com.example.myapplication.model.parquimetros.TipoResultado // Importar el enum
 import com.example.myapplication.view.parquimetros.EstatusContract
 
 class EstatusPresenter(
@@ -9,14 +10,28 @@ class EstatusPresenter(
 ) : EstatusContract.Presenter {
 
     override fun consultarPlaca(placa: String) {
+        if (placa.isBlank()) {
+            view?.mostrarError("Por favor, ingrese una placa.")
+            return
+        }
         view?.mostrarCargando()
 
-        model.buscarPlacaEnServidor(placa) { resultado, esValido ->
+        model.buscarPlacaEnServidor(placa) { resultado ->
             view?.ocultarCargando()
-            if (esValido) {
-                view?.mostrarEstatus(resultado!!, true)
-            } else {
-                view?.mostrarError(resultado!!)
+            when (resultado.tipo) {
+                TipoResultado.VIGENTE -> {
+                    // Este es el único caso que debe llamar a mostrarEstatus()
+                    view?.mostrarEstatus(resultado.mensaje, true)
+                }
+                // --- INICIO DE LA CORRECCIÓN ---
+                // Agrupamos todos los casos "no válidos" para que llamen a mostrarError()
+                TipoResultado.CADUCADO,
+                TipoResultado.NO_ENCONTRADO,
+                TipoResultado.ERROR_SERVIDOR,
+                TipoResultado.ERROR_RED -> {
+                    view?.mostrarError(resultado.mensaje)
+                }
+                // --- FIN DE LA CORRECCIÓN ---
             }
         }
     }

@@ -13,6 +13,12 @@ class ParquimetroPresenter(private var view: ParquimetroContract.View?) : Parqui
         view?.navegarAConfiguracion()
     }
 
+    override fun alHacerClickReporte() {
+        // --- CORRECCIÓN DE LÓGICA ---
+        // Ahora llama a la función correcta para navegar a la pantalla de reporte/contacto
+        view?.navegarAReporte()
+    }
+
     override fun destruir() {
         view = null // Evitamos fugas de memoria (memory leaks)
     }

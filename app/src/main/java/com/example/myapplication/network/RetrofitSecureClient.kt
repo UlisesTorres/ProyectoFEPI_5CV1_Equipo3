@@ -1,7 +1,7 @@
 package com.example.myapplication.network
 
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor // <-- AÑADIR IMPORTACIÓN
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -16,42 +16,35 @@ object RetrofitSecureClient {
         token = jwt
     }
 
-    // INICIO DE CAMBIOS SUGERIDOS
-
-    // 1. Crea el interceptor de logging
+    // ... (toda tu configuración de loggingInterceptor y okHttpClient se queda igual) ...
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY // Muestra toda la info de la petición/respuesta
+        level = HttpLoggingInterceptor.Level.BODY
     }
 
     private val okHttpClient = OkHttpClient.Builder()
-        // 2. Tu interceptor para añadir el token va PRIMERO
         .addInterceptor { chain ->
             val originalRequest = chain.request()
-
             val requestBuilder = originalRequest.newBuilder()
-
-            // Solo añade el header si el token no es nulo
             token?.let {
                 android.util.Log.d("JWT_DEBUG", "Añadiendo token: Bearer $it")
                 requestBuilder.header("Authorization", "Bearer $it")
             }
-
             val request = requestBuilder.build()
             chain.proceed(request)
         }
-        // 3. El interceptor de logging va DESPUÉS (casi al final)
         .addInterceptor(loggingInterceptor)
         .build()
 
-    // FIN DE CAMBIOS SUGERIDOS
 
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .client(okHttpClient) // okHttpClient ahora incluye ambos interceptores
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
+
+    // --- Servicios existentes ---
 
     val infraccionApiService: InfraccionApiService by lazy {
         retrofit.create(InfraccionApiService::class.java)
@@ -59,5 +52,12 @@ object RetrofitSecureClient {
 
     val uploadApiService: UploadApiService by lazy {
         retrofit.create(UploadApiService::class.java)
+    }
+
+    // --- ¡¡AQUÍ ESTÁ LA LÍNEA QUE FALTA!! ---
+    // Crea una instancia lazy para tu nuevo servicio de parquímetros.
+    // Sin esta línea, `parquimetroApiService` no existe y por eso da error.
+    val parquimetroApiService: ParquimetroApiService by lazy {
+        retrofit.create(ParquimetroApiService::class.java)
     }
 }
