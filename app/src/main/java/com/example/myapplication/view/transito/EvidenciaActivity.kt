@@ -1,5 +1,6 @@
 package com.example.myapplication.view.transito
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
@@ -208,9 +209,15 @@ class EvidenciaActivity : ComponentActivity() {
         firma: File,
         fotos: List<File>
     ) {
+        // 1️⃣ Crear y mostrar diálogo de carga (Bloquea la pantalla para evitar errores)
+        val progressDialog = AlertDialog.Builder(this)
+            .setView(ProgressBar(this).apply { setPadding(40, 40, 40, 40) })
+            .setTitle("Guardando Infracción")
+            .setMessage("Conectando con el servidor, por favor espere...")
+            .setCancelable(false)
+            .show()
 
-
-        // 1️⃣ JSON PURO
+        // 2️⃣ Preparar JSON
         val jsonString = """
     {
       "data": {
@@ -224,49 +231,54 @@ class EvidenciaActivity : ComponentActivity() {
 
         val body = jsonString.toRequestBody("application/json".toMediaTypeOrNull())
 
-        // 2️⃣ CREAR INFRACCIÓN
+        // 3️⃣ Enviar a Strapi
         RetrofitSecureClient.infraccionApiService
             .crearInfraccion(body)
             .enqueue(object : retrofit2.Callback<ResponseBody> {
 
-                override fun onResponse(
-                    call: Call<ResponseBody>,
-                    response: retrofit2.Response<ResponseBody>
-                ) {
-                    if (!response.isSuccessful) {
-                        Log.e("STRAPI", response.errorBody()?.string() ?: "")
-                        return
+                override fun onResponse(call: Call<ResponseBody>, response: retrofit2.Response<ResponseBody>) {
+                    // Quitamos el círculo de carga
+                    progressDialog.dismiss()
+
+                    if (response.isSuccessful) {
+                        // --- CASO ÉXITO ---
+                        val json = JSONObject(response.body()!!.string())
+                        val infraccionId = json.getJSONObject("data").getInt("id")
+
+                        // Subir archivos en segundo plano
+                        subirArchivo(infraccionId, firma, "firma_infractor")
+                        fotos.forEach { foto -> subirArchivo(infraccionId, foto, "evidencia_infraccion") }
+
+                        Toast.makeText(this@EvidenciaActivity, "Infracción guardada correctamente", Toast.LENGTH_LONG).show()
+
+                        // NAVEGAR: Solo si fue exitoso
+                        val intentPrincipal = Intent(this@EvidenciaActivity, TransitoActivity::class.java)
+                        intentPrincipal.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                        startActivity(intentPrincipal)
+                        finish()
+                    } else {
+                        // --- CASO ERROR DE SERVIDOR (400, 403, 500, etc) ---
+                        val errorBody = response.errorBody()?.string()
+                        Log.e("STRAPI", "Error: $errorBody")
+
+                        // Reactivamos el botón para que intente de nuevo
+                        findViewById<Button>(R.id.btnFinalizarInfraccion).isEnabled = true
+
+                        AlertDialog.Builder(this@EvidenciaActivity)
+                            .setTitle("Error en el servidor")
+                            .setMessage("No se pudo guardar la infracción. Revisa los datos o el rol del usuario.")
+                            .setPositiveButton("Aceptar", null)
+                            .show()
                     }
-
-                    // 3️⃣ EXTRAER ID
-                    val json = JSONObject(response.body()!!.string())
-                    val infraccionId = json.getJSONObject("data").getInt("id")
-
-                    // 4️⃣ SUBIR FIRMA
-                    subirArchivo(
-                        infraccionId,
-                        firma,
-                        "firma_infractor"
-                    )
-
-                    // 5️⃣ SUBIR FOTOS
-                    fotos.forEach { foto ->
-                        subirArchivo(
-                            infraccionId,
-                            foto,
-                            "evidencia_infraccion"
-                        )
-                    }
-
-                    Toast.makeText(
-                        this@EvidenciaActivity,
-                        "Infracción guardada correctamente",
-                        Toast.LENGTH_LONG
-                    ).show()
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    Log.e("STRAPI", t.message ?: "Error de red")
+                    // --- CASO ERROR DE RED (Sin internet, servidor caído) ---
+                    progressDialog.dismiss()
+                    findViewById<Button>(R.id.btnFinalizarInfraccion).isEnabled = true
+
+                    Log.e("STRAPI", "Fallo de conexión: ${t.message}")
+                    Toast.makeText(this@EvidenciaActivity, "Error de red: No hay conexión con Railway", Toast.LENGTH_LONG).show()
                 }
             })
     }
