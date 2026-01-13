@@ -27,6 +27,7 @@ class Orden_ArrastreActivity : ComponentActivity() {
     // Declaración de las Vistas (Views) del layout
     private lateinit var tvFolioActual: TextView
     private lateinit var tvPlacaActual: TextView
+    private lateinit var tvUbicacion: TextView
     private lateinit var etNotasPolicia: TextInputEditText
     private lateinit var btnSolicitarGrua: Button
 
@@ -60,11 +61,13 @@ class Orden_ArrastreActivity : ComponentActivity() {
         tvPlacaActual = findViewById(R.id.tvPlacaActual)
         etNotasPolicia = findViewById(R.id.etNotasPolicia)
         btnSolicitarGrua = findViewById(R.id.btnSolicitarGrua)
+        tvUbicacion = findViewById(R.id.tv_detalle_ubicacion)
     }
 
     private fun mostrarDatosEnUI() {
         tvFolioActual.text = "Folio Infracción: $folioInfraccion"
         tvPlacaActual.text = "Placas: $placa"
+        tvUbicacion.text = "Ubicacion: $ubicacion"
     }
 
     private fun enviarOrdenDeArrastre() {

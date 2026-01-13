@@ -17,18 +17,25 @@ class DetalleSolicitudActivity : ComponentActivity(), DetalleSolicitudContract.V
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_detalle_solicitud)
+        setContentView(R.layout.activity_det_sol_nva)
 
         presenter = DetalleSolicitudPresenter(this, SolicitudArrastreModel())
 
         idInfraccion = intent.getIntExtra("id_infraccion", -1)
         val observaciones = intent.getStringExtra("observaciones")
+        val ubicacion = intent.getStringExtra("Ubicacion")
 
-        val tvIdInfraccion: TextView = findViewById(R.id.tv_detalle_folio)
-        val tvObservaciones: TextView = findViewById(R.id.tv_detalle_placa)
+
+        val tvIdInfraccion: TextView = findViewById(R.id.tv_detalle_infraccion_id)
+        val tvObservaciones: TextView = findViewById(R.id.tv_detalle_observaciones)
+        val tvUbicacion: TextView = findViewById(R.id.tv_detalle_ubicacion)
+
 
         tvIdInfraccion.text = "ID Infracción: $idInfraccion"
         tvObservaciones.text = "Observaciones: $observaciones"
+        tvUbicacion.text = "Ubicación: $ubicacion"
+
+
 
         val btnAceptar: Button = findViewById(R.id.btn_aceptar_solicitud)
         btnAceptar.setOnClickListener {

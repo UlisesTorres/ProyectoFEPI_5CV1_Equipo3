@@ -17,6 +17,8 @@ class SolicitudesAdapter(
         val tvFolio: TextView = view.findViewById(R.id.tvFolio)
         val tvPlaca: TextView = view.findViewById(R.id.tvPlaca)
         val tvFecha: TextView = view.findViewById(R.id.tvFecha)
+
+        val tvUbicacion: TextView = view.findViewById(R.id.tvUbicacion)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -36,6 +38,9 @@ class SolicitudesAdapter(
         }
 
         holder.tvPlaca.text = "Observaciones: ${solicitud.observaciones}"
+        holder.tvUbicacion.text = "Ubicacion: ${solicitud.ubicacion}"
+
+
 
         holder.tvFecha.visibility = View.GONE
 
