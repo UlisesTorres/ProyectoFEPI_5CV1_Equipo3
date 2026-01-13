@@ -1,5 +1,6 @@
 package com.example.myapplication.view.operador_grua
 
+import android.content.Context
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
@@ -20,22 +21,24 @@ class DetalleSolicitudActivity : ComponentActivity(), DetalleSolicitudContract.V
 
         presenter = DetalleSolicitudPresenter(this, SolicitudArrastreModel())
 
-        // --- CORRECCIÓN: Leemos el ID de la infracción ---
         idInfraccion = intent.getIntExtra("id_infraccion", -1)
         val observaciones = intent.getStringExtra("observaciones")
 
         val tvIdInfraccion: TextView = findViewById(R.id.tv_detalle_folio)
         val tvObservaciones: TextView = findViewById(R.id.tv_detalle_placa)
 
-        // --- CORRECCIÓN: Mostramos el ID de la infracción ---
         tvIdInfraccion.text = "ID Infracción: $idInfraccion"
         tvObservaciones.text = "Observaciones: $observaciones"
 
         val btnAceptar: Button = findViewById(R.id.btn_aceptar_solicitud)
         btnAceptar.setOnClickListener {
-            // --- CORRECCIÓN: Pasamos el ID de la infracción al presentador ---
+            // --- CORRECCIÓN FINAL: Usamos las claves correctas de SharedPreferences ---
+            val prefs = getSharedPreferences("AUTH_PREFS", Context.MODE_PRIVATE)
+            val nombreUsuario = prefs.getString("username", "Usuario Desconocido") ?: "Usuario Desconocido"
+
             if (idInfraccion != -1) {
-                presenter.aceptarSolicitud(idInfraccion)
+                // Usamos el nombre de usuario para ambos campos, como se solicitó.
+                presenter.aceptarSolicitud(idInfraccion, nombreUsuario, nombreUsuario)
             } else {
                 mostrarError("ID de infracción no válido")
             }

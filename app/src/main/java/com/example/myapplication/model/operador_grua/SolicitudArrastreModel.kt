@@ -29,14 +29,14 @@ class SolicitudArrastreModel {
         })
     }
 
-    fun aceptarSolicitudDeArrastre(idArrastre: Int, callback: (Boolean) -> Unit) {
+    // --- CORRECCIÓN: La función ahora acepta los datos del operador ---
+    fun aceptarSolicitudDeArrastre(idArrastre: Int, operadorGrua: String, gruaIdentificador: String, callback: (Boolean) -> Unit) {
         val request = OrdenArrastreRequest(
             data = OrdenArrastreData(
                 fechaIngreso = getISODateTime(),
-                // --- CORRECCIÓN: Usamos un valor de estatus válido ---
-                estatus = "en_corralon",
-                operadorGrua = "Operador 1", // TODO: Reemplazar con datos reales
-                gruaIdentificador = "Grua-007", // TODO: Reemplazar con datos reales
+                estatus = "en_corralon", // La API espera este valor de texto
+                operadorGrua = operadorGrua,
+                gruaIdentificador = gruaIdentificador,
                 infraccionId = idArrastre
             )
         )

@@ -10,7 +10,8 @@ interface DetalleSolicitudContract {
     }
 
     interface Presenter {
-        fun aceptarSolicitud(idArrastre: Int)
+        // --- CORRECCIÓN: La función ahora acepta los datos del operador ---
+        fun aceptarSolicitud(idArrastre: Int, operadorGrua: String, gruaIdentificador: String)
         fun destruir()
     }
 }
