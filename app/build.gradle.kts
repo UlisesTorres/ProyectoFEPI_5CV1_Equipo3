@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    kotlin("kapt") // Esta es la forma correcta para que reconozca 'kapt' abajo
 }
 
 android {
@@ -67,4 +68,11 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
+    // Room (Base de Datos)
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1") // Ahora sí debería reconocerlo
+
+    // WorkManager (Sincronización)
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
 }
