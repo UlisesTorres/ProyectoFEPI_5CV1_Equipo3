@@ -41,12 +41,13 @@ class EvidenciaActivity : ComponentActivity() {
     private var contadorFotos = 0
     private lateinit var fotoActualUri: Uri
     private val listaArchivosFotos = mutableListOf<File>()
-
+    private var userId: Int = -1
 
     // CORRECCIÓN 1: Declarar estas variables aquí arriba para que funcionen en toda la clase
     private var placas: String? = null
     private var direccion: String? = null
     private var fechaInfraccion: String? = null
+
 
     private val cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success) procesarYMostrarFoto()
@@ -55,6 +56,13 @@ class EvidenciaActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_evidencia)
+        userId = obtenerUserId()
+
+        if (userId == -1) {
+            Toast.makeText(this, "Sesión inválida, vuelve a iniciar sesión", Toast.LENGTH_LONG).show()
+            finish()
+            return
+        }
 
         // Recuperar datos del intent
         placas = intent.getStringExtra("PLACAS")
@@ -194,6 +202,11 @@ class EvidenciaActivity : ComponentActivity() {
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
+    private fun obtenerUserId(): Int {
+        val prefs = getSharedPreferences("AUTH_PREFS", MODE_PRIVATE)
+        return prefs.getInt("user_id", -1)
+    }
+
     private fun prepararArchivoFirma(): File {
         val archivoFirma = File(cacheDir, "firma_evidencia.png")
         val bitmapFirma = signaturePad.signatureBitmap
@@ -220,14 +233,15 @@ class EvidenciaActivity : ComponentActivity() {
         // 2️⃣ Preparar JSON
         val jsonString = """
     {
-      "data": {
-        "folio": "INF-${System.currentTimeMillis()}",
-        "placa_vehiculo": "${placas ?: "S/P"}",
-        "ubicacion_infraccion": "${direccion ?: "N/D"}",
-        "fecha_infraccion": "$fechaInfraccion"
-      }
-    }
-    """.trimIndent()
+  "data": {
+    "folio": "INF-${System.currentTimeMillis()}",
+    "placa_vehiculo": "${placas ?: "S/P"}",
+    "ubicacion_infraccion": "${direccion ?: "N/D"}",
+    "fecha_infraccion": "$fechaInfraccion",
+    "oficial_id": "$userId"
+  }
+}
+""".trimIndent()
 
         val body = jsonString.toRequestBody("application/json".toMediaTypeOrNull())
 
