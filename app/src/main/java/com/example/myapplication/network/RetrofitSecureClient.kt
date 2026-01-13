@@ -60,4 +60,10 @@ object RetrofitSecureClient {
     val parquimetroApiService: ParquimetroApiService by lazy {
         retrofit.create(ParquimetroApiService::class.java)
     }
+
+    // En RetrofitSecureClient.kt
+    val gruaApiService: GruaApiService by lazy {
+        retrofit.create(GruaApiService::class.java)
+    }
+
 }

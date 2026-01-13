@@ -80,9 +80,9 @@
                 android:id="@+id/tvMotivoResumen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Motivo: Abandono en vía pública"
-                android:textSize="14sp"
-                android:alpha="0.8" />
+                android:alpha="0.8"
+                android:text="------"
+                android:textSize="14sp" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
