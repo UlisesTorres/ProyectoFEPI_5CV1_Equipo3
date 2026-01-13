@@ -59,6 +59,15 @@ class EvidenciaActivity : ComponentActivity() {
         direccion = intent.getStringExtra("DIRECCION")
         fechaInfraccion = intent.getStringExtra("FECHA")
 
+        layoutFotos = findViewById(R.id.layoutFotosEvidencia)
+        signaturePad = findViewById(R.id.signaturePad)
+
+        // 🔥 BLOQUEO TOTAL DE GUARDADO DE ESTADO
+        layoutFotos.isSaveEnabled = false
+        layoutFotos.isSaveFromParentEnabled = false
+        signaturePad.isSaveEnabled = false
+        signaturePad.isSaveFromParentEnabled = false
+
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 AlertDialog.Builder(this@EvidenciaActivity)
@@ -70,10 +79,9 @@ class EvidenciaActivity : ComponentActivity() {
             }
         })
 
-        layoutFotos = findViewById(R.id.layoutFotosEvidencia)
-        signaturePad = findViewById(R.id.signaturePad)
-
-        findViewById<Button>(R.id.btnLimpiarFirma).setOnClickListener { signaturePad.clear() }
+        findViewById<Button>(R.id.btnLimpiarFirma).setOnClickListener {
+            signaturePad.clear()
+        }
 
         findViewById<ImageButton>(R.id.btnTomarFoto).setOnClickListener {
             if (contadorFotos < 5) {
@@ -84,14 +92,12 @@ class EvidenciaActivity : ComponentActivity() {
             }
         }
 
-        val btnFinalizar = findViewById<Button>(R.id.btnFinalizarInfraccion)
-        btnFinalizar.setOnClickListener {
+        findViewById<Button>(R.id.btnFinalizarInfraccion).setOnClickListener {
             if (signaturePad.isEmpty) {
                 Toast.makeText(this, "La firma es obligatoria", Toast.LENGTH_LONG).show()
             } else if (contadorFotos == 0) {
                 Toast.makeText(this, "Debes incluir al menos una foto", Toast.LENGTH_SHORT).show()
             } else {
-                btnFinalizar.isEnabled = false
                 val archivoFirma = prepararArchivoFirma()
                 enviarEvidenciaAlServidor(placas, direccion, archivoFirma, listaArchivosFotos)
             }
@@ -99,10 +105,14 @@ class EvidenciaActivity : ComponentActivity() {
     }
 
     private fun crearUriFoto(): Uri {
-        val archivo = File(getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES), "FOTO_${System.currentTimeMillis()}.jpg")
+        val archivo = File(
+            getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES),
+            "FOTO_${System.currentTimeMillis()}.jpg"
+        )
         listaArchivosFotos.add(archivo)
-        return FileProvider.getUriForFile(this, "${packageName}.fileprovider", archivo)
+        return FileProvider.getUriForFile(this, "$packageName.fileprovider", archivo)
     }
+
 
     private fun procesarYMostrarFoto() {
         try {
@@ -114,6 +124,7 @@ class EvidenciaActivity : ComponentActivity() {
             if (bitmap != null) {
                 bitmap = corregirRotacion(bitmap, fotoActualUri)
                 val contenedor = FrameLayout(this)
+                contenedor.isSaveEnabled = false
                 val nombreArchivo = fotoActualUri.lastPathSegment ?: ""
                 val archivoAsociado = File(getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES), nombreArchivo)
                 contenedor.tag = archivoAsociado
@@ -126,6 +137,7 @@ class EvidenciaActivity : ComponentActivity() {
                 ivFoto.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
                 ivFoto.scaleType = ImageView.ScaleType.CENTER_CROP
                 ivFoto.setImageBitmap(bitmap)
+                ivFoto.isSaveEnabled = false
 
                 val btnCerrar = ImageButton(this)
                 val btnParams = FrameLayout.LayoutParams(70, 70)
@@ -276,5 +288,17 @@ class EvidenciaActivity : ComponentActivity() {
             override fun onResponse(call: Call<ResponseBody>, response: retrofit2.Response<ResponseBody>) {}
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {}
         })
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        for (i in 0 until layoutFotos.childCount) {
+            val contenedor = layoutFotos.getChildAt(i) as? FrameLayout ?: continue
+            val iv = contenedor.getChildAt(0) as? ImageView ?: continue
+            iv.setImageDrawable(null)
+        }
+
+        layoutFotos.removeAllViews()
     }
 }
