@@ -1,38 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"><!-- Reutilizamos el primer TextView para el ID de la Infracción -->
+    android:padding="16dp">
+
     <TextView
-        android:id="@+id/tv_detalle_folio"
+        android:id="@+id/tv_detalle_infraccion_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ID Infracción: "
+        android:text="ID Infracción: Cargando..."
         android:textSize="18sp" />
 
-    <!-- Reutilizamos el segundo TextView para las Observaciones -->
     <TextView
-        android:id="@+id/tv_detalle_placa"
+        android:id="@+id/tv_detalle_observaciones"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Observaciones: "
-        android:textSize="18sp" />
-
-    <!-- Estos TextViews no se usan en tu Activity actual. Considera eliminarlos si no son necesarios -->
-    <TextView
-        android:id="@+id/tv_detalle_fecha"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Fecha: "
-        android:visibility="gone"
+        android:layout_marginTop="8dp"
+        android:text="Observaciones: Cargando..."
         android:textSize="18sp" />
 
     <TextView
         android:id="@+id/tv_detalle_ubicacion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ubicación: "
-        android:visibility="gone"
+        android:layout_marginTop="8dp"
+        android:text="Ubicación: Cargando..."
         android:textSize="18sp" />
 
     <Button

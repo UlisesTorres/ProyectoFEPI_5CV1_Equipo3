@@ -63,6 +63,17 @@
             app:layout_constraintTop_toBottomOf="@id/tvPlaca"
             tools:text="12 de enero, 2026" />
 
+        <TextView
+            android:id="@+id/tvUbicacion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:text="Ubicación"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvPlaca" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

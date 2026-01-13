@@ -28,10 +28,6 @@ data class InfraccionAttributes(
     @SerializedName("fecha_infraccion")
     val fecha: String,  // El nombre coincide con el JSON: "fecha_infraccion"
 
-    @SerializedName("ubicacion_arrastre")
+    @SerializedName("ubicacion_infraccion")
     val ubicacion: String
 )
-
-// La clase `InfraccionData` que tenías antes debe ser eliminada.
-// No la necesitas porque el JSON del servidor no tiene el nivel "attributes".
-

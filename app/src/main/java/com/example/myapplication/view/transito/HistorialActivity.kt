@@ -3,6 +3,7 @@ package com.example.myapplication.view.transito
 import HistorialAdapter
 import android.content.Intent // Importamos Intent para la navegación
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -40,6 +41,7 @@ class HistorialActivity : ComponentActivity(), HistorialInfraccionesContract.Vie
     }
 
     override fun mostrarListaInfracciones(infracciones: List<InfraccionAttributes>) {
+        Log.d("InfraccionesRaw", infracciones.toString())
         if (infracciones.isEmpty()) {
             recyclerView.visibility = View.GONE
             layoutVacio.visibility = View.VISIBLE

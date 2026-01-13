@@ -15,17 +15,22 @@ class DetalleInfraccionActivity : AppCompatActivity() {
         val folio = intent.getStringExtra("EXTRA_FOLIO") ?: "No disponible"
         val placa = intent.getStringExtra("EXTRA_PLACA") ?: "No disponible"
         val fecha = intent.getStringExtra("EXTRA_FECHA") ?: "No disponible"
+        val ubicacion = intent.getStringExtra("EXTRA_UBICACION") ?: "No disponible"
+
 
         // Vincular vistas
         val tvFolio: TextView = findViewById(R.id.tv_detalle_folio)
         val tvPlaca: TextView = findViewById(R.id.tv_detalle_placa)
         val tvFecha: TextView = findViewById(R.id.tv_detalle_fecha)
+        val tvUbicacion: TextView = findViewById(R.id.tv_detalle_ubicacion)
+
 
         // Mostrar datos
         tvFolio.text = "Folio: $folio"
         tvPlaca.text = "Placa: $placa"
         // Formateamos un poco la fecha para que no muestre la hora
         tvFecha.text = "Fecha: ${fecha.substringBefore('T')}"
+        tvUbicacion.text = "Ubicación: $ubicacion"
     }
 }
     

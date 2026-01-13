@@ -17,10 +17,15 @@ class HistorialAdapter(
         private val tvPlaca: TextView = itemView.findViewById(R.id.tvPlaca)
         private val tvFecha: TextView = itemView.findViewById(R.id.tvFecha)
 
+        private val tvUbicacion: TextView = itemView.findViewById(R.id.tvUbicacion)
+
+
         fun bind(infraccion: InfraccionAttributes) {
             tvFolio.text = infraccion.folio
             tvPlaca.text = "Placa: ${infraccion.placa}" // Añadimos un texto descriptivo
             tvFecha.text = formatarFecha(infraccion.fecha) // Formatear la fecha se ve mejor
+            tvUbicacion.text = "Ubicacion: ${infraccion.ubicacion}"
+
 
             itemView.setOnClickListener {
                 onItemClick(infraccion)
