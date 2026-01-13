@@ -26,7 +26,10 @@ data class InfraccionAttributes(
     val placa: String, // El nombre coincide con el JSON: "placa_vehiculo"
 
     @SerializedName("fecha_infraccion")
-    val fecha: String  // El nombre coincide con el JSON: "fecha_infraccion"
+    val fecha: String,  // El nombre coincide con el JSON: "fecha_infraccion"
+
+    @SerializedName("ubicacion_arrastre")
+    val ubicacion: String
 )
 
 // La clase `InfraccionData` que tenías antes debe ser eliminada.

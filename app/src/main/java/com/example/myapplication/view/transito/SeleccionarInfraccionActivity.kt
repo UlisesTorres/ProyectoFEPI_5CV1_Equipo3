@@ -90,6 +90,7 @@ class SeleccionarInfraccionActivity : AppCompatActivity(), SeleccionarInfraccion
             putExtra("EXTRA_ID_INFRACCION", infraccion.id)
             putExtra("EXTRA_FOLIO", infraccion.folio)
             putExtra("EXTRA_PLACA", infraccion.placa)
+            putExtra("EXTRA_UBICACION", infraccion.ubicacion)
         }
         startActivity(intent)
     }

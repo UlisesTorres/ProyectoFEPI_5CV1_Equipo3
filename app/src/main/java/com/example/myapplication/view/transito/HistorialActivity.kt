@@ -78,7 +78,7 @@ class HistorialActivity : ComponentActivity(), HistorialInfraccionesContract.Vie
             putExtra("EXTRA_FOLIO", infraccion.folio)
             putExtra("EXTRA_PLACA", infraccion.placa)
             putExtra("EXTRA_FECHA", infraccion.fecha)
-            // Puedes añadir más datos aquí si los necesitas
+            putExtra("EXTRA_UBICACION", infraccion.ubicacion)
         }
         startActivity(intent)
     }

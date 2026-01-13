@@ -21,6 +21,8 @@ class Orden_ArrastreActivity : ComponentActivity() {
     private var infraccionId: Int = -1
     private lateinit var folioInfraccion: String // Renombrado para claridad
     private lateinit var placa: String
+    private lateinit var ubicacion: String
+
 
     // Declaración de las Vistas (Views) del layout
     private lateinit var tvFolioActual: TextView
@@ -49,6 +51,8 @@ class Orden_ArrastreActivity : ComponentActivity() {
         infraccionId = intent.getIntExtra("EXTRA_ID_INFRACCION", -1)
         folioInfraccion = intent.getStringExtra("EXTRA_FOLIO") ?: "No disponible"
         placa = intent.getStringExtra("EXTRA_PLACA") ?: "No disponible"
+        ubicacion = intent.getStringExtra("EXTRA_UBICACION") ?: "No disponible"
+
     }
 
     private fun inicializarVistas() {
@@ -77,7 +81,8 @@ class Orden_ArrastreActivity : ComponentActivity() {
             data = OrdenArrastreData(
                 folio = folioArrastre,             // Campo 'folio' para la tabla 'Generar_arrastre'
                 infraccionId = this.infraccionId,  // La relación con la infracción
-                observaciones = observaciones      // Las notas del policía
+                observaciones = observaciones,      // Las notas del policía
+                ubicacion = ubicacion
             )
         )
 

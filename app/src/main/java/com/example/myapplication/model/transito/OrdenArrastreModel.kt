@@ -33,5 +33,8 @@ data class OrdenArrastreData(
     val observaciones: String,
 
     @SerializedName("estatus")
-    val estatus: Int = 0
+    val estatus: Int = 0,
+
+    @SerializedName("ubicacion_arrastre")
+    val ubicacion: String
 )
