@@ -204,7 +204,8 @@ class EvidenciaActivity : ComponentActivity() {
                 "folio": "$folio",
                 "placa_vehiculo": "${placas ?: "S/P"}",
                 "ubicacion_infraccion": "${direccion ?: "N/D"}",
-                "fecha_infraccion": "$fechaInfraccion"
+                "fecha_infraccion": "$fechaInfraccion",
+                "medio_infraccion": "policia_transito"
               }
             }
         """.trimIndent()
