@@ -30,5 +30,8 @@ data class OrdenArrastreData(
     // --- CORRECCIÓN #2: El campo 'observaciones' ahora sí existe ---
     // Este campo también es requerido por tu nueva tabla.
     @SerializedName("observaciones")
-    val observaciones: String
+    val observaciones: String,
+
+    @SerializedName("estatus")
+    val estatus: Int = 0
 )
