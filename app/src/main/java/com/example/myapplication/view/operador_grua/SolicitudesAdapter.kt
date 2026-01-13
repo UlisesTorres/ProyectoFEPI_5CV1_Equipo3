@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
-import com.example.myapplication.model.operador_grua.GenerarArrastreAttributes // <-- CAMBIA LA IMPORTACIÓN
+import com.example.myapplication.model.operador_grua.GenerarArrastreAttributes
 
 class SolicitudesAdapter(
-    private var solicitudes: List<GenerarArrastreAttributes>, // <-- CAMBIA EL TIPO DE LISTA
-    private val onItemClick: (GenerarArrastreAttributes) -> Unit // <-- CAMBIA EL TIPO DEL LISTENER
+    private var solicitudes: List<GenerarArrastreAttributes>,
+    private val onItemClick: (GenerarArrastreAttributes) -> Unit
 ) : RecyclerView.Adapter<SolicitudesAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -28,11 +28,8 @@ class SolicitudesAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val solicitud = solicitudes[position]
 
-        // --- INICIO DE LA CORRECCIÓN ---
-        // Accedemos a los campos directamente desde el objeto 'solicitud'.
-        holder.tvFolio.text = "FOLIO ARRASTRE: ${solicitud.folio}"
+        holder.tvFolio.text = "ID ARRASTRE: ${solicitud.id}"
         holder.tvPlaca.text = "Observaciones: ${solicitud.observaciones}"
-        // --- FIN DE LA CORRECCIÓN ---
 
         holder.tvFecha.visibility = View.GONE
 
@@ -43,7 +40,7 @@ class SolicitudesAdapter(
 
     override fun getItemCount() = solicitudes.size
 
-    fun updateData(newSolicitudes: List<GenerarArrastreAttributes>) { // <-- CAMBIA EL TIPO DE LISTA
+    fun updateData(newSolicitudes: List<GenerarArrastreAttributes>) {
         this.solicitudes = newSolicitudes
         notifyDataSetChanged()
     }

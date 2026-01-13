@@ -91,6 +91,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".view.parquimetros.ReporteActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".view.operador_grua.DetalleSolicitudActivity"
+            android:screenOrientation="portrait"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"
