@@ -15,24 +15,25 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.work.*
 import com.example.myapplication.R
-import com.example.myapplication.network.InfraccionApiService
+import com.example.myapplication.database.AppDatabase
+import com.example.myapplication.database.InfraccionPendiente
 import com.example.myapplication.network.RetrofitSecureClient
+import com.example.myapplication.worker.SyncWorker
 import com.github.gcacace.signaturepad.views.SignaturePad
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.Response
 import org.json.JSONObject
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class EvidenciaActivity : ComponentActivity() {
 
@@ -42,8 +43,6 @@ class EvidenciaActivity : ComponentActivity() {
     private lateinit var fotoActualUri: Uri
     private val listaArchivosFotos = mutableListOf<File>()
 
-
-    // CORRECCIÓN 1: Declarar estas variables aquí arriba para que funcionen en toda la clase
     private var placas: String? = null
     private var direccion: String? = null
     private var fechaInfraccion: String? = null
@@ -56,7 +55,6 @@ class EvidenciaActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_evidencia)
 
-        // Recuperar datos del intent
         placas = intent.getStringExtra("PLACAS")
         direccion = intent.getStringExtra("DIRECCION")
         fechaInfraccion = intent.getStringExtra("FECHA")
@@ -86,7 +84,6 @@ class EvidenciaActivity : ComponentActivity() {
             }
         }
 
-
         val btnFinalizar = findViewById<Button>(R.id.btnFinalizarInfraccion)
         btnFinalizar.setOnClickListener {
             if (signaturePad.isEmpty) {
@@ -94,14 +91,9 @@ class EvidenciaActivity : ComponentActivity() {
             } else if (contadorFotos == 0) {
                 Toast.makeText(this, "Debes incluir al menos una foto", Toast.LENGTH_SHORT).show()
             } else {
-                btnFinalizar.isEnabled = false // Bloqueamos para evitar doble clic
-
+                btnFinalizar.isEnabled = false
                 val archivoFirma = prepararArchivoFirma()
-
-                // Iniciamos el envío real
                 enviarEvidenciaAlServidor(placas, direccion, archivoFirma, listaArchivosFotos)
-
-                Toast.makeText(this, "Subiendo evidencia, por favor espere...", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -121,10 +113,7 @@ class EvidenciaActivity : ComponentActivity() {
 
             if (bitmap != null) {
                 bitmap = corregirRotacion(bitmap, fotoActualUri)
-
                 val contenedor = FrameLayout(this)
-
-                // --- NUEVO: Buscamos el archivo físico y lo guardamos en el TAG del contenedor ---
                 val nombreArchivo = fotoActualUri.lastPathSegment ?: ""
                 val archivoAsociado = File(getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES), nombreArchivo)
                 contenedor.tag = archivoAsociado
@@ -134,36 +123,22 @@ class EvidenciaActivity : ComponentActivity() {
                 contenedor.layoutParams = layoutParams
 
                 val ivFoto = ImageView(this)
-                ivFoto.layoutParams = FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.MATCH_PARENT,
-                    FrameLayout.LayoutParams.MATCH_PARENT
-                )
+                ivFoto.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
                 ivFoto.scaleType = ImageView.ScaleType.CENTER_CROP
                 ivFoto.setImageBitmap(bitmap)
-                ivFoto.isSaveEnabled = false
 
                 val btnCerrar = ImageButton(this)
                 val btnParams = FrameLayout.LayoutParams(70, 70)
                 btnParams.gravity = Gravity.TOP or Gravity.END
                 btnCerrar.layoutParams = btnParams
-
                 btnCerrar.setImageResource(android.R.drawable.ic_menu_close_clear_cancel)
                 btnCerrar.setBackgroundResource(android.R.drawable.presence_offline)
-                btnCerrar.setPadding(5, 5, 5, 5)
 
-                // --- ACTUALIZADO: El botón ahora limpia la lista y la pantalla ---
                 btnCerrar.setOnClickListener {
-                    // 1. Obtenemos el archivo desde el tag
                     val archivoABorrar = contenedor.tag as? File
-
-                    // 2. Lo quitamos de la lista global de envío
                     archivoABorrar?.let { listaArchivosFotos.remove(it) }
-
-                    // 3. Quitamos la vista de la pantalla
                     layoutFotos.removeView(contenedor)
                     contadorFotos--
-
-                    Toast.makeText(this, "Foto eliminada", Toast.LENGTH_SHORT).show()
                 }
 
                 contenedor.addView(ivFoto)
@@ -188,143 +163,118 @@ class EvidenciaActivity : ComponentActivity() {
             ExifInterface.ORIENTATION_ROTATE_270 -> 270f
             else -> 0f
         }
-
         if (angle == 0f) return bitmap
         val matrix = Matrix().apply { postRotate(angle) }
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
     private fun prepararArchivoFirma(): File {
-        val archivoFirma = File(cacheDir, "firma_evidencia.png")
+        val archivoFirma = File(cacheDir, "firma_${System.currentTimeMillis()}.png")
         val bitmapFirma = signaturePad.signatureBitmap
-
         archivoFirma.outputStream().use { out ->
             bitmapFirma.compress(Bitmap.CompressFormat.PNG, 100, out)
         }
         return archivoFirma
     }
-    private fun enviarEvidenciaAlServidor(
-        placas: String?,
-        direccion: String?,
-        firma: File,
-        fotos: List<File>
-    ) {
-        // 1️⃣ Crear y mostrar diálogo de carga (Bloquea la pantalla para evitar errores)
+
+    private fun enviarEvidenciaAlServidor(placas: String?, direccion: String?, firma: File, fotos: List<File>) {
         val progressDialog = AlertDialog.Builder(this)
             .setView(ProgressBar(this).apply { setPadding(40, 40, 40, 40) })
             .setTitle("Guardando Infracción")
-            .setMessage("Conectando con el servidor, por favor espere...")
+            .setMessage("Conectando con el servidor...")
             .setCancelable(false)
             .show()
 
-        // 2️⃣ Preparar JSON
+        val folio = "INF-${System.currentTimeMillis()}"
         val jsonString = """
-    {
-      "data": {
-        "folio": "INF-${System.currentTimeMillis()}",
-        "placa_vehiculo": "${placas ?: "S/P"}",
-        "ubicacion_infraccion": "${direccion ?: "N/D"}",
-        "fecha_infraccion": "$fechaInfraccion"
-      }
-    }
-    """.trimIndent()
+            {
+              "data": {
+                "folio": "$folio",
+                "placa_vehiculo": "${placas ?: "S/P"}",
+                "ubicacion_infraccion": "${direccion ?: "N/D"}",
+                "fecha_infraccion": "$fechaInfraccion"
+              }
+            }
+        """.trimIndent()
 
         val body = jsonString.toRequestBody("application/json".toMediaTypeOrNull())
 
-        // 3️⃣ Enviar a Strapi
-        RetrofitSecureClient.infraccionApiService
-            .crearInfraccion(body)
-            .enqueue(object : retrofit2.Callback<ResponseBody> {
-
-                override fun onResponse(call: Call<ResponseBody>, response: retrofit2.Response<ResponseBody>) {
-                    // Quitamos el círculo de carga
-                    progressDialog.dismiss()
-
-                    if (response.isSuccessful) {
-                        // --- CASO ÉXITO ---
-                        val json = JSONObject(response.body()!!.string())
-                        val infraccionId = json.getJSONObject("data").getInt("id")
-
-                        // Subir archivos en segundo plano
-                        subirArchivo(infraccionId, firma, "firma_infractor")
-                        fotos.forEach { foto -> subirArchivo(infraccionId, foto, "evidencia_infraccion") }
-
-                        Toast.makeText(this@EvidenciaActivity, "Infracción guardada correctamente", Toast.LENGTH_LONG).show()
-
-                        // NAVEGAR: Solo si fue exitoso
-                        val intentPrincipal = Intent(this@EvidenciaActivity, TransitoActivity::class.java)
-                        intentPrincipal.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                        startActivity(intentPrincipal)
-                        finish()
-                    } else {
-                        // --- CASO ERROR DE SERVIDOR (400, 403, 500, etc) ---
-                        val errorBody = response.errorBody()?.string()
-                        Log.e("STRAPI", "Error: $errorBody")
-
-                        // Reactivamos el botón para que intente de nuevo
-                        findViewById<Button>(R.id.btnFinalizarInfraccion).isEnabled = true
-
-                        AlertDialog.Builder(this@EvidenciaActivity)
-                            .setTitle("Error en el servidor")
-                            .setMessage("No se pudo guardar la infracción. Revisa los datos o el rol del usuario.")
-                            .setPositiveButton("Aceptar", null)
-                            .show()
-                    }
-                }
-
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    // --- CASO ERROR DE RED (Sin internet, servidor caído) ---
-                    progressDialog.dismiss()
-                    findViewById<Button>(R.id.btnFinalizarInfraccion).isEnabled = true
-
-                    Log.e("STRAPI", "Fallo de conexión: ${t.message}")
-                    Toast.makeText(this@EvidenciaActivity, "Error de red: No hay conexión con Railway", Toast.LENGTH_LONG).show()
-                }
-            })
-    }
-
-    private fun subirArchivo(
-        infraccionId: Int,
-        archivo: File,
-        field: String
-    ) {
-        val filePart = MultipartBody.Part.createFormData(
-            "files",
-            archivo.name,
-            archivo.asRequestBody(
-                if (field == "firma_infractor")
-                    "image/png".toMediaTypeOrNull()
-                else
-                    "image/jpeg".toMediaTypeOrNull()
-            )
-        )
-
-        RetrofitSecureClient.uploadApiService.subirArchivo(
-            filePart,
-            "api::infraccion.infraccion".toRequestBody(),
-            infraccionId.toString().toRequestBody(),
-            field.toRequestBody()
-        ).enqueue(object : retrofit2.Callback<ResponseBody> {
-
-            override fun onResponse(
-                call: Call<ResponseBody>,
-                response: retrofit2.Response<ResponseBody>
-            ) {
-                if (!response.isSuccessful) {
-                    Log.e("UPLOAD", response.errorBody()?.string() ?: "")
+        RetrofitSecureClient.infraccionApiService.crearInfraccion(body).enqueue(object : retrofit2.Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: retrofit2.Response<ResponseBody>) {
+                progressDialog.dismiss()
+                if (response.isSuccessful) {
+                    val json = JSONObject(response.body()!!.string())
+                    val infraccionId = json.getJSONObject("data").getInt("id")
+                    subirArchivo(infraccionId, firma, "firma_infractor")
+                    fotos.forEach { foto -> subirArchivo(infraccionId, foto, "evidencia_infraccion") }
+                    finalizarActividad("Infracción enviada correctamente")
+                } else {
+                    guardarOffline(folio, placas, direccion, firma, fotos)
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Log.e("UPLOAD", t.message ?: "Error")
+                progressDialog.dismiss()
+                guardarOffline(folio, placas, direccion, firma, fotos)
             }
         })
     }
 
+    private fun guardarOffline(folio: String, placas: String?, direccion: String?, firma: File, fotos: List<File>) {
+        val rutasFotos = fotos.joinToString(",") { it.absolutePath }
+        val infraccion = InfraccionPendiente(
+            folio = folio,
+            placa = placas ?: "S/P",
+            ubicacion = direccion ?: "N/D",
+            fecha = fechaInfraccion ?: "",
+            rutaFirma = firma.absolutePath,
+            rutasFotos = rutasFotos
+        )
 
+        lifecycleScope.launch(Dispatchers.IO) {
+            AppDatabase.getDatabase(applicationContext).infraccionDao().insertar(infraccion)
+            programarSincronizacion()
+            withContext(Dispatchers.Main) {
+                finalizarActividad("Sin conexión. Se guardó localmente y se enviará al recuperar internet.")
+            }
+        }
+    }
 
+    private fun programarSincronizacion() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(Bundle())
+        val syncRequest = OneTimeWorkRequestBuilder<SyncWorker>()
+            .setConstraints(constraints)
+            .build()
+
+        WorkManager.getInstance(applicationContext).enqueueUniqueWork(
+            "sync_infracciones",
+            ExistingWorkPolicy.KEEP,
+            syncRequest
+        )
+    }
+
+    private fun finalizarActividad(mensaje: String) {
+        Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show()
+        val intent = Intent(this, TransitoActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(intent)
+        finish()
+    }
+
+    private fun subirArchivo(infraccionId: Int, archivo: File, field: String) {
+        val filePart = MultipartBody.Part.createFormData(
+            "files", archivo.name,
+            archivo.asRequestBody(if (field == "firma_infractor") "image/png".toMediaTypeOrNull() else "image/jpeg".toMediaTypeOrNull())
+        )
+        RetrofitSecureClient.uploadApiService.subirArchivo(
+            filePart, "api::infraccion.infraccion".toRequestBody(),
+            infraccionId.toString().toRequestBody(), field.toRequestBody()
+        ).enqueue(object : retrofit2.Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: retrofit2.Response<ResponseBody>) {}
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {}
+        })
     }
 }
