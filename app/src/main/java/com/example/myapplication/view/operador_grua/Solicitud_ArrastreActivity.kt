@@ -44,10 +44,15 @@ class Solicitud_ArrastreActivity : ComponentActivity(), SolicitudArrastreContrac
 
     private fun setupRecyclerView() {
         adapter = SolicitudesAdapter(emptyList()) { solicitud ->
-            val intent = Intent(this, DetalleSolicitudActivity::class.java)
-            intent.putExtra("id_arrastre", solicitud.id)
-            intent.putExtra("observaciones", solicitud.observaciones)
-            startActivity(intent)
+            // --- CORRECCIÓN FINAL: Usamos el nombre de campo correcto "infraccion_id" ---
+            if (solicitud.infraccion_id != null) {
+                val intent = Intent(this, DetalleSolicitudActivity::class.java)
+                intent.putExtra("id_infraccion", solicitud.infraccion_id.id)
+                intent.putExtra("observaciones", solicitud.observaciones)
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "Datos de la infracción incompletos. No se puede proceder.", Toast.LENGTH_LONG).show()
+            }
         }
         rvSolicitudes.layoutManager = LinearLayoutManager(this)
         rvSolicitudes.adapter = adapter
@@ -65,7 +70,6 @@ class Solicitud_ArrastreActivity : ComponentActivity(), SolicitudArrastreContrac
     }
 
     override fun confirmarAceptacion(folio: String) {
-        // This might not be needed anymore, but we'll keep it for now.
         Toast.makeText(this, "Aceptando solicitud para folio $folio...", Toast.LENGTH_SHORT).show()
     }
 

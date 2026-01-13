@@ -28,7 +28,13 @@ class SolicitudesAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val solicitud = solicitudes[position]
 
-        holder.tvFolio.text = "ID ARRASTRE: ${solicitud.id}"
+        // --- CORRECCIÓN FINAL: Usamos el nombre de campo correcto "infraccion_id" ---
+        if (solicitud.infraccion_id != null) {
+            holder.tvFolio.text = "ID Infracción: ${solicitud.infraccion_id.id}"
+        } else {
+            holder.tvFolio.text = "ID Arrastre: ${solicitud.id} (Sin Infracción)"
+        }
+
         holder.tvPlaca.text = "Observaciones: ${solicitud.observaciones}"
 
         holder.tvFecha.visibility = View.GONE
