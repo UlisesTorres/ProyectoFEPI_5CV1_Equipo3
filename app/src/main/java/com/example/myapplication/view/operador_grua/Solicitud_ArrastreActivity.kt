@@ -49,6 +49,7 @@ class Solicitud_ArrastreActivity : ComponentActivity(), SolicitudArrastreContrac
                 val intent = Intent(this, DetalleSolicitudActivity::class.java)
                 intent.putExtra("id_infraccion", solicitud.infraccion_id.id)
                 intent.putExtra("observaciones", solicitud.observaciones)
+                intent.putExtra("Ubicacion", solicitud.ubicacion)
                 startActivity(intent)
             } else {
                 Toast.makeText(this, "Datos de la infracción incompletos. No se puede proceder.", Toast.LENGTH_LONG).show()

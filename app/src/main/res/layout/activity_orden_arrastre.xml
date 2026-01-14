@@ -77,7 +77,7 @@
                 android:background="#F0F0F0" />
 
             <TextView
-                android:id="@+id/tvMotivoResumen"
+                android:id="@+id/tv_detalle_ubicacion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:alpha="0.8"

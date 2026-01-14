@@ -18,7 +18,10 @@ data class GenerarArrastreAttributes(
     val observaciones: String,
 
     @SerializedName("infraccion_id")
-    val infraccion_id: PopulatedInfraccion?
+    val infraccion_id: PopulatedInfraccion?,
+
+    @SerializedName("ubicacion_arrastre")
+    val ubicacion: String?
 )
 
 // --- CORRECCIÓN: El modelo ahora puede recibir la ubicación y el oficial ---
@@ -33,7 +36,10 @@ data class PopulatedInfraccion(
     val ubicacion: String?,
 
     @SerializedName("oficial_id")
-    val oficial: PopulatedOficial?
+    val oficial: PopulatedOficial?,
+
+    @SerializedName("ubicacion_arrastre")
+    val ubicacionArrastre: String
 )
 
 data class PopulatedOficial(
