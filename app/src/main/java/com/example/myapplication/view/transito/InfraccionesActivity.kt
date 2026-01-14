@@ -9,7 +9,8 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.text.color
+import android.text.InputFilter
+import android.text.InputType
 import com.example.myapplication.R
 import com.example.myapplication.model.transito.EvidenciaModel
 import com.example.myapplication.presenter.transito.InfraccionesPresenter
@@ -51,6 +52,9 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
     // Mapa
     private var mapLibreMap: MapLibreMap? = null
     private var marcadorInfraccion: Marker? = null
+
+    private var placaValida = false
+    private var licenciaValida = false
 
     // MVP
     private lateinit var presenter: InfraccionesContract.Presenter
@@ -97,6 +101,10 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
         presenter.cargarFechaInfraccion()
         setupMapa(savedInstanceState)
 
+        etPlacas.filters = arrayOf(InputFilter.LengthFilter(7))
+        etLicencia.filters = arrayOf(InputFilter.LengthFilter(10))
+        etLicencia.inputType = InputType.TYPE_CLASS_NUMBER
+
         // 4. Listeners
         btnConsultarPlaca.setOnClickListener {
             // ✅ SOLUCIÓN: Normalizamos la entrada antes de enviarla.
@@ -114,6 +122,14 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
         }
 
         btnSiguiente.setOnClickListener {
+            if (!placaValida) {
+                mostrarMensaje("Debe consultar una placa válida antes de continuar.")
+                return@setOnClickListener
+            }
+            if (!licenciaValida) {
+                mostrarMensaje("Debe validar una licencia antes de continuar.")
+                return@setOnClickListener
+            }
             val placas = etPlacas.text.toString()
             val tipoInfraccion = spinnerInfracciones.selectedItem.toString()
             presenter.validarYGuardarInfraccion(placas, tipoInfraccion)
@@ -127,13 +143,18 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
             v.parent.requestDisallowInterceptTouchEvent(true)
             false
         }
+
+
     }
+
+
 
     // ... (dentro de InfraccionesActivity.kt)
 
     // En InfraccionesActivity.kt
 
     override fun mostrarDatosVehiculo(vehiculo: VehiculoDTO) {
+        placaValida = true
         tvMarca.text = vehiculo.marca ?: "N/D"
         tvModelo.text = vehiculo.modelo ?: "N/D"
         tvColor.text = vehiculo.color ?: "N/D"
@@ -143,6 +164,7 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
     }
 
     override fun mostrarDatosLicencia(licencia: LicenciaDTO) {
+        licenciaValida = true
         runOnUiThread {
             tvNombreConductor.text =
                 "${licencia.nombre ?: ""} ${licencia.apellido ?: ""}".trim()
@@ -156,6 +178,8 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
 
 
     override fun mostrarErrorConsulta(mensaje: String) {
+        placaValida = false
+        licenciaValida = false
         // ✅ BUENA PRÁCTICA HACERLO TAMBIÉN PARA LOS ERRORES
         runOnUiThread {
             Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show()
@@ -164,17 +188,13 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
 
     override fun mostrarCatalogoInfracciones(infracciones: List<TipoInfraccionDTO>) {
 
-        // 1. Extrae los nombres de la lista de objetos para mostrarlos en el Spinner
         val nombresInfracciones = infracciones.map { it.nombre ?: "Sin nombre" }
 
-        // 2. ✅ ¡PASO CLAVE QUE FALTABA! Crea el adaptador con los nombres.
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, nombresInfracciones)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-        // 3. ✅ ¡PASO CLAVE QUE FALTABA! Asigna el adaptador al Spinner.
         spinnerInfracciones.adapter = adapter
 
-        // 4. Ahora sí, configura el listener.
+
         spinnerInfracciones.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val infraccionSeleccionada = infracciones[position]
@@ -218,10 +238,6 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
         }
     }
 
-
-
-
-    // --- MÉTODOS DE CONTRATO (SIN TOCAR SEGÚN INSTRUCCIÓN) ---
     private fun setupMapa(savedInstanceState: Bundle?) {
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync { map ->
