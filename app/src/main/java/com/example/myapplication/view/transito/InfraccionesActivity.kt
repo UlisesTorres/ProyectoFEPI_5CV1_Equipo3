@@ -9,6 +9,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.color
 import com.example.myapplication.R
 import com.example.myapplication.model.transito.EvidenciaModel
 import com.example.myapplication.presenter.transito.InfraccionesPresenter
@@ -20,6 +21,8 @@ import org.maplibre.android.maps.MapLibreMap
 import org.maplibre.android.annotations.MarkerOptions
 import org.maplibre.android.annotations.Marker
 import com.example.myapplication.model.transito.TipoInfraccionDTO
+import com.example.myapplication.model.licencia.LicenciaDTO
+import com.example.myapplication.model.vehiculo.VehiculoDTO
 
 class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
 
@@ -96,21 +99,18 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
 
         // 4. Listeners
         btnConsultarPlaca.setOnClickListener {
-            val placa = etPlacas.text.toString()
-            if (placa.isNotEmpty()) {
-                mostrarMensaje("Consultando placa: $placa")
-            } else {
-                etPlacas.error = "Ingrese una placa"
-            }
+            // ✅ SOLUCIÓN: Normalizamos la entrada antes de enviarla.
+            // Convertimos a mayúsculas y quitamos espacios al principio y al final.
+            val placaNormalizada = etPlacas.text.toString().uppercase().trim()
+
+            // La vista solo debe hacer UNA cosa: delegar al presenter.
+            presenter.onBotonConsultarPlacaPulsado(placaNormalizada)
         }
 
         btnValidarLicencia.setOnClickListener {
+            // La vista solo debe hacer UNA cosa: delegar al presenter.
             val licencia = etLicencia.text.toString()
-            if (licencia.isNotEmpty()) {
-                tvEstatusLicencia.text = "Estado: Validando..."
-            } else {
-                etLicencia.error = "Ingrese licencia"
-            }
+            presenter.onBotonValidarLicenciaPulsado(licencia)
         }
 
         btnSiguiente.setOnClickListener {
@@ -132,6 +132,35 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
     // ... (dentro de InfraccionesActivity.kt)
 
     // En InfraccionesActivity.kt
+
+    override fun mostrarDatosVehiculo(vehiculo: VehiculoDTO) {
+        tvMarca.text = vehiculo.marca ?: "N/D"
+        tvModelo.text = vehiculo.modelo ?: "N/D"
+        tvColor.text = vehiculo.color ?: "N/D"
+        tvTipo.text = vehiculo.tipo ?: "N/D"
+
+        mostrarMensaje("Datos del vehiculo encontrados.")
+    }
+
+    override fun mostrarDatosLicencia(licencia: LicenciaDTO) {
+        runOnUiThread {
+            tvNombreConductor.text =
+                "${licencia.nombre ?: ""} ${licencia.apellido ?: ""}".trim()
+
+            tvEstatusLicencia.text =
+                "Estado: ${licencia.estado_licencia ?: "Desconocido"}"
+
+            mostrarMensaje("Licencia encontrada.")
+        }
+    }
+
+
+    override fun mostrarErrorConsulta(mensaje: String) {
+        // ✅ BUENA PRÁCTICA HACERLO TAMBIÉN PARA LOS ERRORES
+        runOnUiThread {
+            Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show()
+        }
+    }
 
     override fun mostrarCatalogoInfracciones(infracciones: List<TipoInfraccionDTO>) {
 

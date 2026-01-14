@@ -2,6 +2,7 @@ package com.example.myapplication.presenter.transito
 
 import com.example.myapplication.model.transito.EvidenciaModel
 import com.example.myapplication.view.transito.InfraccionesContract
+
 import org.maplibre.android.geometry.LatLng
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -64,6 +65,40 @@ class InfraccionesPresenter(
                 view.mostrarMensaje(mensajeError)
             }
         )
+    }
+
+    override fun onBotonConsultarPlacaPulsado(placa: String) {
+        if (placa.isBlank()) {            view.mostrarMensaje("Ingrese una placa.")
+            return
+        }
+        // ✅ SOLUCIÓN: Nombra TODOS los argumentos para evitar ambigüedad.
+        model.consultarVehiculo(
+            placa = placa, // Nombra el primer argumento también
+            onSuccess = { vehiculo ->
+                view.mostrarDatosVehiculo(vehiculo)
+            },
+            onError = { error ->
+                view.mostrarErrorConsulta(error)
+            }
+        )
+    }
+
+
+    override fun onBotonValidarLicenciaPulsado(licencia: String) {
+        if (licencia.isBlank()) {
+            view.mostrarErrorConsulta("Ingrese una licencia.")
+            return
+        }
+        model.consultarLicencia(
+            numeroLicencia = licencia,
+            onSuccess = { licencia ->
+                view.mostrarDatosLicencia(licencia)
+            },
+            onError = { error ->
+                view.mostrarErrorConsulta(error)
+            }
+        )
+
     }
 
 }

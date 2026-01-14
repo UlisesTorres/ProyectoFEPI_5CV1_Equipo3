@@ -54,18 +54,16 @@ object RetrofitSecureClient {
         retrofit.create(UploadApiService::class.java)
     }
 
-    // --- ¡¡AQUÍ ESTÁ LA LÍNEA QUE FALTA!! ---
-    // Crea una instancia lazy para tu nuevo servicio de parquímetros.
-    // Sin esta línea, `parquimetroApiService` no existe y por eso da error.
     val parquimetroApiService: ParquimetroApiService by lazy {
         retrofit.create(ParquimetroApiService::class.java)
     }
 
-    // En RetrofitSecureClient.kt
     val gruaApiService: GruaApiService by lazy {
         retrofit.create(GruaApiService::class.java)
     }
 
-
+    val consultaApiService: ConsultaApiService by lazy {
+        retrofit.create(ConsultaApiService::class.java)
+    }
 
 }

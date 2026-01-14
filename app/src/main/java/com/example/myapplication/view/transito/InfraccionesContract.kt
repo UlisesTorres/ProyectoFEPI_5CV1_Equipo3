@@ -2,7 +2,8 @@ package com.example.myapplication.view.transito
 
 import org.maplibre.android.geometry.LatLng
 import com.example.myapplication.model.transito.TipoInfraccionDTO
-
+import com.example.myapplication.model.vehiculo.VehiculoDTO
+import com.example.myapplication.model.licencia.LicenciaDTO
 interface InfraccionesContract {
     interface View {
         fun actualizarDireccionEnPantalla(direccion: String)
@@ -14,6 +15,9 @@ interface InfraccionesContract {
         fun navegarAEvidencia(placas: String, direccion: String, fechaISO: String)
         fun ocultarTeclado()
         fun mostrarCatalogoInfracciones(lista: List<TipoInfraccionDTO>)
+        fun mostrarDatosVehiculo(vehiculo: VehiculoDTO)
+        fun mostrarDatosLicencia(licencia: LicenciaDTO)
+        fun mostrarErrorConsulta(mensaje: String)
 
     }
 
@@ -22,5 +26,7 @@ interface InfraccionesContract {
         fun procesarClickMapa(punto: LatLng)
         fun validarYGuardarInfraccion(placas: String, infraccionTipo: String)
         fun cargarCatalogoInfracciones()
+        fun onBotonConsultarPlacaPulsado(placa: String)
+        fun onBotonValidarLicenciaPulsado(licencia: String)
     }
 }
