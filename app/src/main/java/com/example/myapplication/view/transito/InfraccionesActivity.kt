@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -21,83 +22,149 @@ import org.maplibre.android.annotations.Marker
 
 class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
 
-    // Vistas
+    // Vistas Existentes
     private lateinit var spinnerInfracciones: Spinner
     private lateinit var mapView: MapView
     private lateinit var tvDireccion: TextView
     private lateinit var tvFecha: TextView
-    private lateinit var etPlacas: EditText
 
+    // --- NUEVAS VISTAS ---
+    private lateinit var etPlacas: EditText
+    private lateinit var tvTipo: TextView
+    private lateinit var tvMarca: TextView
+    private lateinit var tvModelo: TextView
+    private lateinit var tvColor: TextView
+    private lateinit var btnConsultarPlaca: Button
+
+    private lateinit var etLicencia: EditText
+    private lateinit var tvNombreConductor: TextView
+    private lateinit var tvEstatusLicencia: TextView
+    private lateinit var btnValidarLicencia: Button
+
+    // Card 3: Nueva vista de artículo
+    private lateinit var tvArticuloInfraccion: TextView
 
     // Mapa
     private var mapLibreMap: MapLibreMap? = null
     private var marcadorInfraccion: Marker? = null
 
-    // MVP: Usamos la interfaz del contrato
+    // MVP
     private lateinit var presenter: InfraccionesContract.Presenter
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 1. Configuración de MapLibre y Diseño
         MapLibre.getInstance(this)
         setContentView(R.layout.activity_infracciones)
 
-        // 2. Inicializar Vistas
+        // 1. Inicializar Vistas
         tvFecha = findViewById(R.id.tvFFija)
         spinnerInfracciones = findViewById(R.id.spinnerInfracciones)
         mapView = findViewById(R.id.map)
         tvDireccion = findViewById(R.id.tvDireccionInfraccion)
-        etPlacas = findViewById(R.id.editTextText2)
+
+        // Card 1
+        etPlacas = findViewById(R.id.etPlaca)
+        tvTipo = findViewById(R.id.tvTipo)
+        tvMarca = findViewById(R.id.tvMarca)
+        tvModelo = findViewById(R.id.tvModelo)
+        tvColor = findViewById(R.id.tvColor)
+        btnConsultarPlaca = findViewById(R.id.btnConsultarPlaca)
+
+        // Card 2
+        etLicencia = findViewById(R.id.etLicencia)
+        tvNombreConductor = findViewById(R.id.tvNombreConductor)
+        tvEstatusLicencia = findViewById(R.id.tvEstatusLicencia)
+        btnValidarLicencia = findViewById(R.id.btnValidarLicencia)
+
+        // Card 3: Articulo (La que acabas de agregar al XML)
+        tvArticuloInfraccion = findViewById(R.id.tvArticuloInfraccion)
+
         val btnSiguiente = findViewById<Button>(R.id.btnSiguiente)
         val btnMyLocation = findViewById<ImageButton>(R.id.btnMyLocation)
 
-        // 3. Inicializar MVP
-        // Nota: Asegúrate de que InfraccionesModel esté en el paquete correcto
+        // 2. Inicializar MVP
         val model = InfraccionesModel(this)
         presenter = InfraccionesPresenter(this, model)
 
-        // 4. Configuración Inicial
+        // 3. Configuración Inicial
         presenter.cargarFechaInfraccion()
         setupSpinner()
         setupMapa(savedInstanceState)
 
-        // 5. Listeners de Usuario
+        // 4. Listeners
+        btnConsultarPlaca.setOnClickListener {
+            val placa = etPlacas.text.toString()
+            if (placa.isNotEmpty()) {
+                mostrarMensaje("Consultando placa: $placa")
+            } else {
+                etPlacas.error = "Ingrese una placa"
+            }
+        }
+
+        btnValidarLicencia.setOnClickListener {
+            val licencia = etLicencia.text.toString()
+            if (licencia.isNotEmpty()) {
+                tvEstatusLicencia.text = "Estado: Validando..."
+            } else {
+                etLicencia.error = "Ingrese licencia"
+            }
+        }
+
         btnSiguiente.setOnClickListener {
             val placas = etPlacas.text.toString()
-            val tipo = spinnerInfracciones.selectedItem.toString()
-            // El presenter decide si los datos son válidos
-            presenter.validarYGuardarInfraccion(placas, tipo)
-
+            val tipoInfraccion = spinnerInfracciones.selectedItem.toString()
+            presenter.validarYGuardarInfraccion(placas, tipoInfraccion)
         }
 
         btnMyLocation.setOnClickListener {
             mapLibreMap?.getStyle { style -> activarUbicacion(style) }
         }
 
-        // Bloqueo de scroll para que el mapa no se mueva al hacer scroll en la pantalla
         mapView.setOnTouchListener { v, event ->
             v.parent.requestDisallowInterceptTouchEvent(true)
             false
         }
     }
 
+    private fun setupSpinner() {
+        val infracciones = listOf("Exceso de velocidad", "Lugar prohibido", "Semáforo", "Celular")
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, infracciones)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerInfracciones.adapter = adapter
+
+        // Listener para actualizar el TextView del artículo según la selección
+        spinnerInfracciones.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val seleccionado = infracciones[position]
+
+                // Ejemplo de lógica para mostrar el artículo (Esto podría venir de tu Presenter/Model)
+                val textoArticulo = when (seleccionado) {
+                    "Exceso de velocidad" -> "Artículo 9: Circular a velocidad superior a la permitida."
+                    "Lugar prohibido" -> "Artículo 30: Estacionar en zonas restringidas o señalizadas."
+                    "Semáforo" -> "Artículo 10: No respetar la luz roja del semáforo."
+                    "Celular" -> "Artículo 38: Uso de dispositivos electrónicos al conducir."
+                    else -> "Artículo aplicable: --"
+                }
+                tvArticuloInfraccion.text = textoArticulo
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+    }
+
+    // --- MÉTODOS DE CONTRATO (SIN TOCAR SEGÚN INSTRUCCIÓN) ---
     private fun setupMapa(savedInstanceState: Bundle?) {
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync { map ->
             this.mapLibreMap = map
-
-            // Obtenemos el estilo local a través del modelo
             val absolutePath = InfraccionesModel(this).prepararMapaLocal()
             val styleJson = assets.open("cdmx_style.json").bufferedReader().use { it.readText() }
             val finalStyle = styleJson.replace("{file_path}", absolutePath)
-
             map.setStyle(org.maplibre.android.maps.Style.Builder().fromJson(finalStyle)) { style ->
                 val cdmxCenter = LatLng(19.4326, -99.1332)
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(cdmxCenter, 14.0))
-
-                // Click en el mapa para situar la infracción
                 map.addOnMapClickListener { point ->
                     presenter.procesarClickMapa(point)
                     true
@@ -106,10 +173,8 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
         }
     }
 
-    // --- IMPLEMENTACIÓN DEL CONTRATO (View) ---
-
     override fun actualizarDireccionEnPantalla(direccion: String) {
-        tvDireccion.text = direccion
+        tvDireccion.setText(direccion)
     }
 
     override fun moverMarcador(latLng: LatLng) {
@@ -121,6 +186,21 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
 
     override fun mostrarFechaActual(fecha: String) {
         tvFecha.text = fecha
+    }
+
+    private fun activarUbicacion(style: org.maplibre.android.maps.Style) {
+        if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            val locationComponent = mapLibreMap?.locationComponent
+            val options = org.maplibre.android.location.LocationComponentActivationOptions
+                .builder(this, style)
+                .useDefaultLocationEngine(true)
+                .build()
+            locationComponent?.activateLocationComponent(options)
+            locationComponent?.isLocationComponentEnabled = true
+            locationComponent?.cameraMode = org.maplibre.android.location.modes.CameraMode.TRACKING
+        } else {
+            requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1000)
+        }
     }
 
     override fun navegarAEvidencia(placas: String, direccion: String, fechaISO: String) {
@@ -137,6 +217,10 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
 
     override fun limpiarFormulario() {
         etPlacas.setText("")
+        etLicencia.setText("")
+        tvNombreConductor.text = "--"
+        tvEstatusLicencia.text = "Estado: Pendiente"
+        tvArticuloInfraccion.text = "Artículo aplicable: --"
         spinnerInfracciones.setSelection(0)
     }
 
@@ -152,34 +236,7 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
         }
     }
 
-    // --- LÓGICA DE UBICACIÓN Y CICLO DE VIDA ---
-
-    private fun activarUbicacion(style: org.maplibre.android.maps.Style) {
-        if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            val locationComponent = mapLibreMap?.locationComponent
-            val options = org.maplibre.android.location.LocationComponentActivationOptions
-                .builder(this, style)
-                .useDefaultLocationEngine(true)
-                .build()
-
-            locationComponent?.activateLocationComponent(options)
-            locationComponent?.isLocationComponentEnabled = true
-            locationComponent?.cameraMode = org.maplibre.android.location.modes.CameraMode.TRACKING
-        } else {
-            requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1000)
-        }
-    }
-
-    private fun setupSpinner() {
-        val infracciones = listOf("Exceso de velocidad", "Lugar prohibido", "Semáforo", "Celular")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, infracciones)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerInfracciones.adapter = adapter
-    }
-
-
-
-    // Ciclo de vida del MapView (Vital para que no se trabe)
+    // Ciclo de vida del MapView
     override fun onStart() { super.onStart(); mapView.onStart() }
     override fun onResume() { super.onResume(); mapView.onResume() }
     override fun onPause() { super.onPause(); mapView.onPause() }
