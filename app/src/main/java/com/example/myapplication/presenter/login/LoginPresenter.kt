@@ -1,6 +1,5 @@
-package com.example.myapplication.presenter.Login
+package com.example.myapplication.presenter.login
 
-import android.util.Log
 import com.example.myapplication.network.RetrofitAuthClient
 import com.example.myapplication.network.RetrofitSecureClient
 import com.example.myapplication.view.login.LoginContract

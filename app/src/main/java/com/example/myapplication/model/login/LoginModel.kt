@@ -1,4 +1,4 @@
-package com.example.myapplication.model.Login
+package com.example.myapplication.model.login
 
 //LOGIN
 data class LoginModel(

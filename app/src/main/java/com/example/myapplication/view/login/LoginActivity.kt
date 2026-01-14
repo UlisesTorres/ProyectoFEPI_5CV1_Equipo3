@@ -3,14 +3,12 @@ package com.example.myapplication.view.login
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.R
-import com.example.myapplication.network.RetrofitAuthClient
-import com.example.myapplication.presenter.Login.LoginPresenter
+import com.example.myapplication.presenter.login.LoginPresenter
 import com.example.myapplication.view.corralones.CorralonesActivity
 import com.example.myapplication.view.operador_grua.Operador_GruaActivity
 import com.example.myapplication.view.supervisor.SupervisorActivity
