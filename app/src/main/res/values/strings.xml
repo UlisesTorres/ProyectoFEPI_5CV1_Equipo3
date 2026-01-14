@@ -72,4 +72,23 @@
     <string name="panel_de_control_supervisor">Panel de Control - Supervisor</string>
     <string name="ver_infracciones_recientes">Ver infracciones recientes</string>
     <string name="validar_infracciones">Validar Infracciones</string>
+    <string name="levantar_infracci_n">Levantar Infracción</string>
+    <string name="_1_datos_del_veh_culo">1. Datos del Vehículo</string>
+    <string name="ingresar_placa">Ingresar placa</string>
+    <string name="consultar_placa">Consultar Placa</string>
+    <string name="tipo">Tipo:</string>
+    <string name="marca">Marca:</string>
+    <string name="modelo">Modelo:</string>
+    <string name="_2_datos_del_conductor">2. Datos del Conductor</string>
+    <string name="n_mero_de_licencia">Número de Licencia:</string>
+    <string name="ej_l12345678">Ej. L12345678</string>
+    <string name="validar_conductor">Validar Conductor</string>
+    <string name="estado_pendiente_de_validaci_n">Estado: Pendiente de validación</string>
+    <string name="nombre_del_conductor">Nombre del Conductor:</string>
+    <string name="_3_cat_logo_de_infracci_n">3. Catálogo de Infracción</string>
+    <string name="art_culo_aplicable">Artículo aplicable: --</string>
+    <string name="_4_fecha_de_la_infracci_n">4. Fecha de la Infracción</string>
+    <string name="_5_geolocalizaci_n">5. Geolocalización</string>
+    <string name="direcci_n_del_incidente">Dirección del incidente</string>
+    <string name="siguiente">SIGUIENTE</string>
 </resources>

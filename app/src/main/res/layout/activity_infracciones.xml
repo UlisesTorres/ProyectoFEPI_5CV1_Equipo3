@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/colorBackground">
@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
-            android:text="Levantar Infracción"
+            android:text="@string/levantar_infracci_n"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="26sp"
             android:textStyle="bold"
@@ -43,14 +43,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1. Datos del Vehículo"
+                    android:text="@string/_1_datos_del_veh_culo"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="?attr/colorPrimary"
                     android:layout_marginBottom="12dp"/>
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Placa:" android:textStyle="bold" android:textColor="?android:attr/textColorPrimary"/>
-                <EditText android:id="@+id/etPlaca" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Ingresar placa" android:textColor="?android:attr/textColorPrimary" android:textColorHint="?android:attr/textColorSecondary" android:inputType="textCapCharacters"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/placa" android:textStyle="bold" android:textColor="?android:attr/textColorPrimary"/>
+                <EditText android:id="@+id/etPlaca" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="@string/ingresar_placa" android:textColor="?android:attr/textColorPrimary" android:textColorHint="?android:attr/textColorSecondary" android:inputType="textCapCharacters"/>
 
                 <Button
                     android:id="@+id/btnConsultarPlaca"
@@ -58,18 +58,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:text="Consultar Placa" />
+                    android:text="@string/consultar_placa" />
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tipo:" android:layout_marginTop="8dp" android:textColor="?android:attr/textColorSecondary"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/tipo" android:layout_marginTop="8dp" android:textColor="?android:attr/textColorSecondary"/>
                 <TextView android:id="@+id/tvTipo" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="--" android:padding="8dp" android:textSize="16sp" android:textColor="?android:attr/textColorPrimary"/>
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Marca:" android:layout_marginTop="8dp" android:textColor="?android:attr/textColorSecondary"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/marca" android:layout_marginTop="8dp" android:textColor="?android:attr/textColorSecondary"/>
                 <TextView android:id="@+id/tvMarca" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="--" android:padding="8dp" android:textSize="16sp" android:textColor="?android:attr/textColorPrimary"/>
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Modelo:" android:layout_marginTop="8dp" android:textColor="?android:attr/textColorSecondary"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/modelo" android:layout_marginTop="8dp" android:textColor="?android:attr/textColorSecondary"/>
                 <TextView android:id="@+id/tvModelo" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="--" android:padding="8dp" android:textSize="16sp" android:textColor="?android:attr/textColorPrimary"/>
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Color:" android:layout_marginTop="8dp" android:textColor="?android:attr/textColorSecondary"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/color" android:layout_marginTop="8dp" android:textColor="?android:attr/textColorSecondary"/>
                 <TextView android:id="@+id/tvColor" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="--" android:padding="8dp" android:textSize="16sp" android:textColor="?android:attr/textColorPrimary"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -93,14 +93,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2. Datos del Conductor"
+                    android:text="@string/_2_datos_del_conductor"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="?attr/colorPrimary"
                     android:layout_marginBottom="12dp"/>
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Número de Licencia:" android:textStyle="bold" android:textColor="?android:attr/textColorPrimary"/>
-                <EditText android:id="@+id/etLicencia" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Ej. L12345678" android:textColor="?android:attr/textColorPrimary" android:inputType="text"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/n_mero_de_licencia" android:textStyle="bold" android:textColor="?android:attr/textColorPrimary"/>
+                <EditText android:id="@+id/etLicencia" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="@string/ej_l12345678" android:textColor="?android:attr/textColorPrimary" android:inputType="text"/>
 
                 <Button
                     android:id="@+id/btnValidarLicencia"
@@ -108,20 +108,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:text="Validar Conductor" />
+                    android:text="@string/validar_conductor" />
 
                 <TextView
                     android:id="@+id/tvEstatusLicencia"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Estado: Pendiente de validación"
+                    android:text="@string/estado_pendiente_de_validaci_n"
                     android:textSize="14sp"
                     android:textStyle="italic"
                     android:textColor="?android:attr/textColorSecondary"
                     android:gravity="end"
                     android:layout_marginBottom="8dp"/>
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Nombre del Conductor:" android:layout_marginTop="8dp" android:textColor="?android:attr/textColorSecondary"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/nombre_del_conductor" android:layout_marginTop="8dp" android:textColor="?android:attr/textColorSecondary"/>
                 <TextView android:id="@+id/tvNombreConductor" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="--" android:padding="8dp" android:textSize="16sp" android:textColor="?android:attr/textColorPrimary"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -145,7 +145,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="3. Catálogo de Infracción"
+                    android:text="@string/_3_cat_logo_de_infracci_n"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="?attr/colorPrimary"
@@ -162,7 +162,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:padding="8dp"
-                    android:text="Artículo aplicable: --"
+                    android:text="@string/art_culo_aplicable"
                     android:textSize="14sp"
                     android:textColor="?android:attr/textColorSecondary"
                     android:background="?android:attr/selectableItemBackground" />
@@ -189,7 +189,7 @@
                     android:id="@+id/tvFechaInfraccion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="4. Fecha de la Infracción"
+                    android:text="@string/_4_fecha_de_la_infracci_n"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="?attr/colorPrimary"/>
@@ -224,7 +224,7 @@
                     android:id="@+id/textView8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="5. Geolocalización"
+                    android:text="@string/_5_geolocalizaci_n"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="?attr/colorPrimary"
@@ -256,7 +256,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:hint="Dirección del incidente"
+                    android:hint="@string/direcci_n_del_incidente"
                     android:textColor="?android:attr/textColorPrimary"
                     android:inputType="text"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -272,7 +272,7 @@
             android:layout_height="60dp"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="32dp"
-            android:text="SIGUIENTE"
+            android:text="@string/siguiente"
             android:textSize="16sp"
             android:textColor="@color/white"
             app:cornerRadius="8dp"
