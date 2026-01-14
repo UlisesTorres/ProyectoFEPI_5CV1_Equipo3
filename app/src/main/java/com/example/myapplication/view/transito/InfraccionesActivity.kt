@@ -129,48 +129,67 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
         }
     }
 
+    // ... (dentro de InfraccionesActivity.kt)
+
+    // En InfraccionesActivity.kt
+
     override fun mostrarCatalogoInfracciones(infracciones: List<TipoInfraccionDTO>) {
 
-        // 1. Extrae los nombres para el Spinner (esto se queda igual)
+        // 1. Extrae los nombres de la lista de objetos para mostrarlos en el Spinner
         val nombresInfracciones = infracciones.map { it.nombre ?: "Sin nombre" }
 
-        // 2. Configura el adaptador del Spinner (esto se queda igual)
+        // 2. ✅ ¡PASO CLAVE QUE FALTABA! Crea el adaptador con los nombres.
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, nombresInfracciones)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        // 3. ✅ ¡PASO CLAVE QUE FALTABA! Asigna el adaptador al Spinner.
         spinnerInfracciones.adapter = adapter
 
-        // 3. ¡LA LÓGICA CLAVE! Actualiza el listener del Spinner
+        // 4. Ahora sí, configura el listener.
         spinnerInfracciones.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                // Obtenemos el objeto COMPLETO de la infracción seleccionada
                 val infraccionSeleccionada = infracciones[position]
 
-                // Extraemos los datos del artículo relacionado
-                val articulo = infraccionSeleccionada.articulo?.data
+                // 1. Obtenemos la lista de artículos
+                val listaDeArticulos = infraccionSeleccionada.articulo?.data
 
-                if (articulo != null) {
-                    // Si el artículo existe, construimos el texto para mostrar
-                    val textoArticulo = """
+                // 2. Verificamos si la lista no es nula y no está vacía
+                if (!listaDeArticulos.isNullOrEmpty()) {
+                    // 3. Usamos StringBuilder para construir eficientemente el texto
+                    val textoCompleto = StringBuilder()
+
+                    // 4. Recorremos cada artículo en la lista
+                    listaDeArticulos.forEachIndexed { index, articulo ->
+                        textoCompleto.append(
+                            """
                         Ordenamiento: ${articulo.ordenamiento ?: "N/A"}
                         Artículo: ${articulo.articulo_numero ?: "N/A"}
-                        
                         Contenido:
-                        ${articulo.contenido ?: "No hay contenido disponible."}
-                    """.trimIndent()
+                        ${articulo.contenido ?: "No hay contenido."}
+                        """.trimIndent()
+                        )
+                        // Añadimos un separador si no es el último artículo
+                        if (index < listaDeArticulos.lastIndex) {
+                            textoCompleto.append("\n\n---\n\n")
+                        }
+                    }
 
-                    tvArticuloInfraccion.text = textoArticulo
+                    // 5. Asignamos el texto construido al TextView
+                    tvArticuloInfraccion.text = textoCompleto.toString()
+
                 } else {
-                    // Si no hay un artículo relacionado, mostramos un mensaje por defecto
-                    tvArticuloInfraccion.text = "No hay un artículo específico asociado a esta infracción."
+                    // Mensaje por defecto si no hay artículos asociados
+                    tvArticuloInfraccion.text = "No hay artículos específicos asociados a esta infracción."
                 }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Opcional: limpiar el TextView si no hay nada seleccionado
                 tvArticuloInfraccion.text = "Seleccione una infracción para ver el artículo."
             }
         }
     }
+
+
 
 
     // --- MÉTODOS DE CONTRATO (SIN TOCAR SEGÚN INSTRUCCIÓN) ---
