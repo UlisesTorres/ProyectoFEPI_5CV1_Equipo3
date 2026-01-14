@@ -19,6 +19,7 @@ import org.maplibre.android.maps.MapView
 import org.maplibre.android.maps.MapLibreMap
 import org.maplibre.android.annotations.MarkerOptions
 import org.maplibre.android.annotations.Marker
+import com.example.myapplication.model.transito.TipoInfraccionDTO
 
 class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
 
@@ -87,6 +88,7 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
         // 2. Inicializar MVP
         val model = EvidenciaModel(this)
         presenter = InfraccionesPresenter(this, model)
+        presenter.cargarCatalogoInfracciones()
 
         // 3. Configuración Inicial
         presenter.cargarFechaInfraccion()
@@ -153,6 +155,40 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
     }
+
+    override fun mostrarCatalogoInfracciones(lista: List<TipoInfraccionDTO>) {
+
+        val listaValida = lista.filter { !it.nombre.isNullOrBlank() }
+
+        val nombres = listaValida.map { it.nombre!! }
+
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            nombres
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerInfracciones.adapter = adapter
+
+        spinnerInfracciones.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val infraccion = listaValida[position]
+
+                    tvArticuloInfraccion.text =
+                        infraccion.descripcion ?: "Descripción no disponible"
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
+    }
+
 
     // --- MÉTODOS DE CONTRATO (SIN TOCAR SEGÚN INSTRUCCIÓN) ---
     private fun setupMapa(savedInstanceState: Bundle?) {

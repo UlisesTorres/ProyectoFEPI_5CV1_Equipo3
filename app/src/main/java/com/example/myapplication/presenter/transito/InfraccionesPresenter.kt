@@ -52,4 +52,17 @@ class InfraccionesPresenter(
         // ✅ AHORA SÍ, LA REAL
         view.navegarAEvidencia(placas, direccionActual!!, fechaISO)
     }
+
+    override fun cargarCatalogoInfracciones() {
+        model.obtenerCatalogoInfracciones(
+            onSuccess = { lista ->
+                view.mostrarCatalogoInfracciones(lista)
+            },
+            onError = {
+                view.mostrarMensaje("Error al cargar infracciones")
+            }
+        )
+    }
+
+
 }

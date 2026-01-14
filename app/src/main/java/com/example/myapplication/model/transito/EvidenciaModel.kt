@@ -2,10 +2,16 @@ package com.example.myapplication.model.transito
 
 import android.content.Context
 import android.location.Geocoder
+import com.example.myapplication.network.RetrofitSecureClient
 import org.maplibre.android.geometry.LatLng
 import java.io.File
 import java.io.FileOutputStream
 import java.util.Locale
+import com.example.myapplication.model.transito.TipoInfraccionDTO
+import com.example.myapplication.model.transito.TipoInfraccionResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class EvidenciaModel(private val context: Context) {
 
@@ -37,4 +43,31 @@ class EvidenciaModel(private val context: Context) {
             "Sin conexión: ${latLng.latitude}, ${latLng.longitude}"
         }
     }
+
+
+    fun obtenerCatalogoInfracciones(
+        onSuccess: (List<TipoInfraccionDTO>) -> Unit,
+        onError: () -> Unit
+    ) {
+        RetrofitSecureClient.infraccionApiService
+            .obtenerTiposInfraccion()
+            .enqueue(object : Callback<TipoInfraccionResponse> {
+
+                override fun onResponse(
+                    call: Call<TipoInfraccionResponse>,
+                    response: Response<TipoInfraccionResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        onSuccess(response.body()?.data ?: emptyList())
+                    } else {
+                        onError()
+                    }
+                }
+
+                override fun onFailure(call: Call<TipoInfraccionResponse>, t: Throwable) {
+                    onError()
+                }
+            })
+    }
+
 }
