@@ -7,6 +7,7 @@ import android.widget.Button
 import androidx.activity.ComponentActivity
 import com.example.myapplication.R
 import com.example.myapplication.view.configuracion.ConfiguracionActivity
+import com.google.android.material.button.MaterialButton
 
 class TransitoActivity : ComponentActivity(), TransitoContract.View {
 
@@ -31,6 +32,9 @@ class TransitoActivity : ComponentActivity(), TransitoContract.View {
         findViewById<Button>(R.id.btnInfraccionRegistrada).setOnClickListener {
             presenter.clickHistorial()
         }
+            findViewById<MaterialButton>(R.id.btnParquimetros).setOnClickListener {
+            presenter.clickParquimetros()
+        }
     }
 
     // Implementación de la navegación
@@ -48,5 +52,9 @@ class TransitoActivity : ComponentActivity(), TransitoContract.View {
 
     override fun navegarAHistorial() {
         startActivity(Intent(this, HistorialActivity::class.java))
+    }
+
+    override fun navegarAParquimetros() {
+        startActivity(Intent(this, EstatusActivity::class.java))
     }
 }

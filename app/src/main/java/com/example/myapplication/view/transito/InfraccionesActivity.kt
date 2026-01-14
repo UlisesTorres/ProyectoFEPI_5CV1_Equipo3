@@ -92,7 +92,6 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
 
         // 3. Configuración Inicial
         presenter.cargarFechaInfraccion()
-        setupSpinner()
         setupMapa(savedInstanceState)
 
         // 4. Listeners
@@ -130,63 +129,26 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
         }
     }
 
-    private fun setupSpinner() {
-        val infracciones = listOf("Exceso de velocidad", "Lugar prohibido", "Semáforo", "Celular")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, infracciones)
+    override fun mostrarCatalogoInfracciones(infracciones: List<TipoInfraccionDTO>) {
+        // 1. Extrae los nombres de la lista de objetos que te pasa el Presenter
+        val nombresInfracciones = infracciones.map { it.nombre ?: "Sin nombre" }
+
+        // 2. Crea el adaptador para el Spinner
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, nombresInfracciones)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        // 3. Asigna el adaptador a tu Spinner
         spinnerInfracciones.adapter = adapter
 
-        // Listener para actualizar el TextView del artículo según la selección
+        // 4. (Opcional pero recomendado) Mueve el listener aquí
         spinnerInfracciones.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val seleccionado = infracciones[position]
-
-                // Ejemplo de lógica para mostrar el artículo (Esto podría venir de tu Presenter/Model)
-                val textoArticulo = when (seleccionado) {
-                    "Exceso de velocidad" -> "Artículo 9: Circular a velocidad superior a la permitida."
-                    "Lugar prohibido" -> "Artículo 30: Estacionar en zonas restringidas o señalizadas."
-                    "Semáforo" -> "Artículo 10: No respetar la luz roja del semáforo."
-                    "Celular" -> "Artículo 38: Uso de dispositivos electrónicos al conducir."
-                    else -> "Artículo aplicable: --"
-                }
-                tvArticuloInfraccion.text = textoArticulo
+                // Ahora puedes obtener el objeto completo si lo necesitas
+                val infraccionSeleccionada = infracciones[position]
+                tvArticuloInfraccion.text = "Artículo aplicable: ${infraccionSeleccionada.clave ?: "--"}"
             }
-
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
-    }
-
-    override fun mostrarCatalogoInfracciones(lista: List<TipoInfraccionDTO>) {
-
-        val listaValida = lista.filter { !it.nombre.isNullOrBlank() }
-
-        val nombres = listaValida.map { it.nombre!! }
-
-        val adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_item,
-            nombres
-        )
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerInfracciones.adapter = adapter
-
-        spinnerInfracciones.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    val infraccion = listaValida[position]
-
-                    tvArticuloInfraccion.text =
-                        infraccion.descripcion ?: "Descripción no disponible"
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {}
-            }
     }
 
 

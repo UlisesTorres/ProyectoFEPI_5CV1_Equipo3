@@ -66,21 +66,37 @@
             app:iconPadding="15dp"
             app:iconSize="28dp" />
 
+        <!-- BOTÓN DE HISTORIAL MODIFICADO: Ahora tiene el mismo estilo que los demás -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnInfraccionRegistrada"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="75dp"
             android:layout_marginBottom="20dp"
             android:text="@string/ver_infracciones_registradas"
             android:textAllCaps="false"
             android:textSize="18sp"
+            android:textStyle="bold"
             app:cornerRadius="40dp"
             app:icon="@android:drawable/ic_menu_recent_history"
             app:iconGravity="textStart"
             app:iconPadding="15dp"
-            app:iconSize="28dp"
-            app:strokeWidth="2dp" />
+            app:iconSize="28dp" />
+
+        <!-- NUEVO BOTÓN AÑADIDO: Botón de Parquímetros -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnParquimetros"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_marginBottom="20dp"
+            android:text="Parquímetros"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:cornerRadius="40dp"
+            app:icon="@android:drawable/ic_menu_mylocation"
+            app:iconGravity="textStart"
+            app:iconPadding="15dp"
+            app:iconSize="28dp" />
 
     </LinearLayout>
 

@@ -46,26 +46,30 @@ class EvidenciaModel(private val context: Context) {
 
 
     fun obtenerCatalogoInfracciones(
+        // Cambia el onSuccess para que devuelva la lista completa de objetos
         onSuccess: (List<TipoInfraccionDTO>) -> Unit,
-        onError: () -> Unit
+        // Cambia el onError para que devuelva un mensaje de error detallado
+        onError: (String) -> Unit
     ) {
         RetrofitSecureClient.infraccionApiService
             .obtenerTiposInfraccion()
             .enqueue(object : Callback<TipoInfraccionResponse> {
-
                 override fun onResponse(
                     call: Call<TipoInfraccionResponse>,
                     response: Response<TipoInfraccionResponse>
                 ) {
                     if (response.isSuccessful) {
+                        // Pasamos la lista de DTOs directamente al presenter
                         onSuccess(response.body()?.data ?: emptyList())
                     } else {
-                        onError()
+                        // Si hay un error (403, 404, etc.), pasamos el código de error
+                        onError("Error del servidor: ${response.code()} - ${response.message()}")
                     }
                 }
 
                 override fun onFailure(call: Call<TipoInfraccionResponse>, t: Throwable) {
-                    onError()
+                    // Si falla la conexión, pasamos el mensaje de la excepción
+                    onError("Fallo de red: ${t.message}")
                 }
             })
     }

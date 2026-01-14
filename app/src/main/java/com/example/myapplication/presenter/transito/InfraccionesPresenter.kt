@@ -55,14 +55,15 @@ class InfraccionesPresenter(
 
     override fun cargarCatalogoInfracciones() {
         model.obtenerCatalogoInfracciones(
-            onSuccess = { lista ->
-                view.mostrarCatalogoInfracciones(lista)
+            onSuccess = { listaDto -> // Recibes la lista de objetos DTO
+                // ✅ PASA LA LISTA COMPLETA DIRECTAMENTE A LA VISTA
+                // Ya no conviertas a nombres aquí.
+                view.mostrarCatalogoInfracciones(listaDto)
             },
-            onError = {
-                view.mostrarMensaje("Error al cargar infracciones")
+            onError = { mensajeError ->
+                view.mostrarMensaje(mensajeError)
             }
         )
     }
-
 
 }

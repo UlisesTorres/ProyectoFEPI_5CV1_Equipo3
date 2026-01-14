@@ -1,17 +1,15 @@
-package com.example.myapplication.view.parquimetros
+package com.example.myapplication.view.transito
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.core.content.ContextCompat
 import com.example.myapplication.R
 import com.example.myapplication.model.parquimetros.EstatusModel
-import com.example.myapplication.presenter.parquimetro.EstatusPresenter
+import com.example.myapplication.presenter.transito.EstatusPresenter
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputEditText
 

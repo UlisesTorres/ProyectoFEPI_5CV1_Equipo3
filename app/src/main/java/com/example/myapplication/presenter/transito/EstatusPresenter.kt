@@ -1,8 +1,8 @@
-package com.example.myapplication.presenter.parquimetro
+package com.example.myapplication.presenter.transito
 
 import com.example.myapplication.model.parquimetros.EstatusModel
-import com.example.myapplication.model.parquimetros.TipoResultado // Importar el enum
-import com.example.myapplication.view.parquimetros.EstatusContract
+import com.example.myapplication.model.parquimetros.TipoResultado
+import com.example.myapplication.view.transito.EstatusContract
 
 class EstatusPresenter(
     private var view: EstatusContract.View?,

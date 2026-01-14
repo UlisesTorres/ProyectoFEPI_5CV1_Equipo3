@@ -8,6 +8,7 @@ import androidx.activity.ComponentActivity
 import com.example.myapplication.R
 import com.example.myapplication.presenter.parquimetro.ParquimetroPresenter
 import com.example.myapplication.view.configuracion.ConfiguracionActivity
+import com.example.myapplication.view.transito.EstatusActivity
 
 class ParquimetroActivity : ComponentActivity(), ParquimetroContract.View {
 

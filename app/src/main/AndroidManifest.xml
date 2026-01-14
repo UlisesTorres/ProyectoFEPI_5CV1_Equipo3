@@ -79,7 +79,7 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".view.parquimetros.ParquimetroActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".view.parquimetros.EstatusActivity"
+        <activity android:name=".view.transito.EstatusActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".view.configuracion.ConfiguracionActivity"
             android:screenOrientation="portrait"/>

@@ -6,6 +6,7 @@ interface TransitoContract {
         fun navegarAConfiguracion()
         fun navegarAGenerarArrastre()
         fun navegarAHistorial()
+        fun navegarAParquimetros()
     }
 
     interface Presenter {
@@ -13,5 +14,7 @@ interface TransitoContract {
         fun clickConfiguracion()
         fun clickGenerarArrastre()
         fun clickHistorial()
+        fun clickParquimetros()
+
     }
 }

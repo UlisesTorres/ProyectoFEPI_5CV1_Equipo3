@@ -1,4 +1,4 @@
-package com.example.myapplication.view.parquimetros
+package com.example.myapplication.view.transito
 
 interface EstatusContract {
     interface View {
