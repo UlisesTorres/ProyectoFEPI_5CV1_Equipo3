@@ -1,6 +1,6 @@
 package com.example.myapplication.presenter.transito
 
-import com.example.myapplication.model.infracciones.InfraccionesModel
+import com.example.myapplication.model.transito.EvidenciaModel
 import com.example.myapplication.view.transito.InfraccionesContract
 import org.maplibre.android.geometry.LatLng
 import java.text.SimpleDateFormat
@@ -9,7 +9,7 @@ import java.util.Locale
 
 class InfraccionesPresenter(
     private val view: InfraccionesContract.View,
-    private val model: InfraccionesModel,
+    private val model: EvidenciaModel,
     private var direccionActual: String? = null,
     private var fechaISO: String = ""
 ) : InfraccionesContract.Presenter { // <--- Es vital que herede del Contrato

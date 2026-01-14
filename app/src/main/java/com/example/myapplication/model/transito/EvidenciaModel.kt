@@ -1,11 +1,13 @@
-package com.example.myapplication.model.infracciones
+package com.example.myapplication.model.transito
 
 import android.content.Context
+import android.location.Geocoder
 import org.maplibre.android.geometry.LatLng
 import java.io.File
 import java.io.FileOutputStream
+import java.util.Locale
 
-class InfraccionesModel(private val context: Context) {
+class EvidenciaModel(private val context: Context) {
 
     // Mover aquí la lógica de getMapFilePath
     fun prepararMapaLocal(): String {
@@ -25,7 +27,7 @@ class InfraccionesModel(private val context: Context) {
     // Lógica del Geocoder
     fun obtenerDireccion(latLng: LatLng): String {
         return try {
-            val geocoder = android.location.Geocoder(context, java.util.Locale.getDefault())
+            val geocoder = Geocoder(context, Locale.getDefault())
             val direcciones = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
             if (!direcciones.isNullOrEmpty()) {
                 val d = direcciones[0]

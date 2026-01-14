@@ -1,19 +1,19 @@
-package com.example.myapplication.model.infracciones
+package com.example.myapplication.model.transito
 
 
 // 1. La respuesta principal que recibe Retrofit
-data class InfraccionResponse(
-    val data: List<InfraccionData>
+data class EvidenciaResponse(
+    val data: List<EvidenciaData>
 )
 
 // 2. El objeto que contiene el ID y los Atributos
-data class InfraccionData(
+data class EvidenciaData(
     val id: Int,
-    val attributes: InfraccionAttributes
+    val attributes: EvidenciaAttributes
 )
 
 // 3. Los datos reales que configuraste en Strapi
-data class InfraccionAttributes(
+data class EvidenciaAttributes(
     val folio: String,
     val placa: String,
     val motivo: String,

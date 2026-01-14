@@ -10,7 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.R
-import com.example.myapplication.model.infracciones.InfraccionesModel
+import com.example.myapplication.model.transito.EvidenciaModel
 import com.example.myapplication.presenter.transito.InfraccionesPresenter
 import org.maplibre.android.MapLibre
 import org.maplibre.android.camera.CameraUpdateFactory
@@ -85,7 +85,7 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
         val btnMyLocation = findViewById<ImageButton>(R.id.btnMyLocation)
 
         // 2. Inicializar MVP
-        val model = InfraccionesModel(this)
+        val model = EvidenciaModel(this)
         presenter = InfraccionesPresenter(this, model)
 
         // 3. Configuración Inicial
@@ -159,7 +159,7 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync { map ->
             this.mapLibreMap = map
-            val absolutePath = InfraccionesModel(this).prepararMapaLocal()
+            val absolutePath = EvidenciaModel(this).prepararMapaLocal()
             val styleJson = assets.open("cdmx_style.json").bufferedReader().use { it.readText() }
             val finalStyle = styleJson.replace("{file_path}", absolutePath)
             map.setStyle(org.maplibre.android.maps.Style.Builder().fromJson(finalStyle)) { style ->
