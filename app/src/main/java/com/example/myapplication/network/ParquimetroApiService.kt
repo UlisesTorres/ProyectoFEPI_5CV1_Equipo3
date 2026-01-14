@@ -1,6 +1,6 @@
 package com.example.myapplication.network
 
-import com.example.myapplication.model.parquimetros.ParquimetroResponse
+import com.example.myapplication.model.transito.ParquimetroResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

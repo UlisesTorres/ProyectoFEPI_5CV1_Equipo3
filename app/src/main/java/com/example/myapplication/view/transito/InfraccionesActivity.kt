@@ -130,24 +130,45 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
     }
 
     override fun mostrarCatalogoInfracciones(infracciones: List<TipoInfraccionDTO>) {
-        // 1. Extrae los nombres de la lista de objetos que te pasa el Presenter
+
+        // 1. Extrae los nombres para el Spinner (esto se queda igual)
         val nombresInfracciones = infracciones.map { it.nombre ?: "Sin nombre" }
 
-        // 2. Crea el adaptador para el Spinner
+        // 2. Configura el adaptador del Spinner (esto se queda igual)
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, nombresInfracciones)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-        // 3. Asigna el adaptador a tu Spinner
         spinnerInfracciones.adapter = adapter
 
-        // 4. (Opcional pero recomendado) Mueve el listener aquí
+        // 3. ¡LA LÓGICA CLAVE! Actualiza el listener del Spinner
         spinnerInfracciones.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                // Ahora puedes obtener el objeto completo si lo necesitas
+                // Obtenemos el objeto COMPLETO de la infracción seleccionada
                 val infraccionSeleccionada = infracciones[position]
-                tvArticuloInfraccion.text = "Artículo aplicable: ${infraccionSeleccionada.clave ?: "--"}"
+
+                // Extraemos los datos del artículo relacionado
+                val articulo = infraccionSeleccionada.articulo?.data
+
+                if (articulo != null) {
+                    // Si el artículo existe, construimos el texto para mostrar
+                    val textoArticulo = """
+                        Ordenamiento: ${articulo.ordenamiento ?: "N/A"}
+                        Artículo: ${articulo.articulo_numero ?: "N/A"}
+                        
+                        Contenido:
+                        ${articulo.contenido ?: "No hay contenido disponible."}
+                    """.trimIndent()
+
+                    tvArticuloInfraccion.text = textoArticulo
+                } else {
+                    // Si no hay un artículo relacionado, mostramos un mensaje por defecto
+                    tvArticuloInfraccion.text = "No hay un artículo específico asociado a esta infracción."
+                }
             }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Opcional: limpiar el TextView si no hay nada seleccionado
+                tvArticuloInfraccion.text = "Seleccione una infracción para ver el artículo."
+            }
         }
     }
 

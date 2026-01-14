@@ -85,7 +85,6 @@ class LoginPresenter(private val view: LoginContract.View) : LoginContract.Prese
             "Operador_Grua" -> view.navegarAGruas()
             "Supervisor" -> view.navegarASupervisor()
             "Gestor_Corralon" -> view.navegarAGestor()
-            "Operador_Parquimetro" -> view.navegarAParquimetro()
             else -> view.mostrarError("Rol no reconocido: $roleName")
         }
     }

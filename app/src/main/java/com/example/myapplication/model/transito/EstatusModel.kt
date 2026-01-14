@@ -1,5 +1,8 @@
-package com.example.myapplication.model.parquimetros
+package com.example.myapplication.model.transito
 
+import com.example.myapplication.model.transito.ParquimetroResponse
+import com.example.myapplication.model.transito.ResultadoConsulta
+import com.example.myapplication.model.transito.TipoResultado
 import com.example.myapplication.network.RetrofitSecureClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -28,17 +31,32 @@ class EstatusModel {
                         }
                     } else {
                         // Caso NO_ENCONTRADO
-                        callback(ResultadoConsulta(TipoResultado.NO_ENCONTRADO, "Placa no encontrada en el sistema."))
+                        callback(
+                            ResultadoConsulta(
+                                TipoResultado.NO_ENCONTRADO,
+                                "Placa no encontrada en el sistema."
+                            )
+                        )
                     }
                 } else {
                     // Caso ERROR_SERVIDOR
-                    callback(ResultadoConsulta(TipoResultado.ERROR_SERVIDOR, "Error del servidor: ${response.code()}"))
+                    callback(
+                        ResultadoConsulta(
+                            TipoResultado.ERROR_SERVIDOR,
+                            "Error del servidor: ${response.code()}"
+                        )
+                    )
                 }
             }
 
             override fun onFailure(call: Call<ParquimetroResponse>, t: Throwable) {
                 // Caso ERROR_RED
-                callback(ResultadoConsulta(TipoResultado.ERROR_RED, "Fallo de conexión: ${t.message}"))
+                callback(
+                    ResultadoConsulta(
+                        TipoResultado.ERROR_RED,
+                        "Fallo de conexión: ${t.message}"
+                    )
+                )
             }
         })
     }

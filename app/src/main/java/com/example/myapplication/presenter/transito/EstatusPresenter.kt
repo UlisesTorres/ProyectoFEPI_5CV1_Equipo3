@@ -1,7 +1,7 @@
 package com.example.myapplication.presenter.transito
 
-import com.example.myapplication.model.parquimetros.EstatusModel
-import com.example.myapplication.model.parquimetros.TipoResultado
+import com.example.myapplication.model.transito.EstatusModel
+import com.example.myapplication.model.transito.TipoResultado
 import com.example.myapplication.view.transito.EstatusContract
 
 class EstatusPresenter(

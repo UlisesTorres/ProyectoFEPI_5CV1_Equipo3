@@ -1,4 +1,4 @@
-package com.example.myapplication.model.parquimetros
+package com.example.myapplication.model.transito
 
 // Este enum nos ayudará a representar todos los posibles resultados de la consulta
 enum class TipoResultado {

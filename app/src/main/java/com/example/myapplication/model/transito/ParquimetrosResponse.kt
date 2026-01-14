@@ -1,4 +1,4 @@
-package com.example.myapplication.model.parquimetros
+package com.example.myapplication.model.transito
 
 import com.google.gson.annotations.SerializedName
 

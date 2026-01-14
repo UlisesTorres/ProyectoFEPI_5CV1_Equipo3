@@ -13,7 +13,6 @@ import com.example.myapplication.view.corralones.CorralonesActivity
 import com.example.myapplication.view.operador_grua.Operador_GruaActivity
 import com.example.myapplication.view.supervisor.SupervisorActivity
 import com.example.myapplication.view.transito.TransitoActivity
-import com.example.myapplication.view.parquimetros.ParquimetroActivity
 
 
 class LoginActivity : AppCompatActivity(), LoginContract.View {
@@ -76,10 +75,6 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
 
     override fun navegarAGestor() {
         startActivity(Intent(this, CorralonesActivity::class.java))
-    }
-
-    override fun navegarAParquimetro(){
-        startActivity(Intent(this, ParquimetroActivity::class.java))
     }
 
     override fun mostrarError(mensaje: String) {

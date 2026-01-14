@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.core.content.ContextCompat
 import com.example.myapplication.R
-import com.example.myapplication.model.parquimetros.EstatusModel
+import com.example.myapplication.model.transito.EstatusModel
 import com.example.myapplication.presenter.transito.EstatusPresenter
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputEditText
