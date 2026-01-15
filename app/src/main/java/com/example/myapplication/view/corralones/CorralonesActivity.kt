@@ -46,6 +46,7 @@ class CorralonesActivity : ComponentActivity(), CorralonContract.View {
         startActivity(Intent(this, HistorialCorralonActivity::class.java))
     }
 
+
     override fun navegarAConfiguracion() {
         startActivity(Intent(this, ConfiguracionActivity::class.java))
     }
