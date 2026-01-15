@@ -18,13 +18,14 @@ interface InfraccionesContract {
         fun mostrarDatosVehiculo(vehiculo: VehiculoDTO)
         fun mostrarDatosLicencia(licencia: LicenciaDTO)
         fun mostrarErrorConsulta(mensaje: String)
+        fun deshabilitarSpinnerInfracciones()
 
     }
 
     interface Presenter {
         fun cargarFechaInfraccion()
         fun procesarClickMapa(punto: LatLng)
-        fun validarYGuardarInfraccion(placas: String, infraccionTipo: String)
+        fun validarYGuardarInfraccion(placas: String, infraccionTipo: String, articuloInfraccion: String)
         fun cargarCatalogoInfracciones()
         fun onBotonConsultarPlacaPulsado(placa: String)
         fun onBotonValidarLicenciaPulsado(licencia: String)

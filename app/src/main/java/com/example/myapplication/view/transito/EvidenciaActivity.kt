@@ -1,5 +1,6 @@
 package com.example.myapplication.view.transito
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -7,6 +8,7 @@ import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.*
@@ -20,6 +22,7 @@ import androidx.work.*
 import com.example.myapplication.R
 import com.example.myapplication.database.AppDatabase
 import com.example.myapplication.database.InfraccionPendiente
+
 import com.example.myapplication.network.RetrofitSecureClient
 import com.example.myapplication.worker.SyncWorker
 import com.github.gcacace.signaturepad.views.SignaturePad
@@ -43,10 +46,13 @@ class EvidenciaActivity : ComponentActivity() {
     private var contadorFotos = 0
     private lateinit var fotoActualUri: Uri
     private val listaArchivosFotos = mutableListOf<File>()
-
+    private var usuarioId: Int = 0
     private var placas: String? = null
     private var direccion: String? = null
     private var fechaInfraccion: String? = null
+    private var tipoInfraccionesIds: List<Int> = emptyList()
+
+    private var articulosSeleccionadosIds: List<Int> = emptyList()
 
     // Launcher corregido: Solo agrega a la lista si la foto se tomó con éxito
     private val cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
@@ -60,14 +66,22 @@ class EvidenciaActivity : ComponentActivity() {
         }
     }
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_evidencia)
+
+        val prefs = getSharedPreferences("AUTH_PREFS", Context.MODE_PRIVATE)
+        usuarioId = prefs.getInt("user_id", 0)
 
         // Recuperar datos
         placas = intent.getStringExtra("PLACAS")
         direccion = intent.getStringExtra("DIRECCION")
         fechaInfraccion = intent.getStringExtra("FECHA")
+        tipoInfraccionesIds = intent.getIntegerArrayListExtra("TIPO_INFRACCION_IDS") ?: emptyList()
+        articulosSeleccionadosIds = intent.getIntegerArrayListExtra("ARTICULOS_IDS") ?: emptyList()
+
 
         // Inicializar vistas
         layoutFotos = findViewById(R.id.layoutFotosEvidencia)
@@ -217,6 +231,11 @@ class EvidenciaActivity : ComponentActivity() {
         return archivoFirma
     }
 
+    private fun formatearListaIdsParaStrapi(ids: List<Int>?): String {
+        return ids?.joinToString(prefix = "[", postfix = "]") { """{"id":$it}""" } ?: "[]"
+    }
+
+
     private fun enviarEvidenciaAlServidor(placas: String?, direccion: String?, firma: File, fotos: List<File>) {
         val progressDialog = AlertDialog.Builder(this)
             .setView(ProgressBar(this).apply { setPadding(40, 40, 40, 40) })
@@ -226,17 +245,41 @@ class EvidenciaActivity : ComponentActivity() {
             .show()
 
         val folio = "INF-${System.currentTimeMillis()}"
-        val jsonString = """
-            {
-              "data": {
-                "folio": "$folio",
-                "placa_vehiculo": "${placas ?: "S/P"}",
-                "ubicacion_infraccion": "${direccion ?: "N/D"}",
-                "fecha_infraccion": "$fechaInfraccion",
-                "medio_infraccion": "policia_transito"
-              }
-            }
-        """.trimIndent()
+
+        // Si son relaciones de uno a uno (solo un ID), toma el primero de la lista
+        val tipoInfraccionId = tipoInfraccionesIds.firstOrNull()
+        val articuloId = articulosSeleccionadosIds.firstOrNull()
+
+        // Crear el JSON con el formato correcto para Strapi
+        val jsonBody = JSONObject().apply {
+            put("data", JSONObject().apply {
+                put("folio", folio)
+                put("placa_vehiculo", placas ?: "S/P")
+                put("ubicacion_infraccion", direccion ?: "N/D")
+                put("fecha_infraccion", fechaInfraccion)
+                put("medio_infraccion", "policia_transito")
+                put("validacion",0)
+                put("oficial_id", usuarioId.toString())
+
+                // Para relaciones de UNO a uno/muchos (usar ID directo)
+                if (tipoInfraccionId != null) {
+                    put("tipo_infraccion_id", tipoInfraccionId)
+                } else {
+                    // Puedes dejarlo null o no incluirlo
+                    put("tipo_infraccion_id", JSONObject.NULL)
+                }
+
+                if (articuloId != null) {
+                    put("articulo_id", articuloId)
+                } else {
+                    put("articulo_id", JSONObject.NULL)
+                }
+            })
+        }
+
+        // Convertir a String y log para debug
+        val jsonString = jsonBody.toString()
+        Log.d("JSON_ENVIADO", "JSON a enviar: $jsonString")
 
         val body = jsonString.toRequestBody("application/json".toMediaTypeOrNull())
 
@@ -244,27 +287,123 @@ class EvidenciaActivity : ComponentActivity() {
             override fun onResponse(call: Call<ResponseBody>, response: retrofit2.Response<ResponseBody>) {
                 progressDialog.dismiss()
                 if (response.isSuccessful) {
-                    val json = JSONObject(response.body()!!.string())
-                    val infraccionId = json.getJSONObject("data").getInt("id")
-                    subirArchivo(infraccionId, firma, "firma_infractor")
-                    fotos.forEach { foto -> subirArchivo(infraccionId, foto, "evidencia_infraccion") }
-                    finalizarActividad("Infracción enviada correctamente")
+                    try {
+                        val json = JSONObject(response.body()!!.string())
+                        val infraccionId = json.getJSONObject("data").getInt("id")
+                        subirArchivo(infraccionId, firma, "firma_infractor")
+                        fotos.forEach { foto -> subirArchivo(infraccionId, foto, "evidencia_infraccion") }
+                        finalizarActividad("Infracción enviada correctamente")
+                    } catch (e: Exception) {
+                        Log.e("UPLOAD_ERROR", "Error parsing response", e)
+                        Toast.makeText(this@EvidenciaActivity, "Error al procesar respuesta", Toast.LENGTH_LONG).show()
+                    }
                 } else {
-                    guardarOffline(folio, placas, direccion, firma, fotos)
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("UPLOAD_ERROR", "Error: ${response.code()} - $errorBody")
+
+                    // Si todavía hay error, probar con formato de relación
+                    if (response.code() == 400) {
+                        // Probar con formato de relación (objeto con id)
+                        enviarConFormatoRelacion(progressDialog, folio, placas, direccion, firma, fotos)
+                    } else {
+                        Toast.makeText(this@EvidenciaActivity, "Error ${response.code()} al enviar datos", Toast.LENGTH_LONG).show()
+                    }
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 progressDialog.dismiss()
-                guardarOffline(folio, placas, direccion, firma, fotos)
+                Log.e("UPLOAD_ERROR", "Network failure", t)
+                Toast.makeText(this@EvidenciaActivity, "Error de conexión", Toast.LENGTH_LONG).show()
+                //guardarOffline(folio, tipoInfraccionesIds, articulosSeleccionadosIds, placas, direccion, firma, fotos)
             }
         })
     }
 
-    private fun guardarOffline(folio: String, placas: String?, direccion: String?, firma: File, fotos: List<File>) {
+    private fun enviarConFormatoRelacion(
+        progressDialog: AlertDialog,
+        folio: String,
+        placas: String?,
+        direccion: String?,
+        firma: File,
+        fotos: List<File>
+    ) {
+        val tipoInfraccionId = tipoInfraccionesIds.firstOrNull()
+        val articuloId = articulosSeleccionadosIds.firstOrNull()
+
+        val jsonBody = JSONObject().apply {
+            put("data", JSONObject().apply {
+                put("folio", folio)
+                put("placa_vehiculo", placas ?: "S/P")
+                put("ubicacion_infraccion", direccion ?: "N/D")
+                put("fecha_infraccion", fechaInfraccion)
+                put("medio_infraccion", "policia_transito")
+
+                // Formato como objeto de relación
+                if (tipoInfraccionId != null) {
+                    put("tipo_infraccion_id", JSONObject().apply {
+                        put("id", tipoInfraccionId)
+                    })
+                }
+
+                if (articuloId != null) {
+                    put("articulo_id", JSONObject().apply {
+                        put("id", articuloId)
+                    })
+                }
+            })
+        }
+
+        val jsonString = jsonBody.toString()
+        Log.d("JSON_ENVIADO_ALT", "JSON alternativo: $jsonString")
+
+        val body = jsonString.toRequestBody("application/json".toMediaTypeOrNull())
+
+        RetrofitSecureClient.infraccionApiService.crearInfraccion(body).enqueue(object : retrofit2.Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: retrofit2.Response<ResponseBody>) {
+                progressDialog.dismiss()
+                if (response.isSuccessful) {
+                    try {
+                        val json = JSONObject(response.body()!!.string())
+                        val infraccionId = json.getJSONObject("data").getInt("id")
+                        subirArchivo(infraccionId, firma, "firma_infractor")
+                        fotos.forEach { foto -> subirArchivo(infraccionId, foto, "evidencia_infraccion") }
+                        finalizarActividad("Infracción enviada correctamente")
+                    } catch (e: Exception) {
+                        Log.e("UPLOAD_ERROR", "Error parsing response", e)
+                        Toast.makeText(this@EvidenciaActivity, "Error al procesar respuesta", Toast.LENGTH_LONG).show()
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("UPLOAD_ERROR", "Error alternativo: ${response.code()} - $errorBody")
+
+                    // Guardar offline como último recurso
+                    guardarOffline(folio, tipoInfraccionesIds, articulosSeleccionadosIds, placas, direccion, firma, fotos)
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                progressDialog.dismiss()
+                guardarOffline(folio, tipoInfraccionesIds, articulosSeleccionadosIds, placas, direccion, firma, fotos)
+            }
+        })
+    }
+
+    private fun guardarOffline(
+        folio: String,
+        tipoInfraccionesIds: List<Int>,
+        articulosSeleccionadosIds: List<Int>,
+        placas: String?,
+        direccion: String?,
+        firma: File,
+        fotos: List<File>
+    ) {
         val rutasFotos = fotos.joinToString(",") { it.absolutePath }
-        val infraccion = InfraccionPendiente(
+
+        val infraccionPendiente = InfraccionPendiente(
             folio = folio,
+            tipoInfraccionId = tipoInfraccionesIds,
+            articuloId = articulosSeleccionadosIds,
             placa = placas ?: "S/P",
             ubicacion = direccion ?: "N/D",
             fecha = fechaInfraccion ?: "",
@@ -273,8 +412,12 @@ class EvidenciaActivity : ComponentActivity() {
         )
 
         lifecycleScope.launch(Dispatchers.IO) {
-            AppDatabase.getDatabase(applicationContext).infraccionDao().insertar(infraccion)
+            AppDatabase.getDatabase(applicationContext)
+                .infraccionDao()
+                .insertar(infraccionPendiente)
+
             programarSincronizacion()
+
             withContext(Dispatchers.Main) {
                 finalizarActividad("Sin conexión. Se guardó localmente.")
             }

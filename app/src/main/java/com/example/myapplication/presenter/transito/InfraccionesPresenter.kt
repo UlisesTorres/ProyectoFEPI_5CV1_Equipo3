@@ -37,11 +37,8 @@ class InfraccionesPresenter(
         view.actualizarDireccionEnPantalla(direccionActual!!)
     }
 
-    override fun validarYGuardarInfraccion(placas: String, infraccionTipo: String) {
-        if (placas.isEmpty()) {
-            view.mostrarMensaje("¡Error! Debes ingresar las placas antes de continuar")
-            return
-        }
+    override fun validarYGuardarInfraccion(placas: String, infraccionTipo: String, articuloInfraccion: String) {
+
 
         if (direccionActual.isNullOrEmpty()) {
             view.mostrarMensaje("Debes seleccionar la ubicación en el mapa")
@@ -50,19 +47,17 @@ class InfraccionesPresenter(
 
         view.ocultarTeclado()
 
-        // ✅ AHORA SÍ, LA REAL
         view.navegarAEvidencia(placas, direccionActual!!, fechaISO)
     }
 
     override fun cargarCatalogoInfracciones() {
         model.obtenerCatalogoInfracciones(
-            onSuccess = { listaDto -> // Recibes la lista de objetos DTO
-                // ✅ PASA LA LISTA COMPLETA DIRECTAMENTE A LA VISTA
-                // Ya no conviertas a nombres aquí.
+            onSuccess = { listaDto ->
                 view.mostrarCatalogoInfracciones(listaDto)
             },
             onError = { mensajeError ->
                 view.mostrarMensaje(mensajeError)
+                view.deshabilitarSpinnerInfracciones()
             }
         )
     }

@@ -56,6 +56,9 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
     private var placaValida = false
     private var licenciaValida = false
 
+    private var tipoInfraccionSeleccionadoId: Int? = null
+    private var articulosSeleccionadosIds: List<Int> = emptyList()
+
     // MVP
     private lateinit var presenter: InfraccionesContract.Presenter
 
@@ -132,7 +135,8 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
             }
             val placas = etPlacas.text.toString()
             val tipoInfraccion = spinnerInfracciones.selectedItem.toString()
-            presenter.validarYGuardarInfraccion(placas, tipoInfraccion)
+            val articuloInfraccion = tvArticuloInfraccion.text.toString()
+            presenter.validarYGuardarInfraccion(placas, tipoInfraccion, articuloInfraccion)
         }
 
         btnMyLocation.setOnClickListener {
@@ -147,11 +151,6 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
 
     }
 
-
-
-    // ... (dentro de InfraccionesActivity.kt)
-
-    // En InfraccionesActivity.kt
 
     override fun mostrarDatosVehiculo(vehiculo: VehiculoDTO) {
         placaValida = true
@@ -188,55 +187,71 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
 
     override fun mostrarCatalogoInfracciones(infracciones: List<TipoInfraccionDTO>) {
 
+        if (infracciones.isEmpty()) {
+            deshabilitarSpinnerInfracciones()
+            return
+        }
+
         val nombresInfracciones = infracciones.map { it.nombre ?: "Sin nombre" }
 
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, nombresInfracciones)
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            nombresInfracciones
+        )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
         spinnerInfracciones.adapter = adapter
+        spinnerInfracciones.isEnabled = true
 
+        spinnerInfracciones.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
 
-        spinnerInfracciones.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val infraccionSeleccionada = infracciones[position]
+                    val infraccionSeleccionada = infracciones[position]
+                    val listaDeArticulos = infraccionSeleccionada.articulo_id // <- lista directa ahora
+                    tipoInfraccionSeleccionadoId = infraccionSeleccionada.id
 
-                // 1. Obtenemos la lista de artículos
-                val listaDeArticulos = infraccionSeleccionada.articulo?.data
-
-                // 2. Verificamos si la lista no es nula y no está vacía
-                if (!listaDeArticulos.isNullOrEmpty()) {
-                    // 3. Usamos StringBuilder para construir eficientemente el texto
-                    val textoCompleto = StringBuilder()
-
-                    // 4. Recorremos cada artículo en la lista
-                    listaDeArticulos.forEachIndexed { index, articulo ->
-                        textoCompleto.append(
-                            """
-                        Ordenamiento: ${articulo.ordenamiento ?: "N/A"}
-                        Artículo: ${articulo.articulo_numero ?: "N/A"}
-                        Contenido:
-                        ${articulo.contenido ?: "No hay contenido."}
-                        """.trimIndent()
-                        )
-                        // Añadimos un separador si no es el último artículo
-                        if (index < listaDeArticulos.lastIndex) {
-                            textoCompleto.append("\n\n---\n\n")
+                    if (!listaDeArticulos.isNullOrEmpty()) {
+                        val textoCompleto = StringBuilder()
+                        listaDeArticulos.forEachIndexed { index, articulo ->
+                            textoCompleto.append(
+                                """
+                            Ordenamiento: ${articulo.ordenamiento ?: "N/A"}
+                            Artículo: ${articulo.articulo_numero ?: "N/A"}
+                            Contenido:
+                            ${articulo.contenido ?: "No hay contenido."}
+                            Ambito: ${articulo.ambito ?: "N/A"}
+                            Fecha publicación: ${articulo.fecha_publicacion ?: "N/A"}
+                            Fecha última reforma: ${articulo.fecha_ultima_reforma ?: "N/A"}
+                            """.trimIndent()
+                            )
+                            if (index < listaDeArticulos.lastIndex) {
+                                textoCompleto.append("\n\n---\n\n")
+                            }
                         }
+                        tvArticuloInfraccion.text = textoCompleto.toString()
+                        articulosSeleccionadosIds = listaDeArticulos.map { it.id }
+                    } else {
+                        tvArticuloInfraccion.text =
+                            "No hay artículos específicos asociados a esta infracción."
                     }
 
-                    // 5. Asignamos el texto construido al TextView
-                    tvArticuloInfraccion.text = textoCompleto.toString()
+                }
 
-                } else {
-                    // Mensaje por defecto si no hay artículos asociados
-                    tvArticuloInfraccion.text = "No hay artículos específicos asociados a esta infracción."
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    tvArticuloInfraccion.text =
+                        "Seleccione una infracción para ver el artículo."
                 }
             }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                tvArticuloInfraccion.text = "Seleccione una infracción para ver el artículo."
-            }
-        }
     }
+
+
 
     private fun setupMapa(savedInstanceState: Bundle?) {
         mapView.onCreate(savedInstanceState)
@@ -291,6 +306,10 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
         intent.putExtra("PLACAS", placas)
         intent.putExtra("DIRECCION", direccion)
         intent.putExtra("FECHA", fechaISO)
+        tipoInfraccionSeleccionadoId?.let {
+            intent.putIntegerArrayListExtra("TIPO_INFRACCION_IDS", arrayListOf(it))
+        }
+        intent.putIntegerArrayListExtra("ARTICULOS_IDS", ArrayList(articulosSeleccionadosIds))
         startActivity(intent)
     }
 
@@ -310,6 +329,19 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
     override fun bloquearEnvio() {
         findViewById<Button>(R.id.btnSiguiente).isEnabled = false
     }
+
+    override fun deshabilitarSpinnerInfracciones() {
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            listOf("No disponible")
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        spinnerInfracciones.adapter = adapter
+        spinnerInfracciones.isEnabled = false
+    }
+
 
     override fun ocultarTeclado() {
         val view = this.currentFocus

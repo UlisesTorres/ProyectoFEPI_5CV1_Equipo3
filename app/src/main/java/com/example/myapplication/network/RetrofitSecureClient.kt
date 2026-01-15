@@ -66,4 +66,8 @@ object RetrofitSecureClient {
         retrofit.create(ConsultaApiService::class.java)
     }
 
+    val tipoInfraccionApiService: TipoInfraccionApiService by lazy {
+        retrofit.create(TipoInfraccionApiService::class.java)
+    }
+
 }

@@ -7,6 +7,8 @@ import androidx.room.PrimaryKey
 data class InfraccionPendiente(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val folio: String,
+    val tipoInfraccionId: List<Int>,
+    val articuloId: List<Int>,
     val placa: String,
     val ubicacion: String,
     val fecha: String,
