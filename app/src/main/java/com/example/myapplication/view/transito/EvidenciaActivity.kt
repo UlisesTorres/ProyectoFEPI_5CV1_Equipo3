@@ -315,7 +315,7 @@ class EvidenciaActivity : ComponentActivity() {
                 progressDialog.dismiss()
                 Log.e("UPLOAD_ERROR", "Network failure", t)
                 Toast.makeText(this@EvidenciaActivity, "Error de conexión", Toast.LENGTH_LONG).show()
-                //guardarOffline(folio, tipoInfraccionesIds, articulosSeleccionadosIds, placas, direccion, firma, fotos)
+                guardarOffline(folio, tipoInfraccionesIds, articulosSeleccionadosIds, placas, direccion, firma, fotos)
             }
         })
     }
