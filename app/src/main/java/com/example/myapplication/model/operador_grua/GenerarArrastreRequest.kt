@@ -21,9 +21,12 @@ data class OrdenArrastreData(
     @SerializedName("grua_identificador")
     val gruaIdentificador: String,
 
-    @SerializedName("infraccion_id") // <<< CORREGIDO (de vuelta al nombre original)
-    val infraccionId: Int
+    // 👇 RELACIÓN STRAPI V5 (documentId)
+
+    @SerializedName("infraccion_id")
+    val infraccionId: Int,
 )
+
 
 // --- Modelo para la respuesta (si es necesario) ---
 data class OrdenArrastreResponse(

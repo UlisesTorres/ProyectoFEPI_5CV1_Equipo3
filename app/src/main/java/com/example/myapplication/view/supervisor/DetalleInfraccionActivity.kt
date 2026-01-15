@@ -1,4 +1,4 @@
-package com.example.myapplication.view.transito
+package com.example.myapplication.view.supervisor
 
 import android.os.Bundle
 import android.view.View
@@ -22,12 +22,15 @@ class DetalleInfraccionActivity : AppCompatActivity() {
 
     private var infraccionId: Int = -1
     private val BASE_URL_IMAGES = "https://apisistemainfracciones-production.up.railway.app"
+    private var documentId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detalle_infraccion)
 
         // 1. Recibir datos
+
+        documentId = intent.getStringExtra("EXTRA_DOCUMENT_ID")
         infraccionId = intent.getIntExtra("EXTRA_ID", -1)
         val folio = intent.getStringExtra("EXTRA_FOLIO") ?: "N/A"
         val placa = intent.getStringExtra("EXTRA_PLACA") ?: "N/A"
@@ -35,6 +38,7 @@ class DetalleInfraccionActivity : AppCompatActivity() {
         val ubicacion = intent.getStringExtra("EXTRA_UBICACION") ?: "N/A"
         val fotosUrls = intent.getStringArrayListExtra("EXTRA_FOTOS") ?: arrayListOf()
         val firmaUrl = intent.getStringExtra("EXTRA_FIRMA")
+
 
         // 2. Vincular vistas
         findViewById<TextView>(R.id.tv_detalle_folio).text = "Folio: $folio"
@@ -86,7 +90,7 @@ class DetalleInfraccionActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         val msj = if (estado == 1) "Aceptada" else "Rechazada"
                         Toast.makeText(this@DetalleInfraccionActivity, "Infracción $msj", Toast.LENGTH_SHORT).show()
-                        
+
                         // Ocultar botones tras validar
                         findViewById<LinearLayout>(R.id.layout_botones_validacion).visibility = View.GONE
                         val tvEstatus = findViewById<TextView>(R.id.tv_estatus_validacion)

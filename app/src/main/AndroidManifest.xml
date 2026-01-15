@@ -85,7 +85,7 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".view.transito.SeleccionarInfraccionActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".view.transito.DetalleInfraccionActivity"
+        <activity android:name=".view.supervisor.DetalleInfraccionActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".view.supervisor.SupervisorHistorialActivity"
             android:screenOrientation="portrait"/>

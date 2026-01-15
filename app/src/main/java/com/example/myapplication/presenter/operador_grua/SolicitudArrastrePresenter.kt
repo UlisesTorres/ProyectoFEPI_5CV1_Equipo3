@@ -1,6 +1,5 @@
 package com.example.myapplication.presenter.operador_grua
 
-// --- CORRECCIÓN #1: Cambiamos la importación ---
 import com.example.myapplication.model.operador_grua.GenerarArrastreAttributes
 import com.example.myapplication.model.operador_grua.SolicitudArrastreModel
 import com.example.myapplication.view.operador_grua.SolicitudArrastreContract
@@ -13,12 +12,9 @@ class SolicitudArrastrePresenter(
     override fun cargarSolicitudesNuevas() {
         view?.mostrarCargando()
 
-        // --- CORRECCIÓN #2: El tipo de 'lista' ahora es el correcto ---
-        // El callback ahora nos da una lista de 'GenerarArrastreAttributes'.
         model.obtenerPeticionesPendientes { lista, exito ->
             view?.ocultarCargando()
             if (exito && lista != null) {
-                // Pasamos la lista correcta a la vista.
                 view?.mostrarSolicitudes(lista)
             } else {
                 view?.mostrarError("No hay solicitudes de arrastre en este momento")
@@ -26,9 +22,27 @@ class SolicitudArrastrePresenter(
         }
     }
 
-    // --- CORRECCIÓN #3: Actualizamos el tipo del parámetro ---
+    // CORRECCIÓN: Revisa cómo está definido en tu contrato
+    // Si el contrato no tiene este mé
+    // Si el contrato lo tiene con diferente firma, ajústala
     override fun aceptarSolicitud(solicitud: GenerarArrastreAttributes) {
-        view?.mostrarError("Funcionalidad 'Aceptar' no implementada aún.")
+        // Si el contrato requiere un objeto GenerarArrastreAttributes
+        view?.mostrarCargando()
+
+        model.aceptarSolicitudDeArrastre(
+            idArrastre = solicitud.id,
+            documentId = solicitud.documentId,
+            idInfraccion = solicitud.infraccion_id?.id ?: -1,
+            operadorGrua = "Operador Grua",  // Deberías obtener esto de SharedPreferences
+            gruaIdentificador = "Grua-01"    // Deberías obtener esto de SharedPreferences
+        ) { exito ->
+            view?.ocultarCargando()
+            if (exito) {
+                view?.confirmarAceptacion("Solicitud ${solicitud.folio} aceptada")
+            } else {
+                view?.mostrarError("No se pudo aceptar la solicitud")
+            }
+        }
     }
 
     override fun destruir() {

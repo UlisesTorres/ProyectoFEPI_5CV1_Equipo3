@@ -8,11 +8,22 @@ class DetalleSolicitudPresenter(
     private val model: SolicitudArrastreModel
 ) : DetalleSolicitudContract.Presenter {
 
-    // --- CORRECCIÓN: La firma de la función ahora coincide con el contrato ---
-    override fun aceptarSolicitud(idArrastre: Int, operadorGrua: String, gruaIdentificador: String) {
+    override fun aceptarSolicitud(
+        idArrastre: Int,
+        documentId: String,  // Nuevo parámetro
+        idInfraccion: Int,
+        operadorGrua: String,
+        gruaIdentificador: String
+    ) {
         view?.mostrarCargando()
-        // --- CORRECCIÓN: Pasamos los nuevos parámetros al modelo ---
-        model.aceptarSolicitudDeArrastre(idArrastre, operadorGrua, gruaIdentificador) { exito ->
+
+        model.aceptarSolicitudDeArrastre(
+            idArrastre = idArrastre,
+            documentId = documentId,
+            idInfraccion = idInfraccion,
+            operadorGrua = operadorGrua,
+            gruaIdentificador = gruaIdentificador
+        ) { exito ->
             view?.ocultarCargando()
             if (exito) {
                 view?.mostrarConfirmacion("Solicitud aceptada con éxito")

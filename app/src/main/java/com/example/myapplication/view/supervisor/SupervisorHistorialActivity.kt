@@ -13,7 +13,7 @@ import com.example.myapplication.R
 import com.example.myapplication.model.transito.HistorialInfraccionesModel
 import com.example.myapplication.model.transito.InfraccionData
 import com.example.myapplication.presenter.transito.HistorialInfraccionesPresenter
-import com.example.myapplication.view.transito.DetalleInfraccionActivity
+import com.example.myapplication.view.supervisor.DetalleInfraccionActivity
 import com.example.myapplication.view.transito.HistorialInfraccionesContract
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
