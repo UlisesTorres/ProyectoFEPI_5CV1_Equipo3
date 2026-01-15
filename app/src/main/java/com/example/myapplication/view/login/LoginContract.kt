@@ -14,9 +14,11 @@ interface LoginContract {
         fun navegarASupervisor()
         fun navegarAGestor()
         fun mostrarError(mensaje: String)
+        fun mostrarAlertaRecuperar()
     }
 
     interface Presenter {
         fun intentarLogin(usuario: String, pass: String)
+        fun clickRecuperarPassword()
     }
 }

@@ -88,4 +88,10 @@ class LoginPresenter(private val view: LoginContract.View) : LoginContract.Prese
             else -> view.mostrarError("Rol no reconocido: $roleName")
         }
     }
+
+    override fun clickRecuperarPassword() {
+        // El presenter decide qué debe pasar
+        view.mostrarAlertaRecuperar()
+    }
+
 }

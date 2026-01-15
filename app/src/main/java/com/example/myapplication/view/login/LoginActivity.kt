@@ -29,6 +29,9 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
         val btnIS = findViewById<Button>(R.id.btnIniciarSesion)
         val etUser = findViewById<EditText>(R.id.etUsuario)
         val etPass = findViewById<EditText>(R.id.etPassword)
+        val btnRP = findViewById<Button>(R.id.btnRecuperarPassword)
+
+
 
         btnIS.setOnClickListener {
             val user = etUser.text.toString()
@@ -39,6 +42,10 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
             } else {
                 mostrarError("Por favor, llena todos los campos")
             }
+        }
+
+       btnRP.setOnClickListener {
+            presenter.clickRecuperarPassword()
         }
     }
 
@@ -79,5 +86,15 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
 
     override fun mostrarError(mensaje: String) {
         Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun mostrarAlertaRecuperar() {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Recuperar contraseña")
+            .setMessage("Para restablecer su contraseña, por favor contacte al administrador del sistema.")
+            .setPositiveButton("Entendido") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 }
