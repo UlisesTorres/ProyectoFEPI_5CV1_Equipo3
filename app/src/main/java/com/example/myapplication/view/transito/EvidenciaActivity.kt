@@ -400,10 +400,13 @@ class EvidenciaActivity : ComponentActivity() {
     ) {
         val rutasFotos = fotos.joinToString(",") { it.absolutePath }
 
+        val tipoInfraccionId = tipoInfraccionesIds.firstOrNull() ?: 0
+        val articuloId = articulosSeleccionadosIds.firstOrNull() ?: 0
+
         val infraccionPendiente = InfraccionPendiente(
             folio = folio,
-            tipoInfraccionId = tipoInfraccionesIds,
-            articuloId = articulosSeleccionadosIds,
+            tipoInfraccionId = tipoInfraccionId,
+            articuloId = articuloId,
             placa = placas ?: "S/P",
             ubicacion = direccion ?: "N/D",
             fecha = fechaInfraccion ?: "",
@@ -423,6 +426,7 @@ class EvidenciaActivity : ComponentActivity() {
             }
         }
     }
+
 
     private fun programarSincronizacion() {
         val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()

@@ -1,11 +1,11 @@
 package com.example.myapplication.database
 
 import android.content.Context
-import androidx.privacysandbox.tools.core.generator.build
-import androidx.room.Databaseimport androidx.room.Room
+import androidx.room.Database
+import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@androidx.room.Database(entities = [InfraccionPendiente::class], version = 1)
+@androidx.room.Database(entities = [InfraccionPendiente::class], version = 10)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun infraccionDao(): InfraccionDao
 
@@ -19,7 +19,8 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "infracciones_db"
-                ).build()
+                )
+                    .build()
                 INSTANCE = instance
                 instance
             }

@@ -1,14 +1,22 @@
 package com.example.myapplication.database
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "infracciones_pendientes")
 data class InfraccionPendiente(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+
     val folio: String,
-    val tipoInfraccionId: List<Int>,
-    val articuloId: List<Int>,
+
+    @ColumnInfo(name = "tipo_infraccion_id")
+    val tipoInfraccionId: Int,
+
+    @ColumnInfo(name = "articulo_id")
+    val articuloId: Int,
+
     val placa: String,
     val ubicacion: String,
     val fecha: String,
