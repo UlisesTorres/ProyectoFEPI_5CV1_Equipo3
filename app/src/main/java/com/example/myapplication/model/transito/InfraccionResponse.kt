@@ -14,6 +14,9 @@ data class InfraccionData(
     @SerializedName("id")
     val id: Int? = null,
 
+    @SerializedName("documentId")  // ¡NUEVO! Necesario para Strapi v5
+    val documentId: String?,
+
     @SerializedName("folio")
     val folio: String? = null,
 

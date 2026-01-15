@@ -20,9 +20,9 @@ interface InfraccionApiService {
         @Query("populate") populate: String = "*"
     ): Call<InfraccionesResponse>
 
-    @PUT("api/infraccions/{id}")
+    @PUT("api/infraccions/{documentId}")
     fun actualizarInfraccion(
-        @Path("id") id: Int,
+        @Path("documentId") documentId: String,  // Cambiado de Int a String
         @Body body: RequestBody
     ): Call<ResponseBody>
 

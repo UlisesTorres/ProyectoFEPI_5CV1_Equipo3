@@ -1,6 +1,5 @@
 package com.example.myapplication.view.supervisor
 
-import com.example.myapplication.view.transito.HistorialAdapter
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -13,7 +12,7 @@ import com.example.myapplication.R
 import com.example.myapplication.model.transito.HistorialInfraccionesModel
 import com.example.myapplication.model.transito.InfraccionData
 import com.example.myapplication.presenter.transito.HistorialInfraccionesPresenter
-import com.example.myapplication.view.supervisor.DetalleInfraccionActivity
+import com.example.myapplication.view.transito.HistorialAdapter
 import com.example.myapplication.view.transito.HistorialInfraccionesContract
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
@@ -57,12 +56,14 @@ class SupervisorHistorialActivity : ComponentActivity(), HistorialInfraccionesCo
 
     override fun navegarADetalleInfraccion(infraccion: InfraccionData) {
         val intent = Intent(this, DetalleInfraccionActivity::class.java).apply {
+            // ¡IMPORTANTE! Pasar documentId
+            putExtra("EXTRA_DOCUMENT_ID", infraccion.documentId ?: "")
             putExtra("EXTRA_ID", infraccion.id ?: -1)
             putExtra("EXTRA_FOLIO", infraccion.folio ?: "S/F")
             putExtra("EXTRA_PLACA", infraccion.placa_vehiculo ?: "S/P")
             putExtra("EXTRA_FECHA", infraccion.fecha_infraccion ?: "")
             putExtra("EXTRA_UBICACION", infraccion.ubicacion_infraccion ?: "N/D")
-            
+
             val fotosUrls = mutableListOf<String>()
             infraccion.evidencia?.let { evidencia ->
                 try {
@@ -76,7 +77,9 @@ class SupervisorHistorialActivity : ComponentActivity(), HistorialInfraccionesCo
                             fotosUrls.add(itemObj.get("attributes").asJsonObject.get("url").asString)
                         }
                     }
-                } catch (e: Exception) {}
+                } catch (e: Exception) {
+                    android.util.Log.e("NAVEGAR_DETALLE", "Error procesando evidencia: ${e.message}")
+                }
             }
             putStringArrayListExtra("EXTRA_FOTOS", ArrayList(fotosUrls))
 
@@ -89,9 +92,15 @@ class SupervisorHistorialActivity : ComponentActivity(), HistorialInfraccionesCo
                         val dataObj = data.asJsonObject
                         putExtra("EXTRA_FIRMA", dataObj.get("attributes").asJsonObject.get("url").asString)
                     }
-                } catch (e: Exception) {}
+                } catch (e: Exception) {
+                    android.util.Log.e("NAVEGAR_DETALLE", "Error procesando firma: ${e.message}")
+                }
             }
         }
+
+        // Log para debug
+        android.util.Log.d("NAVEGAR_DETALLE", "Enviando DocumentId: ${infraccion.documentId}")
+
         startActivity(intent)
     }
 
