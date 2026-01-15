@@ -77,8 +77,6 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".view.corralones.HistorialCorralonActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".view.parquimetros.ParquimetroActivity"
-            android:screenOrientation="portrait"/>
         <activity android:name=".view.transito.EstatusActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".view.configuracion.ConfiguracionActivity"
@@ -88,8 +86,6 @@
         <activity android:name=".view.supervisor.DetalleInfraccionActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".view.supervisor.SupervisorHistorialActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".view.parquimetros.ReporteActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".view.operador_grua.DetalleSolicitudActivity"
             android:screenOrientation="portrait"/>
