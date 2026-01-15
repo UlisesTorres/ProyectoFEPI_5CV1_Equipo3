@@ -3,31 +3,35 @@ package com.example.myapplication.model.transito
 import com.google.gson.annotations.SerializedName
 
 /**
- * Representa el objeto de nivel superior de la respuesta de la API,
- * que contiene una lista de infracciones.
+ * Modelo FLAT (Plano) para coincidir con la respuesta transformada de Strapi.
  */
 data class InfraccionesResponse(
     @SerializedName("data")
-    val data: List<InfraccionAttributes> // <-- CORRECCIÓN #1: Ahora contiene directamente una lista de InfraccionAttributes.
+    val data: List<InfraccionData>? = null
 )
 
-/**
- * Representa los campos de una sola infracción.
- * La clase InfraccionData ha sido eliminada porque era innecesaria.
- */
-data class InfraccionAttributes(
-    @SerializedName("id") // <-- AÑADIR ESTO
-    val id: Int,
+data class InfraccionData(
+    @SerializedName("id")
+    val id: Int? = null,
 
     @SerializedName("folio")
-    val folio: String,
+    val folio: String? = null,
 
     @SerializedName("placa_vehiculo")
-    val placa: String, // El nombre coincide con el JSON: "placa_vehiculo"
+    val placa_vehiculo: String? = null,
 
     @SerializedName("fecha_infraccion")
-    val fecha: String,  // El nombre coincide con el JSON: "fecha_infraccion"
+    val fecha_infraccion: String? = null,
 
     @SerializedName("ubicacion_infraccion")
-    val ubicacion: String
+    val ubicacion_infraccion: String? = null,
+
+    @SerializedName("validacion")
+    val validacion: Int? = 0,
+
+    @SerializedName("evidencia_infraccion")
+    val evidencia: Any? = null,
+
+    @SerializedName("firma_infractor")
+    val firma: Any? = null
 )

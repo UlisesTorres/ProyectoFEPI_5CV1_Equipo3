@@ -2,7 +2,7 @@ package com.example.myapplication.presenter.transito
 
 import com.example.myapplication.model.transito.HistorialInfraccionesModel
 import com.example.myapplication.view.transito.HistorialInfraccionesContract
-import com.example.myapplication.model.transito.InfraccionAttributes
+import com.example.myapplication.model.transito.InfraccionData
 
 class HistorialInfraccionesPresenter(
     private var view: HistorialInfraccionesContract.View?,
@@ -21,7 +21,7 @@ class HistorialInfraccionesPresenter(
         }
     }
 
-    override fun alSeleccionarInfraccion(infraccion: InfraccionAttributes) {
+    override fun alSeleccionarInfraccion(infraccion: InfraccionData) {
         view?.navegarADetalleInfraccion(infraccion)
     }
 

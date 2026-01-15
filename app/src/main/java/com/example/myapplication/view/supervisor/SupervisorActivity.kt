@@ -7,11 +7,8 @@ import androidx.activity.ComponentActivity
 import com.example.myapplication.R
 import com.example.myapplication.presenter.supervisor.SupervisorPresenter
 import com.example.myapplication.view.configuracion.ConfiguracionActivity
+import com.example.myapplication.view.transito.HistorialActivity
 
-/**
- * Esta es la pantalla principal para el rol de Supervisor.
- * Desde aquí, puede navegar a las diferentes funcionalidades.
- */
 class SupervisorActivity : ComponentActivity(), SupervisorContract.View  {
 
     private lateinit var presenter: SupervisorContract.Presenter
@@ -19,31 +16,25 @@ class SupervisorActivity : ComponentActivity(), SupervisorContract.View  {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_supervisor_principal)
         presenter = SupervisorPresenter(this)
-        // 1. Vincular los botones del layout con variables en el código
-        //    Asegúrate de que los IDs ('R.id...') coincidan con los de tu archivo XML.
-        val btnVerInfracciones: Button = findViewById(R.id.btnVerInfracciones) // Reemplaza con tu ID real
-        val btnValidarInfracciones: Button = findViewById(R.id.btnValidarInfraccion) // Reemplaza con tu ID real
 
-        // 2. Configurar el listener para el botón "Ver Infracciones"
-        btnVerInfracciones.setOnClickListener {
-            // Creamos un Intent para abrir la SupervisorHistorialActivity que ya preparamos
+        val btnValidar: Button = findViewById(R.id.btnVerInfracciones) // Antes era ver, ahora es validar
+        val btnVerHistorial: Button = findViewById(R.id.btnValidarInfraccion) // Antes era validar, ahora es historial
+
+        // 1. Botón VALIDAR (El que abre la lista con CLIC habilitado)
+        btnValidar.setOnClickListener {
             val intent = Intent(this, SupervisorHistorialActivity::class.java)
+            startActivity(intent)
+        }
+
+        // 2. Botón VER HISTORIAL (El que abre la lista SIN CLIC habilitado)
+        btnVerHistorial.setOnClickListener {
+            // Usaremos HistorialActivity pero sin permitir navegación al detalle más adelante
+            val intent = Intent(this, HistorialActivity::class.java)
             startActivity(intent)
         }
 
         findViewById<Button>(R.id.btnConfiguracion).setOnClickListener {
             presenter.clickConfiguracion()
-        }
-
-        // 3. Configurar el listener para el botón "Validar Infracciones" (funcionalidad futura)
-        btnValidarInfracciones.setOnClickListener {
-            // Por ahora, podemos mostrar un mensaje temporal
-            // hasta que implementes la nueva pantalla.
-            // val intent = Intent(this, ValidarInfraccionesActivity::class.java)
-            // startActivity(intent)
-
-            // Mensaje temporal:
-            android.widget.Toast.makeText(this, "Funcionalidad 'Validar Infracciones' en desarrollo", android.widget.Toast.LENGTH_SHORT).show()
         }
     }
 

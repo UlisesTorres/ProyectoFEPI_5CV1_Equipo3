@@ -7,7 +7,8 @@ import retrofit2.Response
 
 class HistorialInfraccionesModel {
 
-    fun consultarInfracciones(callback: (List<InfraccionAttributes>?, Boolean) -> Unit) {
+    // Cambiamos el callback para que devuelva la lista de InfraccionData (que incluye ID y Atributos)
+    fun consultarInfracciones(callback: (List<InfraccionData>?, Boolean) -> Unit) {
         RetrofitSecureClient.infraccionApiService.getInfracciones()
             .enqueue(object : Callback<InfraccionesResponse> {
                 override fun onResponse(
@@ -16,7 +17,6 @@ class HistorialInfraccionesModel {
                 ) {
                     if (response.isSuccessful) {
                         val infraccionesResponse = response.body()
-                        // La lógica se simplifica: solo pasamos la lista de datos.
                         callback(infraccionesResponse?.data, infraccionesResponse?.data != null)
                     } else {
                         callback(null, false)

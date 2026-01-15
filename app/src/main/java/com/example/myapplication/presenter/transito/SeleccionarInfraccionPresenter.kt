@@ -1,7 +1,7 @@
 package com.example.myapplication.presenter.transito
 
 import com.example.myapplication.model.transito.HistorialInfraccionesModel
-import com.example.myapplication.model.transito.InfraccionAttributes
+import com.example.myapplication.model.transito.InfraccionData
 import com.example.myapplication.view.transito.SeleccionarInfraccionContract
 
 class SeleccionarInfraccionPresenter(
@@ -19,7 +19,7 @@ class SeleccionarInfraccionPresenter(
         }
     }
 
-    override fun seleccionarInfraccion(infraccion: InfraccionAttributes) {
+    override fun seleccionarInfraccion(infraccion: InfraccionData) {
         view?.navegarAOrdenArrastre(infraccion)
     }
 
@@ -27,4 +27,3 @@ class SeleccionarInfraccionPresenter(
         view = null
     }
 }
-    

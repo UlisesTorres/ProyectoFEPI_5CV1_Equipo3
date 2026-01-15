@@ -1,9 +1,7 @@
 package com.example.myapplication.view.transito
 
-import HistorialAdapter
-import android.content.Intent // Importamos Intent para la navegación
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -12,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.model.transito.HistorialInfraccionesModel
-import com.example.myapplication.model.transito.InfraccionAttributes
+import com.example.myapplication.model.transito.InfraccionData
 import com.example.myapplication.presenter.transito.HistorialInfraccionesPresenter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -29,7 +27,6 @@ class HistorialActivity : ComponentActivity(), HistorialInfraccionesContract.Vie
         recyclerView = findViewById(R.id.rvInfraccionesHistorial)
         layoutVacio = findViewById(R.id.layoutHistorialVacio)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        actualizarAdaptador(emptyList()) // Inicializa con lista vacía
 
         presenter = HistorialInfraccionesPresenter(this, HistorialInfraccionesModel())
 
@@ -40,49 +37,28 @@ class HistorialActivity : ComponentActivity(), HistorialInfraccionesContract.Vie
         presenter.obtenerInfraccionesDelOficial()
     }
 
-    override fun mostrarListaInfracciones(infracciones: List<InfraccionAttributes>) {
-        Log.d("InfraccionesRaw", infracciones.toString())
+    override fun mostrarListaInfracciones(infracciones: List<InfraccionData>) {
         if (infracciones.isEmpty()) {
             recyclerView.visibility = View.GONE
             layoutVacio.visibility = View.VISIBLE
         } else {
             recyclerView.visibility = View.VISIBLE
             layoutVacio.visibility = View.GONE
-            actualizarAdaptador(infracciones)
+            // DESACTIVADO EL CLIC: Al pasar un bloque vacío {}, el adaptador no hará nada al tocar los cuadros
+            recyclerView.adapter = HistorialAdapter(infracciones) { 
+                // No hace nada al seleccionar
+            }
         }
     }
 
-    private fun actualizarAdaptador(infracciones: List<InfraccionAttributes>) {
-        val adapter = HistorialAdapter(infracciones) { infraccion ->
-            // --- CORRECCIÓN #1: Pasa el objeto 'infraccion' completo ---
-            presenter.alSeleccionarInfraccion(infraccion)
-        }
-        recyclerView.adapter = adapter
+    override fun navegarADetalleInfraccion(infraccion: InfraccionData) {
+        // Esta función se queda vacía porque ya no navegamos desde aquí
     }
 
-    override fun mostrarCargando() {
-        // Implementar
-    }
-
-    override fun ocultarCargando() {
-        // Implementar
-    }
-
+    override fun mostrarCargando() {}
+    override fun ocultarCargando() {}
     override fun mostrarError(mensaje: String) {
         Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show()
-        recyclerView.visibility = View.GONE
-        layoutVacio.visibility = View.VISIBLE
-    }
-
-    override fun navegarADetalleInfraccion(infraccion: InfraccionAttributes) {
-        // Implementamos la navegación que habíamos planeado
-        val intent = Intent(this, DetalleInfraccionActivity::class.java).apply {
-            putExtra("EXTRA_FOLIO", infraccion.folio)
-            putExtra("EXTRA_PLACA", infraccion.placa)
-            putExtra("EXTRA_FECHA", infraccion.fecha)
-            putExtra("EXTRA_UBICACION", infraccion.ubicacion)
-        }
-        startActivity(intent)
     }
 
     override fun onDestroy() {
