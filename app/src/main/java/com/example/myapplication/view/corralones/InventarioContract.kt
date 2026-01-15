@@ -1,10 +1,12 @@
 package com.example.myapplication.view.corralones
 
+import com.example.myapplication.model.corralones.VehiculoInventario
+
 interface InventarioContract {
     interface View {
         fun mostrarCargando()
         fun ocultarCargando()
-        fun mostrarVehiculosEnInventario(vehiculos: List<String>)
+        fun mostrarVehiculosEnInventario(vehiculos: List<VehiculoInventario>)
         fun mostrarError(mensaje: String)
         fun navegarADetalleVehiculo(idVehiculo: String)
     }

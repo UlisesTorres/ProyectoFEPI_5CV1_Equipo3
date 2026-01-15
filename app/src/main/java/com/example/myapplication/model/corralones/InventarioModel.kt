@@ -1,14 +1,38 @@
 package com.example.myapplication.model.corralones
 
 class InventarioModel {
-    fun obtenerAutosAlmacenados(callback: (List<String>?, Boolean) -> Unit) {
-        // Simulación de autos actualmente en el corralón
+    fun obtenerAutosAlmacenados(callback: (List<VehiculoInventario>?, Boolean) -> Unit) {
+        // Datos de prueba basados en los requerimientos del chat
         val inventarioFake = listOf(
-            "Placa: TSM-123 | Marca: Nissan | Color: Blanco",
-            "Placa: URY-456 | Marca: Ford | Color: Rojo",
-            "Placa: VBT-789 | Marca: VW | Color: Gris"
+            VehiculoInventario(
+                id = "1",
+                folio = "ARR-7721",
+                placa = "TSM-1234",
+                estatus = "Retenido",
+                fechaIngreso = "2024-01-12",
+                ubicacion = "Patio A - Fila 3",
+                observaciones = "Falla mecánica, sin llanta de refacción"
+            ),
+            VehiculoInventario(
+                id = "2",
+                folio = "ARR-8842",
+                placa = "URY-5678",
+                estatus = "En Espera",
+                fechaIngreso = "2024-01-14",
+                ubicacion = "Patio B - Fila 1",
+                observaciones = "Espejo lateral derecho roto"
+            ),
+            VehiculoInventario(
+                id = "3",
+                folio = "ARR-9910",
+                placa = "VBT-9012",
+                estatus = "Listo para Entrega",
+                fechaIngreso = "2024-01-15",
+                ubicacion = "Zona de Salida",
+                observaciones = "Ninguna"
+            )
         )
-        // Mañana integraremos Retrofit aquí
+        // Simulamos que la respuesta fue exitosa
         callback(inventarioFake, true)
     }
 }

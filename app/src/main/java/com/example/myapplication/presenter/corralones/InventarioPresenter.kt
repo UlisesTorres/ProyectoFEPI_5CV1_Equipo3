@@ -13,11 +13,7 @@ class InventarioPresenter(
         model.obtenerAutosAlmacenados { lista, exito ->
             view?.ocultarCargando()
             if (exito && lista != null) {
-                if (lista.isEmpty()) {
-                    view?.mostrarError("El corralón está vacío.")
-                } else {
-                    view?.mostrarVehiculosEnInventario(lista)
-                }
+                view?.mostrarVehiculosEnInventario(lista)
             } else {
                 view?.mostrarError("Error al obtener el inventario")
             }

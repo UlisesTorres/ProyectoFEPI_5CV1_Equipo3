@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import com.example.myapplication.R
 import com.example.myapplication.presenter.operador_grua.OperadorGruaPresenter
 import com.example.myapplication.view.configuracion.ConfiguracionActivity
+import com.example.myapplication.view.corralones.InventarioActivity
 
 class Operador_GruaActivity : ComponentActivity(), OperadorGruaContract.View {
 
@@ -29,6 +30,11 @@ class Operador_GruaActivity : ComponentActivity(), OperadorGruaContract.View {
 
         findViewById<Button>(R.id.btnHistorialGrua).setOnClickListener {
             presenter.clickHistorial()
+        }
+
+        // --- Botón NUEVO: Inventario ---
+        findViewById<Button>(R.id.btnInventarioGrua).setOnClickListener {
+            startActivity(Intent(this, InventarioActivity::class.java))
         }
 
         findViewById<Button>(R.id.btnConfiguracion).setOnClickListener {

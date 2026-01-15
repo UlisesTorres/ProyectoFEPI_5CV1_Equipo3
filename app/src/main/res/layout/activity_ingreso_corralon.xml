@@ -17,19 +17,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="@string/registro_de_ingreso_a_corral_n"
+            android:text="Registro de Ingreso a Corralón"
             android:textAlignment="center"
             android:textStyle="bold"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="24dp" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/labelSeccionInfraccion"
+            android:id="@+id/labelSeccionArrastre"
             style="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="@string/datos_de_la_infracci_n"
+            android:text="Datos del Arrastre"
             android:textColor="?attr/colorPrimary"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -42,13 +41,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:hint="@string/folio_de_infracci_n"
+            android:hint="Folio de Arrastre"
             app:layout_constraintEnd_toStartOf="@+id/btnBuscarFolio"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/labelSeccionInfraccion">
+            app:layout_constraintTop_toBottomOf="@+id/labelSeccionArrastre">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etFolioInfraccion"
+                android:id="@+id/etFolioArrastre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textCapCharacters" />
@@ -66,68 +65,31 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tilFolio" />
 
+        <!-- ... Placa ... -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilPlaca"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="@string/placa"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:hint="Placa del Vehículo"
             app:layout_constraintTop_toBottomOf="@+id/tilFolio">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPlaca"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:focusable="false"
-                android:clickable="true"
                 android:inputType="textCapCharacters" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilFecha"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:hint="@string/fecha_y_hora_de_ingreso"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tilPlaca">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etFechaHoraIngreso"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="false"
-                android:inputType="datetime" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            android:id="@+id/labelSeccionVehiculo"
-            style="@style/TextAppearance.MaterialComponents.Subtitle1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="@string/datos_del_veh_culo"
-            android:textColor="?attr/colorPrimary"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tilFecha" />
-
-        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilMarca"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="@string/marca_modelo"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/labelSeccionVehiculo">
+            android:layout_marginTop="12dp"
+            android:hint="Marca y Modelo"
+            app:layout_constraintTop_toBottomOf="@+id/tilPlaca">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etMarcaModelo"
@@ -137,88 +99,30 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilColor"
+            android:id="@+id/tilEstado"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="@string/color"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:hint="Estado Físico e Inventario"
             app:layout_constraintTop_toBottomOf="@+id/tilMarca">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etColor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textCapWords" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            android:id="@+id/labelSeccionCorralon"
-            style="@style/TextAppearance.MaterialComponents.Subtitle1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="@string/datos_del_corral_n"
-            android:textColor="?attr/colorPrimary"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tilColor" />
-
-        <Spinner
-            android:id="@+id/spCorralon"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="8dp"
-            android:background="@android:drawable/btn_dropdown"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/labelSeccionCorralon" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilInventario"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:hint="@string/estado_f_sico_e_inventario"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spCorralon">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEstadoVehiculo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="top|start"
-                android:inputType="textMultiLine"
-                android:minLines="3" />
+                android:gravity="top"
+                android:minLines="3"
+                android:inputType="textMultiLine" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnCancelarCorralon"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:id="@+id/btnGuardarRegistro"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
             android:layout_marginTop="32dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/cancelar"
-            app:layout_constraintEnd_toStartOf="@+id/btnGuardarOrden"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tilInventario" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnGuardarOrden"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/finalizar_registro"
-            app:layout_constraintBottom_toBottomOf="@+id/btnCancelarCorralon"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/btnCancelarCorralon"
-            app:layout_constraintTop_toTopOf="@+id/btnCancelarCorralon" />
+            android:text="Finalizar Registro de Ingreso"
+            app:layout_constraintTop_toBottomOf="@+id/tilEstado" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

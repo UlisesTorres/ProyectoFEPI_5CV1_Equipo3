@@ -64,6 +64,23 @@
             app:iconPadding="15dp"
             app:iconSize="28dp" />
 
+        <!-- Botón NUEVO: Inventario de Corralón -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnInventarioGrua"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_marginBottom="20dp"
+            android:text="Inventario de Corralón"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            app:cornerRadius="40dp"
+            app:icon="@android:drawable/ic_menu_agenda"
+            app:iconGravity="textStart"
+            app:iconPadding="15dp"
+            app:iconSize="28dp"
+            app:strokeWidth="2dp" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnHistorialGrua"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
