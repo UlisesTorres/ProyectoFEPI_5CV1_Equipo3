@@ -13,8 +13,6 @@ import com.example.myapplication.model.transito.HistorialInfraccionesModel
 import com.example.myapplication.model.transito.InfraccionData
 import com.example.myapplication.presenter.transito.HistorialInfraccionesPresenter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.gson.Gson
-import com.google.gson.JsonObject
 
 class HistorialActivity : ComponentActivity(), HistorialInfraccionesContract.View {
 
@@ -46,50 +44,15 @@ class HistorialActivity : ComponentActivity(), HistorialInfraccionesContract.Vie
         } else {
             recyclerView.visibility = View.VISIBLE
             layoutVacio.visibility = View.GONE
-            recyclerView.adapter = HistorialAdapter(infracciones) { infraccion ->
-                presenter.alSeleccionarInfraccion(infraccion)
+            // DESACTIVADO EL CLIC: Al pasar un bloque vacío {}, el adaptador no hará nada al tocar los cuadros
+            recyclerView.adapter = HistorialAdapter(infracciones) { 
+                // No hace nada al seleccionar
             }
         }
     }
 
     override fun navegarADetalleInfraccion(infraccion: InfraccionData) {
-        val intent = Intent(this, DetalleInfraccionActivity::class.java).apply {
-            putExtra("EXTRA_ID", infraccion.id ?: -1)
-            putExtra("EXTRA_FOLIO", infraccion.folio ?: "S/F")
-            putExtra("EXTRA_PLACA", infraccion.placa_vehiculo ?: "S/P")
-            putExtra("EXTRA_FECHA", infraccion.fecha_infraccion ?: "")
-            putExtra("EXTRA_UBICACION", infraccion.ubicacion_infraccion ?: "N/D")
-            
-            val fotosUrls = mutableListOf<String>()
-            infraccion.evidencia?.let { evidencia ->
-                try {
-                    val gson = Gson()
-                    val root = gson.toJsonTree(evidencia).asJsonObject
-                    val data = root.get("data")
-                    if (data != null && !data.isJsonNull) {
-                        val list = if (data.isJsonArray) data.asJsonArray else listOf(data.asJsonObject)
-                        list.forEach { item ->
-                            val itemObj = if (item is JsonObject) item else item.asJsonObject
-                            fotosUrls.add(itemObj.get("attributes").asJsonObject.get("url").asString)
-                        }
-                    }
-                } catch (e: Exception) {}
-            }
-            putStringArrayListExtra("EXTRA_FOTOS", ArrayList(fotosUrls))
-
-            infraccion.firma?.let { firma ->
-                try {
-                    val gson = Gson()
-                    val root = gson.toJsonTree(firma).asJsonObject
-                    val data = root.get("data")
-                    if (data != null && !data.isJsonNull) {
-                        val dataObj = data.asJsonObject
-                        putExtra("EXTRA_FIRMA", dataObj.get("attributes").asJsonObject.get("url").asString)
-                    }
-                } catch (e: Exception) {}
-            }
-        }
-        startActivity(intent)
+        // Esta función se queda vacía porque ya no navegamos desde aquí
     }
 
     override fun mostrarCargando() {}

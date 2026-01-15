@@ -36,12 +36,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvSubtituloAgente">
 
+        <!-- Botón SUPERIOR: AHORA ES VALIDAR (Interactivo) -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnVerInfracciones"
             android:layout_width="match_parent"
             android:layout_height="75dp"
             android:layout_marginBottom="20dp"
-            android:text="@string/ver_infracciones_recientes"
+            android:text="Validar Infracciones"
             android:textAllCaps="false"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -51,12 +52,13 @@
             app:iconPadding="15dp"
             app:iconSize="28dp" />
 
+        <!-- Botón INFERIOR: AHORA ES VER HISTORIAL (Solo lectura) -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnValidarInfraccion"
             android:layout_width="match_parent"
             android:layout_height="75dp"
             android:layout_marginBottom="20dp"
-            android:text="@string/validar_infracciones"
+            android:text="Ver Infracciones Recientes"
             android:textAllCaps="false"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -65,8 +67,6 @@
             app:iconGravity="textStart"
             app:iconPadding="15dp"
             app:iconSize="28dp" />
-
-
 
     </LinearLayout>
 
