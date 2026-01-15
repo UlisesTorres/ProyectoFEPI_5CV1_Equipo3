@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    kotlin("kapt") // Esta es la forma correcta para que reconozca 'kapt' abajo
+    kotlin("kapt")
 }
 
 android {
@@ -17,7 +17,6 @@ android {
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
 
     buildTypes {
         release {
@@ -66,11 +65,14 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
-    // Room (Base de Datos)
+    // Coil para cargar imágenes desde URL
+    implementation("io.coil-kt:coil:2.5.0")
+
+    // Room
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
-    kapt("androidx.room:room-compiler:2.6.1") // Ahora sí debería reconocerlo
+    kapt("androidx.room:room-compiler:2.6.1")
 
-    // WorkManager (Sincronización)
+    // WorkManager
     implementation("androidx.work:work-runtime-ktx:2.9.0")
 }
