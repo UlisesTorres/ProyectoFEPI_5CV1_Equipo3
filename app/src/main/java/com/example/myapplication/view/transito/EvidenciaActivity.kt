@@ -51,10 +51,20 @@ class EvidenciaActivity : ComponentActivity() {
     private var direccion: String? = null
     private var fechaInfraccion: String? = null
     private var tipoInfraccionesIds: List<Int> = emptyList()
-
     private var articulosSeleccionadosIds: List<Int> = emptyList()
 
-    // Launcher corregido: Solo agrega a la lista si la foto se tomó con éxito
+    // Variables para almacenar los datos recibidos
+    private var tipoVehiculo: String? = null
+    private var marcaVehiculo: String? = null
+    private var modeloVehiculo: String? = null
+    private var colorVehiculo: String? = null
+    private var nombreConductor: String? = null
+
+    private var esVehiculoManual = false
+    private var esConductorManual = false
+    private var pagoId = 0
+
+
     private val cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success) {
             val nombreArchivo = fotoActualUri.lastPathSegment ?: ""
@@ -83,6 +93,9 @@ class EvidenciaActivity : ComponentActivity() {
         articulosSeleccionadosIds = intent.getIntegerArrayListExtra("ARTICULOS_IDS") ?: emptyList()
 
 
+        recibirDatosInfraccion()
+
+
         // Inicializar vistas
         layoutFotos = findViewById(R.id.layoutFotosEvidencia)
         signaturePad = findViewById(R.id.signaturePad)
@@ -91,6 +104,10 @@ class EvidenciaActivity : ComponentActivity() {
         // Configuración de bloqueo de estado (Evita comportamientos extraños en recreación)
         layoutFotos.isSaveEnabled = false
         signaturePad.isSaveEnabled = false
+
+        Log.d("DEPURACION", "Vehiculo Manual: $esVehiculoManual")
+        Log.d("DEPURACION", "Conductor Manual: $esConductorManual")
+        Log.d("DEPURACION", "Marca: $marcaVehiculo")
 
         // Manejo del botón atrás
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -118,9 +135,77 @@ class EvidenciaActivity : ComponentActivity() {
         }
 
         findViewById<Button>(R.id.btnFinalizarInfraccion).setOnClickListener {
-            validarYEnviar()
+            findViewById<Button>(R.id.btnFinalizarInfraccion).setOnClickListener {
+                // 1️⃣ Validaciones
+                if (signaturePad.isEmpty) {
+                    Toast.makeText(this, "La firma es obligatoria", Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+                if (contadorFotos == 0) {
+                    Toast.makeText(this, "Debes incluir al menos una foto", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                // Preparar archivo de firma
+                val archivoFirma = prepararArchivoFirma()
+
+                // Mostrar ProgressDialog
+                val progressDialog = AlertDialog.Builder(this)
+                    .setView(ProgressBar(this).apply { setPadding(40, 40, 40, 40) })
+                    .setTitle("Guardando Infracción")
+                    .setMessage("Generando línea de captura y enviando datos...")
+                    .setCancelable(false)
+                    .show()
+
+                // 2️⃣ Crear el pago primero
+                crearPago(
+                    onSuccess = { pagoId, lineaCaptura ->
+                        // 3️⃣ Con el ID del pago, crear la infracción
+                        val vehiculoIdExistente = if (!esVehiculoManual) intent.getIntExtra("VEHICULO_ID", -1) else null
+                        val licenciaIdExistente = if (!esConductorManual) intent.getIntExtra("LICENCIA_ID", -1) else null
+
+                        crearInfraccionConPago(
+                            progressDialog,
+                            pagoId,
+                            lineaCaptura,
+                            placas,
+                            direccion,
+                            archivoFirma,
+                            listaArchivosFotos,
+                            vehiculoIdExistente?.takeIf { it != -1 },
+                            licenciaIdExistente?.takeIf { it != -1 }
+                        )
+                    },
+                    onError = {
+                        progressDialog.dismiss()
+                        Toast.makeText(
+                            this,
+                            "No se pudo generar la línea de captura",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                )
+            }
+
         }
     }
+
+    private fun recibirDatosInfraccion() {
+
+        // 3. Datos del Vehículo (Vienen de Spinner o TextView según la lógica anterior)
+        tipoVehiculo = intent.getStringExtra("VEHICULO_TIPO")
+        marcaVehiculo = intent.getStringExtra("VEHICULO_MARCA")
+        modeloVehiculo = intent.getStringExtra("VEHICULO_MODELO")
+        colorVehiculo = intent.getStringExtra("VEHICULO_COLOR")
+
+        // 4. Datos del Conductor
+        nombreConductor = intent.getStringExtra("CONDUCTOR_NOMBRE")
+
+        esVehiculoManual = intent.getBooleanExtra("ES_FORANEO", false)
+        esConductorManual = intent.getBooleanExtra("ES_MANUAL_CONDUCTOR", false)
+    }
+
+
 
     private fun crearUriFoto(): Uri {
         val archivo = File(
@@ -191,11 +276,94 @@ class EvidenciaActivity : ComponentActivity() {
     private fun validarYEnviar() {
         if (signaturePad.isEmpty) {
             Toast.makeText(this, "La firma es obligatoria", Toast.LENGTH_LONG).show()
-        } else if (contadorFotos == 0) {
+            return
+        }
+        if (contadorFotos == 0) {
             Toast.makeText(this, "Debes incluir al menos una foto", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (esVehiculoManual || esConductorManual) {
+            // RUTA B: Registra en tablas externas y luego llama a enviarEvidenciaAlServidor
+            registrarDatosNuevosYCrearInfraccion()
         } else {
+            // RUTA A: Usamos los IDs que ya existían (recuperados por el intent)
+            val vehiculoIdExistente = intent.getIntExtra("VEHICULO_ID", -1)
+            val licenciaIdExistente = intent.getIntExtra("LICENCIA_ID", -1)
+
             val archivoFirma = prepararArchivoFirma()
-            enviarEvidenciaAlServidor(placas, direccion, archivoFirma, listaArchivosFotos)
+
+            // Enviamos directamente con los IDs que ya tenemos
+            enviarEvidenciaAlServidor(
+                placas,
+                direccion,
+                archivoFirma,
+                listaArchivosFotos,
+                if (vehiculoIdExistente != -1) vehiculoIdExistente else null,
+                if (licenciaIdExistente != -1) licenciaIdExistente else null
+            )
+        }
+    }
+
+    private fun registrarDatosNuevosYCrearInfraccion() {
+        val progressDialog = AlertDialog.Builder(this)
+            .setTitle("Sincronizando")
+            .setMessage("Registrando datos manuales...")
+            .setCancelable(false)
+            .show()
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            // Ejecutamos las inserciones en paralelo o secuencia
+            if (esVehiculoManual) crearVehiculoEnStrapi()
+            if (esConductorManual) crearLicenciaEnStrapi()
+
+            // Una vez terminadas (exitosas o no), enviamos la infracción
+            withContext(Dispatchers.Main) {
+                progressDialog.dismiss()
+                val archivoFirma = prepararArchivoFirma()
+                // Llamas a tu función original tal cual la tenías
+                enviarEvidenciaAlServidor(placas, direccion, archivoFirma, listaArchivosFotos)
+            }
+        }
+    }
+
+    private suspend fun crearVehiculoEnStrapi(): Boolean {
+        val json = JSONObject().apply {
+            put("data", JSONObject().apply {
+                put("placa_id", placas)
+                put("marca", marcaVehiculo)
+                put("modelo", modeloVehiculo)
+                put("color", colorVehiculo)
+                put("tipo", tipoVehiculo)
+            })
+        }
+        return try {
+            val response = RetrofitSecureClient.vehiculoApiService.crearVehiculo(
+                json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+            ).execute()
+            response.isSuccessful
+        } catch (e: Exception) {
+            Log.e("API_ERROR", "Error Vehiculo: ${e.message}")
+            false
+        }
+    }
+
+    private suspend fun crearLicenciaEnStrapi(): Boolean {
+        val json = JSONObject().apply {
+            put("data", JSONObject().apply {
+                put("num_licencia", "MANUAL-${System.currentTimeMillis()}")
+                put("nombre", nombreConductor)
+                // Según tu captura, podrías agregar apellido si lo tienes
+            })
+        }
+        return try {
+            val response = RetrofitSecureClient.licenciaApiService.crearLicencia(
+                json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+            ).execute()
+            response.isSuccessful
+        } catch (e: Exception) {
+            Log.e("API_ERROR", "Error Licencia: ${e.message}")
+            false
         }
     }
 
@@ -236,7 +404,14 @@ class EvidenciaActivity : ComponentActivity() {
     }
 
 
-    private fun enviarEvidenciaAlServidor(placas: String?, direccion: String?, firma: File, fotos: List<File>) {
+    private fun enviarEvidenciaAlServidor(
+        placas: String?,
+        direccion: String?,
+        firma: File,
+        fotos: List<File>,
+        vehiculoId: Int? = null,
+        licenciaId: Int? = null,
+    ) {
         val progressDialog = AlertDialog.Builder(this)
             .setView(ProgressBar(this).apply { setPadding(40, 40, 40, 40) })
             .setTitle("Guardando Infracción")
@@ -246,79 +421,72 @@ class EvidenciaActivity : ComponentActivity() {
 
         val folio = "INF-${System.currentTimeMillis()}"
 
-        // Si son relaciones de uno a uno (solo un ID), toma el primero de la lista
         val tipoInfraccionId = tipoInfraccionesIds.firstOrNull()
         val articuloId = articulosSeleccionadosIds.firstOrNull()
 
-        // Crear el JSON con el formato correcto para Strapi
         val jsonBody = JSONObject().apply {
             put("data", JSONObject().apply {
-                put("folio", folio)
+                put("folio", folio) // folio para identificación de multa
                 put("placa_vehiculo", placas ?: "S/P")
                 put("ubicacion_infraccion", direccion ?: "N/D")
                 put("fecha_infraccion", fechaInfraccion)
                 put("medio_infraccion", "policia_transito")
-                put("validacion",0)
+                put("validacion", 0)
                 put("oficial_id", usuarioId.toString())
 
-                // Para relaciones de UNO a uno/muchos (usar ID directo)
-                if (tipoInfraccionId != null) {
-                    put("tipo_infraccion_id", tipoInfraccionId)
-                } else {
-                    // Puedes dejarlo null o no incluirlo
-                    put("tipo_infraccion_id", JSONObject.NULL)
-                }
+                // 🔥 RELACIÓN UNO A UNO: pago
+                put("pago", pagoId)
 
-                if (articuloId != null) {
-                    put("articulo_id", articuloId)
-                } else {
-                    put("articulo_id", JSONObject.NULL)
-                }
+                // IDs de relaciones opcionales
+                if (vehiculoId != null) put("vehiculo", vehiculoId)
+                if (licenciaId != null) put("licencia", licenciaId)
+                if (tipoInfraccionId != null) put("tipo_infraccion_id", tipoInfraccionId)
+                if (articuloId != null) put("articulo_id", articuloId)
             })
         }
 
-        // Convertir a String y log para debug
-        val jsonString = jsonBody.toString()
-        Log.d("JSON_ENVIADO", "JSON a enviar: $jsonString")
+        Log.d("JSON_ENVIADO", jsonBody.toString())
 
-        val body = jsonString.toRequestBody("application/json".toMediaTypeOrNull())
+        val body = jsonBody.toString().toRequestBody("application/json".toMediaTypeOrNull())
 
-        RetrofitSecureClient.infraccionApiService.crearInfraccion(body).enqueue(object : retrofit2.Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: retrofit2.Response<ResponseBody>) {
-                progressDialog.dismiss()
-                if (response.isSuccessful) {
-                    try {
-                        val json = JSONObject(response.body()!!.string())
-                        val infraccionId = json.getJSONObject("data").getInt("id")
-                        subirArchivo(infraccionId, firma, "firma_infractor")
-                        fotos.forEach { foto -> subirArchivo(infraccionId, foto, "evidencia_infraccion") }
-                        finalizarActividad("Infracción enviada correctamente")
-                    } catch (e: Exception) {
-                        Log.e("UPLOAD_ERROR", "Error parsing response", e)
-                        Toast.makeText(this@EvidenciaActivity, "Error al procesar respuesta", Toast.LENGTH_LONG).show()
-                    }
-                } else {
-                    val errorBody = response.errorBody()?.string()
-                    Log.e("UPLOAD_ERROR", "Error: ${response.code()} - $errorBody")
+        RetrofitSecureClient.infraccionApiService.crearInfraccion(body)
+            .enqueue(object : retrofit2.Callback<ResponseBody> {
 
-                    // Si todavía hay error, probar con formato de relación
-                    if (response.code() == 400) {
-                        // Probar con formato de relación (objeto con id)
-                        enviarConFormatoRelacion(progressDialog, folio, placas, direccion, firma, fotos)
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: retrofit2.Response<ResponseBody>
+                ) {
+                    progressDialog.dismiss()
+                    if (response.isSuccessful && response.body() != null) {
+                        try {
+                            val json = JSONObject(response.body()!!.string())
+                            val infraccionId = json.getJSONObject("data").getInt("id") // ESTE ES EL INFRACCION_ID
+                            // NO tocarlo, es independiente y vital
+
+                            subirArchivo(infraccionId, firma, "firma_infractor")
+                            fotos.forEach { subirArchivo(infraccionId, it, "evidencia_infraccion") }
+
+                            finalizarActividad("Infracción creada con línea de captura")
+                        } catch (e: Exception) {
+                            Log.e("UPLOAD_ERROR", "Error parsing response", e)
+                            Toast.makeText(this@EvidenciaActivity, "Error al procesar respuesta", Toast.LENGTH_LONG).show()
+                        }
                     } else {
+                        val errorBody = response.errorBody()?.string()
+                        Log.e("UPLOAD_ERROR", "Error: ${response.code()} - $errorBody")
                         Toast.makeText(this@EvidenciaActivity, "Error ${response.code()} al enviar datos", Toast.LENGTH_LONG).show()
                     }
                 }
-            }
 
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                progressDialog.dismiss()
-                Log.e("UPLOAD_ERROR", "Network failure", t)
-                Toast.makeText(this@EvidenciaActivity, "Error de conexión", Toast.LENGTH_LONG).show()
-                guardarOffline(folio, tipoInfraccionesIds, articulosSeleccionadosIds, placas, direccion, firma, fotos)
-            }
-        })
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    progressDialog.dismiss()
+                    Log.e("UPLOAD_ERROR", "Network failure", t)
+                    Toast.makeText(this@EvidenciaActivity, "Error de conexión", Toast.LENGTH_LONG).show()
+                    guardarOffline(folio, tipoInfraccionesIds, articulosSeleccionadosIds, placas, direccion, firma, fotos)
+                }
+            })
     }
+
 
     private fun enviarConFormatoRelacion(
         progressDialog: AlertDialog,
@@ -456,5 +624,124 @@ class EvidenciaActivity : ComponentActivity() {
         })
     }
 
-    // 🔥 IMPORTANTE: SE ELIMINÓ ONSTOP() QUE BORRABA LAS VISTAS
+    private fun crearPago(
+        onSuccess: (pagoId: Int, lineaCaptura: String) -> Unit,
+        onError: () -> Unit
+    ) {
+        val lineaCaptura = "LC-${System.currentTimeMillis()}"
+
+        val jsonBody = JSONObject().apply {
+            put("data", JSONObject().apply {
+                put("linea_captura", lineaCaptura)
+                put("estatus", "pendiente")
+                put("monto", 0)
+            })
+        }
+
+        val body = jsonBody.toString()
+            .toRequestBody("application/json".toMediaTypeOrNull())
+
+        RetrofitSecureClient.pagoApiService.crearPago(body)
+            .enqueue(object : retrofit2.Callback<ResponseBody> {
+
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: retrofit2.Response<ResponseBody>
+                ) {
+                    if (response.isSuccessful && response.body() != null) {
+                        val json = JSONObject(response.body()!!.string())
+                        val pagoId = json.getJSONObject("data").getInt("id")
+                        onSuccess(pagoId, lineaCaptura)
+                    } else {
+                        Log.e("PAGO_ERROR", response.errorBody()?.string() ?: "")
+                        onError()
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    Log.e("PAGO_ERROR", "Network error", t)
+                    onError()
+                }
+            })
+    }
+
+    private fun crearInfraccionConPago(
+        progressDialog: AlertDialog,
+        pagoId: Int,
+        lineaCaptura: String,
+        placas: String?,
+        direccion: String?,
+        firma: File,
+        fotos: List<File>,
+        vehiculoId: Int?,
+        licenciaId: Int?
+    ) {
+
+        val tipoInfraccionId = tipoInfraccionesIds.firstOrNull()
+        val articuloId = articulosSeleccionadosIds.firstOrNull()
+
+        val jsonBody = JSONObject().apply {
+            put("data", JSONObject().apply {
+                put("folio", lineaCaptura) // usamos la línea de captura
+                put("placa_vehiculo", placas ?: "S/P")
+                put("ubicacion_infraccion", direccion ?: "N/D")
+                put("fecha_infraccion", fechaInfraccion)
+                put("medio_infraccion", "policia_transito")
+                put("validacion", 0)
+                put("oficial_id", usuarioId.toString())
+
+                // 🔥 RELACIÓN UNO A UNO
+                put("pago_id", pagoId)
+
+                if (vehiculoId != null) put("vehiculo", vehiculoId)
+                if (licenciaId != null) put("licencia", licenciaId)
+                if (tipoInfraccionId != null) put("tipo_infraccion_id", tipoInfraccionId)
+                if (articuloId != null) put("articulo_id", articuloId)
+            })
+        }
+
+        val body = jsonBody.toString()
+            .toRequestBody("application/json".toMediaTypeOrNull())
+
+        RetrofitSecureClient.infraccionApiService.crearInfraccion(body)
+            .enqueue(object : retrofit2.Callback<ResponseBody> {
+
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: retrofit2.Response<ResponseBody>
+                ) {
+                    progressDialog.dismiss()
+
+                    if (response.isSuccessful && response.body() != null) {
+                        val json = JSONObject(response.body()!!.string())
+                        val infraccionId = json.getJSONObject("data").getInt("id")
+
+                        subirArchivo(infraccionId, firma, "firma_infractor")
+                        fotos.forEach {
+                            subirArchivo(infraccionId, it, "evidencia_infraccion")
+                        }
+
+                        finalizarActividad("Infracción creada con línea de captura")
+                    } else {
+                        Log.e("INF_ERROR", response.errorBody()?.string() ?: "")
+                        Toast.makeText(
+                            this@EvidenciaActivity,
+                            "Error al crear infracción",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    progressDialog.dismiss()
+                    Toast.makeText(
+                        this@EvidenciaActivity,
+                        "Error de red",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            })
+    }
+
+
 }

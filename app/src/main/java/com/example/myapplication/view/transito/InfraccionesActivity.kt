@@ -46,6 +46,23 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
     private lateinit var tvEstatusLicencia: TextView
     private lateinit var btnValidarLicencia: Button
 
+    // --- NUEVAS VISTAS MANUALES ---
+    private lateinit var cbVehiculoForaneo: CheckBox
+    private lateinit var layoutVehiculoLectura: LinearLayout
+    private lateinit var layoutVehiculoManual: LinearLayout
+    private lateinit var spinnerTipoManual: Spinner
+
+    private lateinit var spinnerMarcaManual: Spinner
+    private lateinit var spinnerColorManual: Spinner
+    private lateinit var spinnerModeloManual: Spinner
+
+
+    private lateinit var cbSinLicencia: CheckBox
+    private lateinit var layoutLicenciaLectura: LinearLayout
+    private lateinit var layoutLicenciaManual: LinearLayout
+    private lateinit var etNombreManual: EditText
+    private lateinit var etApellidoManual: EditText
+
     // Card 3: Nueva vista de artículo
     private lateinit var tvArticuloInfraccion: TextView
 
@@ -89,6 +106,28 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
         tvEstatusLicencia = findViewById(R.id.tvEstatusLicencia)
         btnValidarLicencia = findViewById(R.id.btnValidarLicencia)
 
+        // Inicializar Vistas Manuales - Vehículo
+        cbVehiculoForaneo = findViewById(R.id.cbVehiculoForaneo)
+        layoutVehiculoLectura = findViewById(R.id.layoutVehiculoLectura)
+        layoutVehiculoManual = findViewById(R.id.layoutVehiculoManual)
+        spinnerTipoManual = findViewById(R.id.spinnerTipoManual)
+        spinnerMarcaManual = findViewById(R.id.spinnerMarcaManual)
+        spinnerColorManual = findViewById(R.id.spinnerColorManual)
+        spinnerModeloManual = findViewById(R.id.spinnerModeloManual)
+
+        // Inicializar Vistas Manuales - Licencia
+        cbSinLicencia = findViewById(R.id.cbSinLicencia)
+        layoutLicenciaLectura = findViewById(R.id.layoutLicenciaLectura)
+        layoutLicenciaManual = findViewById(R.id.layoutLicenciaManual)
+        etNombreManual = findViewById(R.id.etNombreManual)
+        etApellidoManual = findViewById(R.id.etApellidoManual)
+
+        configurarSpinnerTipoManual() // Función para llenar el tipo de auto
+        configurarListenersManuales() // Función para ocultar/mostrar
+
+
+
+
         // Card 3: Articulo (La que acabas de agregar al XML)
         tvArticuloInfraccion = findViewById(R.id.tvArticuloInfraccion)
 
@@ -125,17 +164,56 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
         }
 
         btnSiguiente.setOnClickListener {
-            if (!placaValida) {
-                mostrarMensaje("Debe consultar una placa válida antes de continuar.")
-                return@setOnClickListener
+            // 1. Validar sección de Vehículo
+            if (cbVehiculoForaneo.isChecked) {
+                // Validación Manual
+                if (etPlacas.text.toString().trim().isEmpty()) {
+                    mostrarMensaje("Ingrese la placa del vehículo foráneo.")
+                    return@setOnClickListener
+                }
+                // Nota: Los Spinners siempre tienen una opción seleccionada por defecto,
+                // pero puedes validar que no sea una opción tipo "Seleccione..." si la agregaste.
+            } else {
+                // Validación Automática
+                if (!placaValida) {
+                    mostrarMensaje("Debe consultar una placa válida antes de continuar.")
+                    return@setOnClickListener
+                }
             }
-            if (!licenciaValida) {
-                mostrarMensaje("Debe validar una licencia antes de continuar.")
-                return@setOnClickListener
+
+            // 2. Validar sección de Conductor
+            if (cbSinLicencia.isChecked) {
+                // Validación Manual: Nombre y Apellido obligatorios
+                val nombre = etNombreManual.text.toString().trim()
+                val apellido = etApellidoManual.text.toString().trim()
+
+                if (nombre.isEmpty()) {
+                    etNombreManual.error = "El nombre es obligatorio"
+                    etNombreManual.requestFocus()
+                    return@setOnClickListener
+                }
+                if (apellido.isEmpty()) {
+                    etApellidoManual.error = "El apellido es obligatorio"
+                    etApellidoManual.requestFocus()
+                    return@setOnClickListener
+                }
+            } else {
+                // Validación Automática
+                if (!licenciaValida) {
+                    if (etLicencia.text.toString().trim().isEmpty()) {
+                        mostrarMensaje("Ingrese el número de licencia.")
+                    } else {
+                        mostrarMensaje("Debe validar la licencia antes de continuar.")
+                    }
+                    return@setOnClickListener
+                }
             }
-            val placas = etPlacas.text.toString()
+
+
+            val placas = etPlacas.text.toString().uppercase().trim()
             val tipoInfraccion = spinnerInfracciones.selectedItem.toString()
             val articuloInfraccion = tvArticuloInfraccion.text.toString()
+
             presenter.validarYGuardarInfraccion(placas, tipoInfraccion, articuloInfraccion)
         }
 
@@ -303,13 +381,44 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
 
     override fun navegarAEvidencia(placas: String, direccion: String, fechaISO: String) {
         val intent = Intent(this, EvidenciaActivity::class.java)
+
+        // --- 1. DATOS BASE (Lo que ya tenías) ---
         intent.putExtra("PLACAS", placas)
         intent.putExtra("DIRECCION", direccion)
         intent.putExtra("FECHA", fechaISO)
+
         tipoInfraccionSeleccionadoId?.let {
             intent.putIntegerArrayListExtra("TIPO_INFRACCION_IDS", arrayListOf(it))
         }
         intent.putIntegerArrayListExtra("ARTICULOS_IDS", ArrayList(articulosSeleccionadosIds))
+
+        // --- 2. LÓGICA DE VEHÍCULO (Automático vs Spinner) ---
+        if (cbVehiculoForaneo.isChecked) {
+            intent.putExtra("ES_FORANEO", true)
+            intent.putExtra("VEHICULO_TIPO", spinnerTipoManual.selectedItem.toString())
+            intent.putExtra("VEHICULO_MARCA", spinnerMarcaManual.selectedItem.toString())
+            intent.putExtra("VEHICULO_MODELO", spinnerModeloManual.selectedItem.toString())
+            intent.putExtra("VEHICULO_COLOR", spinnerColorManual.selectedItem.toString())
+        } else {
+            intent.putExtra("ES_FORANEO", false)
+            intent.putExtra("VEHICULO_TIPO", tvTipo.text.toString())
+            intent.putExtra("VEHICULO_MARCA", tvMarca.text.toString())
+            intent.putExtra("VEHICULO_MODELO", tvModelo.text.toString())
+            intent.putExtra("VEHICULO_COLOR", tvColor.text.toString())
+        }
+
+        // --- 3. LÓGICA DE CONDUCTOR (Automático vs Manual) ---
+        if (cbSinLicencia.isChecked) {
+            intent.putExtra("ES_MANUAL_CONDUCTOR", true)
+            val nombreCompleto = "${etNombreManual.text.toString().trim()} ${etApellidoManual.text.toString().trim()}"
+            intent.putExtra("CONDUCTOR_NOMBRE", nombreCompleto)
+            intent.putExtra("NUM_LICENCIA", "NO PRESENTA")
+        } else {
+            intent.putExtra("ES_MANUAL_CONDUCTOR", false)
+            intent.putExtra("CONDUCTOR_NOMBRE", tvNombreConductor.text.toString())
+            intent.putExtra("NUM_LICENCIA", etLicencia.text.toString())
+        }
+
         startActivity(intent)
     }
 
@@ -348,6 +457,80 @@ class InfraccionesActivity : AppCompatActivity(), InfraccionesContract.View {
         if (view != null) {
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+    }
+
+    val datosVehiculos = mapOf(
+        "Chevrolet" to listOf("Aveo", "Onix", "Captiva", "Silverado"),
+        "Ford" to listOf("Figo", "Focus", "Explorer", "F-150"),
+        "Nissan" to listOf("Versa", "Sentra", "March", "Frontier"),
+        "Mazda" to listOf("Mazda 3", "CX-5", "MX-5"),
+        "Audi" to listOf("A3", "A4", "Q5", "Q7"),
+        "Dodge" to listOf("Attitude", "Journey", "Ram")
+    )
+
+    private fun configurarSpinnerTipoManual() {
+        // 1. Llenar Marcas (El Spinner "Padre")
+        val marcas = datosVehiculos.keys.toList()
+        val adapterMarca = ArrayAdapter(this, android.R.layout.simple_spinner_item, marcas)
+        adapterMarca.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerMarcaManual.adapter = adapterMarca
+
+        val listaTipos = listOf("Automovil", "Camioneta", "Suv")
+        val adapterTipo = ArrayAdapter(this, android.R.layout.simple_spinner_item, listaTipos)
+        adapterTipo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerTipoManual.adapter = adapterTipo
+
+        // 2. Llenar Colores (Indiferente)
+        val colores = listOf("Blanco", "Negro", "Gris", "Plata", "Rojo", "Azul")
+        spinnerColorManual.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, colores).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+
+        // 3. Lógica de Dependencia: Cuando cambia la Marca, actualiza el Modelo
+        spinnerMarcaManual.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val marcaSeleccionada = marcas[position]
+                val modelosCorrespondientes = datosVehiculos[marcaSeleccionada] ?: listOf("N/A")
+
+                // Actualizamos el Spinner de Modelos con la lista filtrada
+                val adapterModelo = ArrayAdapter(this@InfraccionesActivity, android.R.layout.simple_spinner_item, modelosCorrespondientes)
+                adapterModelo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinnerModeloManual.adapter = adapterModelo
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+    }
+
+    private fun configurarListenersManuales() {
+        cbVehiculoForaneo.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                layoutVehiculoLectura.visibility = View.GONE
+                layoutVehiculoManual.visibility = View.VISIBLE
+                btnConsultarPlaca.visibility = View.GONE
+                placaValida = true // Habilitamos el paso si es manual
+            } else {
+                layoutVehiculoLectura.visibility = View.VISIBLE
+                layoutVehiculoManual.visibility = View.GONE
+                btnConsultarPlaca.visibility = View.VISIBLE
+                placaValida = false // Requiere consulta de nuevo
+            }
+        }
+
+        cbSinLicencia.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                layoutLicenciaLectura.visibility = View.GONE
+                layoutLicenciaManual.visibility = View.VISIBLE
+                btnValidarLicencia.visibility = View.GONE
+                licenciaValida = true // Habilitamos el paso si es manual
+            } else {
+
+                layoutLicenciaLectura.visibility = View.VISIBLE
+                layoutLicenciaManual.visibility = View.GONE
+                btnValidarLicencia.visibility = View.VISIBLE
+                licenciaValida = false // Requiere validación de nuevo
+            }
         }
     }
 

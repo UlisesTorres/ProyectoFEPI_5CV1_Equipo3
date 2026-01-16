@@ -70,4 +70,16 @@ object RetrofitSecureClient {
         retrofit.create(TipoInfraccionApiService::class.java)
     }
 
+    val vehiculoApiService: VehiculoApiService by lazy {
+        retrofit.create(VehiculoApiService::class.java)
+    }
+
+    val licenciaApiService: LicenciaApiService by lazy {
+        retrofit.create(LicenciaApiService::class.java)
+    }
+
+    val pagoApiService: PagoApiService by lazy {
+        retrofit.create(PagoApiService::class.java)
+    }
+
 }

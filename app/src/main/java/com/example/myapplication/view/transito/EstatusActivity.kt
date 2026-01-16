@@ -9,6 +9,7 @@ import androidx.activity.ComponentActivity
 import androidx.core.content.ContextCompat
 import com.example.myapplication.R
 import com.example.myapplication.model.transito.EstatusModel
+import com.example.myapplication.model.transito.TipoResultado
 import com.example.myapplication.presenter.transito.EstatusPresenter
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputEditText
@@ -63,22 +64,56 @@ class EstatusActivity : ComponentActivity(), EstatusContract.View {
         btnConsultar.isEnabled = true
     }
 
-    override fun mostrarEstatus(mensaje: String, esValido: Boolean) {
+    override fun mostrarEstatus(mensaje: String, tipo: TipoResultado) {
         cardResultado.visibility = View.VISIBLE
 
-        // El 'mensaje' que viene del modelo ya es bastante completo.
-        // Lo dividimos para ponerlo en los TextViews correspondientes.
-        val partesMensaje = mensaje.split("\n")
+        when (tipo) {
+            TipoResultado.VIGENTE -> {
+                tvStatusResultado.text = "VIGENTE"
+                tvStatusResultado.setTextColor(
+                    ContextCompat.getColor(this, R.color.verde_vigente)
+                )
+                tvTiempoRestante.text = mensaje
+            }
 
-        if (esValido) {
-            tvStatusResultado.text = "VIGENTE"
-            tvStatusResultado.setTextColor(ContextCompat.getColor(this, R.color.verde_vigente)) // Usa un color de colors.xml
-            tvTiempoRestante.text = partesMensaje.getOrElse(2) { "" } // Muestra la zona
+            TipoResultado.EXPIRADO -> {
+                tvStatusResultado.text = "EXPIRADO"
+                tvStatusResultado.setTextColor(
+                    ContextCompat.getColor(this, R.color.naranja_precaucion)
+                )
+                tvTiempoRestante.text = mensaje
+            }
+
+            TipoResultado.NO_ENCONTRADO -> {
+                tvStatusResultado.text = "NO ENCONTRADO"
+                tvStatusResultado.setTextColor(
+                    ContextCompat.getColor(this, R.color.rojo_error)
+                )
+                tvTiempoRestante.text = mensaje
+            }
+
+            TipoResultado.ERROR_SERVIDOR -> {
+                tvStatusResultado.text = "SE PERDIO LA CONEXION CON EL SERVIDOR"
+                tvStatusResultado.setTextColor(
+                    ContextCompat.getColor(this, R.color.verde_claro)
+                )
+                tvTiempoRestante.text = mensaje
+            }
+
+            TipoResultado.ERROR_RED -> {
+                tvStatusResultado.text = "NO HAY INTERNET/RED DISPONIBLE"
+                tvStatusResultado.setTextColor(
+                    ContextCompat.getColor(this, R.color.rosa)
+                )
+                tvTiempoRestante.text = mensaje
+            }
+
+
         }
 
-        // Ocultamos el textview de la hora de vencimiento ya que no tenemos ese dato por ahora
         findViewById<TextView>(R.id.tvHoraVencimiento).visibility = View.GONE
     }
+
 
     override fun mostrarError(error: String) {
         cardResultado.visibility = View.VISIBLE
