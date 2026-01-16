@@ -56,7 +56,6 @@ class SupervisorHistorialActivity : ComponentActivity(), HistorialInfraccionesCo
 
     override fun navegarADetalleInfraccion(infraccion: InfraccionData) {
         val intent = Intent(this, DetalleInfraccionActivity::class.java).apply {
-            // ¡IMPORTANTE! Pasar documentId
             putExtra("EXTRA_DOCUMENT_ID", infraccion.documentId ?: "")
             putExtra("EXTRA_ID", infraccion.id ?: -1)
             putExtra("EXTRA_FOLIO", infraccion.folio ?: "S/F")
@@ -70,15 +69,15 @@ class SupervisorHistorialActivity : ComponentActivity(), HistorialInfraccionesCo
                     val gson = Gson()
                     val root = gson.toJsonTree(evidencia).asJsonObject
                     val data = root.get("data")
-                    if (!data.isJsonNull) {
+                    if (data != null && !data.isJsonNull) {
                         val list = if (data.isJsonArray) data.asJsonArray else listOf(data.asJsonObject)
                         list.forEach { item ->
-                            val itemObj = if (item is JsonObject) item else item.asJsonObject
+                            val itemObj = item.asJsonObject
                             fotosUrls.add(itemObj.get("attributes").asJsonObject.get("url").asString)
                         }
                     }
                 } catch (e: Exception) {
-                    android.util.Log.e("NAVEGAR_DETALLE", "Error procesando evidencia: ${e.message}")
+                    android.util.Log.e("NAVEGAR_DETALLE", "Error evidencia: ${e.message}")
                 }
             }
             putStringArrayListExtra("EXTRA_FOTOS", ArrayList(fotosUrls))
@@ -88,19 +87,15 @@ class SupervisorHistorialActivity : ComponentActivity(), HistorialInfraccionesCo
                     val gson = Gson()
                     val root = gson.toJsonTree(firma).asJsonObject
                     val data = root.get("data")
-                    if (!data.isJsonNull) {
+                    if (data != null && !data.isJsonNull) {
                         val dataObj = data.asJsonObject
                         putExtra("EXTRA_FIRMA", dataObj.get("attributes").asJsonObject.get("url").asString)
                     }
                 } catch (e: Exception) {
-                    android.util.Log.e("NAVEGAR_DETALLE", "Error procesando firma: ${e.message}")
+                    android.util.Log.e("NAVEGAR_DETALLE", "Error firma: ${e.message}")
                 }
             }
         }
-
-        // Log para debug
-        android.util.Log.d("NAVEGAR_DETALLE", "Enviando DocumentId: ${infraccion.documentId}")
-
         startActivity(intent)
     }
 

@@ -12,10 +12,10 @@ import com.google.android.material.textfield.TextInputEditText
 class RegistrarIngresoActivity : ComponentActivity(), RegistrarIngresoContract.View {
 
     private lateinit var presenter: RegistrarIngresoContract.Presenter
-    private lateinit var etPlaca: TextInputEditText
     private lateinit var etFolio: TextInputEditText
-    private lateinit var etMarca: TextInputEditText
-    private lateinit var etEstado: TextInputEditText
+    private lateinit var etPlaca: TextInputEditText
+    private lateinit var etNombreCorralon: TextInputEditText
+    private lateinit var etDireccionCorralon: TextInputEditText
     private lateinit var btnRegistrar: MaterialButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,46 +24,47 @@ class RegistrarIngresoActivity : ComponentActivity(), RegistrarIngresoContract.V
 
         presenter = RegistrarIngresoPresenter(this, RegistrarIngresoModel())
 
-        // Vincular con los nuevos IDs del XML
-        val btnBuscar = findViewById<MaterialButton>(R.id.btnBuscarFolio)
-        etFolio = findViewById(R.id.etFolioArrastre) // <-- CAMBIO AQUÍ
+        etFolio = findViewById(R.id.etFolioArrastre)
         etPlaca = findViewById(R.id.etPlaca)
-        etMarca = findViewById(R.id.etMarcaModelo)
-        etEstado = findViewById(R.id.etEstadoVehiculo)
-        btnRegistrar = findViewById(R.id.btnGuardarRegistro) // <-- CAMBIO AQUÍ
+        etNombreCorralon = findViewById(R.id.etNombreCorralon)
+        etDireccionCorralon = findViewById(R.id.etDireccionCorralon)
+        
+        val btnBuscar = findViewById<MaterialButton>(R.id.btnBuscarFolio)
+        btnRegistrar = findViewById(R.id.btnGuardarRegistro)
 
         btnBuscar.setOnClickListener {
-            val folio = etFolio.text.toString()
-            if (folio.isNotEmpty()) {
-                presenter.buscarFolio(folio)
-            } else {
-                etFolio.error = "Ingresa un folio"
-            }
+            presenter.buscarFolio(etFolio.text.toString())
         }
 
         btnRegistrar.setOnClickListener {
-            // Lógica para guardar el registro
-            Toast.makeText(this, "Registro finalizado", Toast.LENGTH_SHORT).show()
-            finish()
+            val nombre = etNombreCorralon.text.toString()
+            val direccion = etDireccionCorralon.text.toString()
+            presenter.registrarIngreso(nombre, direccion)
         }
     }
 
     override fun llenarDatosVehiculo(placa: String) {
         etPlaca.setText(placa)
-        Toast.makeText(this, "Datos cargados correctamente", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun mostrarCargando() {}
-    override fun ocultarCargando() {}
-
-    override fun mostrarError(mensaje: String) {
-        etFolio.error = mensaje
-        Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "Vehículo identificado", Toast.LENGTH_SHORT).show()
     }
 
     override fun habilitarRegistro(habilitar: Boolean) {
         btnRegistrar.isEnabled = habilitar
     }
+
+    override fun limpiarFormulario() {
+        etFolio.text?.clear()
+        etPlaca.text?.clear()
+        etNombreCorralon.text?.clear()
+        etDireccionCorralon.text?.clear()
+    }
+
+    override fun mostrarError(mensaje: String) {
+        Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show()
+    }
+
+    override fun mostrarCargando() {}
+    override fun ocultarCargando() {}
 
     override fun onDestroy() {
         super.onDestroy()

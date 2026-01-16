@@ -8,30 +8,27 @@ class LiberarPresenter(
     private val model: LiberarModel
 ) : LiberarContract.Presenter {
 
-    override fun buscarVehiculoParaLiberar(identificador: String) {
-        if (identificador.isEmpty()) {
-            view?.mostrarError("Ingresa una placa o folio")
-            return
-        }
+    override fun cargarVehiculos() {
         view?.mostrarCargando()
-        model.consultarVehiculoAlmacenado(identificador) { datos, exito ->
+        model.obtenerVehiculosParaLiberar { lista, exito ->
             view?.ocultarCargando()
-            if (exito && datos != null) {
-                view?.mostrarDatosVehiculo(datos)
+            if (exito && lista != null) {
+                view?.mostrarVehiculosParaLiberar(lista)
             } else {
-                view?.mostrarError("Vehículo no encontrado o ya liberado")
+                view?.mostrarError("Error al cargar vehículos")
             }
         }
     }
 
-    override fun procesarLiberacion(idVehiculo: String) {
+    override fun liberarVehiculo(id: String) {
         view?.mostrarCargando()
-        model.registrarSalida(idVehiculo) { exito ->
+        model.liberarVehiculo(id) { exito ->
             view?.ocultarCargando()
             if (exito) {
-                view?.confirmarSalidaExitosa()
+                view?.removerVehiculoDeLista(id)
+                view?.mostrarError("✅ Vehículo liberado correctamente")
             } else {
-                view?.mostrarError("Error al procesar la salida")
+                view?.mostrarError("❌ Error al liberar el vehículo")
             }
         }
     }

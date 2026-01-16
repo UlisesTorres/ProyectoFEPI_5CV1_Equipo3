@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp">
+    android:background="#121212">
 
     <TextView
         android:id="@+id/tvTituloLiberacion"
@@ -11,108 +12,39 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Liberación de Vehículo"
+        android:layout_marginHorizontal="24dp"
+        android:text="Vehículos en Depósito"
+        android:textColor="@android:color/white"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilBuscarPlaca"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+    <TextView
+        android:id="@+id/tvSubtituloLiberacion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:hint="Placa del vehículo"
-        app:boxCornerRadiusBottomEnd="30dp"
-        app:boxCornerRadiusBottomStart="30dp"
-        app:boxCornerRadiusTopEnd="30dp"
-        app:boxCornerRadiusTopStart="30dp"
-        app:startIconDrawable="@android:drawable/ic_menu_search"
-        app:layout_constraintTop_toBottomOf="@+id/tvTituloLiberacion">
+        android:layout_marginHorizontal="24dp"
+        android:text="Selecciona un vehículo para procesar su salida"
+        android:textColor="#BBBBBB"
+        android:alpha="0.8"
+        app:layout_constraintTop_toBottomOf="@+id/tvTituloLiberacion" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etBuscarPlaca"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAllCaps="true"
-            android:inputType="textCapCharacters" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardDetallesVehiculo"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvLiberarVehiculos"
         android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSubtituloLiberacion"
+        tools:listitem="@layout/item_liberar_card" />
+
+    <ProgressBar
+        android:id="@+id/pbLiberar"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:visibility="gone"
-        app:cardCornerRadius="24dp"
-        app:cardElevation="2dp"
-        app:strokeColor="#E0E0E0"
-        app:strokeWidth="1dp"
-        app:layout_constraintTop_toBottomOf="@+id/tilBuscarPlaca">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
-
-            <TextView
-                android:id="@+id/tvDetallePlaca"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Placa: ---"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvFechaIngreso"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Ingreso: 05/01/2026"
-                android:alpha="0.7" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipEstatusPago"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="ESTADO DE PAGO"
-                android:textColor="@android:color/white"
-                app:chipCornerRadius="15dp" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilNombreRecibe"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:hint="Nombre de quien recibe"
-        android:visibility="gone"
-        app:boxCornerRadiusBottomEnd="30dp"
-        app:boxCornerRadiusBottomStart="30dp"
-        app:boxCornerRadiusTopEnd="30dp"
-        app:boxCornerRadiusTopStart="30dp"
-        app:startIconDrawable="@android:drawable/ic_menu_myplaces"
-        app:layout_constraintTop_toBottomOf="@+id/cardDetallesVehiculo">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnFinalizarSalida"
-        android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:layout_marginTop="32dp"
-        android:text="Confirmar Liberación"
-        android:textAllCaps="false"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:visibility="gone"
-        app:cornerRadius="35dp"
-        app:layout_constraintTop_toBottomOf="@+id/tilNombreRecibe" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

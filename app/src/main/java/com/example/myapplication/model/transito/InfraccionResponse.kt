@@ -1,10 +1,8 @@
 package com.example.myapplication.model.transito
 
+import com.example.myapplication.model.corralones.PagoInfo
 import com.google.gson.annotations.SerializedName
 
-/**
- * Modelo FLAT (Plano) para coincidir con la respuesta transformada de Strapi.
- */
 data class InfraccionesResponse(
     @SerializedName("data")
     val data: List<InfraccionData>? = null
@@ -14,7 +12,7 @@ data class InfraccionData(
     @SerializedName("id")
     val id: Int? = null,
 
-    @SerializedName("documentId")  // ¡NUEVO! Necesario para Strapi v5
+    @SerializedName("documentId")
     val documentId: String?,
 
     @SerializedName("folio")
@@ -23,11 +21,20 @@ data class InfraccionData(
     @SerializedName("placa_vehiculo")
     val placa_vehiculo: String? = null,
 
+    @SerializedName("marca_vehiculo")
+    val marca: String? = null,
+
+    @SerializedName("modelo_vehiculo")
+    val modelo: String? = null,
+
     @SerializedName("fecha_infraccion")
     val fecha_infraccion: String? = null,
 
     @SerializedName("ubicacion_infraccion")
     val ubicacion_infraccion: String? = null,
+
+    @SerializedName("pago") 
+    val pago: PagoInfo? = null,
 
     @SerializedName("validacion")
     val validacion: Int? = 0,

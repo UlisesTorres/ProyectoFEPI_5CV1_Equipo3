@@ -24,7 +24,6 @@ class CorralonesActivity : ComponentActivity(), CorralonContract.View {
         findViewById<Button>(R.id.btnIngresoVehiculo).setOnClickListener { presenter.alClickIngreso() }
         findViewById<Button>(R.id.btnInventario).setOnClickListener { presenter.alClickInventario() }
         findViewById<Button>(R.id.btnSalidaVehiculo).setOnClickListener { presenter.alClickSalida() }
-        findViewById<Button>(R.id.btnHistorialMovimientos).setOnClickListener { presenter.alClickHistorial() }
         findViewById<Button>(R.id.btnConfiguracion).setOnClickListener { presenter.alClickConfiguracion() }
     }
 
@@ -43,7 +42,7 @@ class CorralonesActivity : ComponentActivity(), CorralonContract.View {
     }
 
     override fun navegarAHistorial() {
-        startActivity(Intent(this, HistorialCorralonActivity::class.java))
+        // Esta función se mantiene por contrato pero ya no se dispara desde el botón eliminado
     }
 
 

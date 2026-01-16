@@ -1,38 +1,50 @@
 package com.example.myapplication.model.corralones
 
+import android.util.Log
+import com.example.myapplication.network.RetrofitSecureClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
 class InventarioModel {
+    
     fun obtenerAutosAlmacenados(callback: (List<VehiculoInventario>?, Boolean) -> Unit) {
-        // Datos de prueba basados en los requerimientos del chat
-        val inventarioFake = listOf(
-            VehiculoInventario(
-                id = "1",
-                folio = "ARR-7721",
-                placa = "TSM-1234",
-                estatus = "Retenido",
-                fechaIngreso = "2024-01-12",
-                ubicacion = "Patio A - Fila 3",
-                observaciones = "Falla mecánica, sin llanta de refacción"
-            ),
-            VehiculoInventario(
-                id = "2",
-                folio = "ARR-8842",
-                placa = "URY-5678",
-                estatus = "En Espera",
-                fechaIngreso = "2024-01-14",
-                ubicacion = "Patio B - Fila 1",
-                observaciones = "Espejo lateral derecho roto"
-            ),
-            VehiculoInventario(
-                id = "3",
-                folio = "ARR-9910",
-                placa = "VBT-9012",
-                estatus = "Listo para Entrega",
-                fechaIngreso = "2024-01-15",
-                ubicacion = "Zona de Salida",
-                observaciones = "Ninguna"
-            )
-        )
-        // Simulamos que la respuesta fue exitosa
-        callback(inventarioFake, true)
+        // Corregido: populate profundo para obtener el pago de la infracción
+        RetrofitSecureClient.infraccionApiService.getInventarioReal()
+            .enqueue(object : Callback<InventarioCorralonResponse> {
+                override fun onResponse(
+                    call: Call<InventarioCorralonResponse>,
+                    response: Response<InventarioCorralonResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        val body = response.body()
+                        
+                        val listaMapeada = body?.data?.map { data ->
+                            val infraccion = data.infraccion
+                            // El estatus ahora viene anidado en la infracción
+                            val estatusPago = infraccion?.pago?.estatus ?: "pendiente"
+                            
+                            VehiculoInventario(
+                                id = data.id.toString(),
+                                documentId = data.documentId ?: "",
+                                folio = infraccion?.folio ?: "S/F",
+                                placa = infraccion?.placa_vehiculo ?: "S/P",
+                                estatus = "En Depósito",
+                                fechaIngreso = infraccion?.fecha_infraccion?.substringBefore("T") ?: "N/A",
+                                ubicacion = data.nombre_corralon ?: "Corralón",
+                                observaciones = data.direccion_corralon ?: "Sin obs.",
+                                pagoEstatus = estatusPago
+                            )
+                        }
+                        callback(listaMapeada, true)
+                    } else {
+                        callback(null, false)
+                    }
+                }
+
+                override fun onFailure(call: Call<InventarioCorralonResponse>, t: Throwable) {
+                    callback(null, false)
+                }
+            })
     }
 }

@@ -1,17 +1,19 @@
 package com.example.myapplication.view.corralones
 
+import com.example.myapplication.model.corralones.VehiculoInventario
+
 interface LiberarContract {
     interface View {
         fun mostrarCargando()
         fun ocultarCargando()
-        fun mostrarDatosVehiculo(detalles: String)
+        fun mostrarVehiculosParaLiberar(vehiculos: List<VehiculoInventario>)
         fun mostrarError(mensaje: String)
-        fun confirmarSalidaExitosa()
+        fun removerVehiculoDeLista(documentId: String)
     }
 
     interface Presenter {
-        fun buscarVehiculoParaLiberar(identificador: String)
-        fun procesarLiberacion(idVehiculo: String)
+        fun cargarVehiculos()
+        fun liberarVehiculo(documentId: String)
         fun destruir()
     }
 }
