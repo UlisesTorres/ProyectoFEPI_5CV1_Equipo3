@@ -91,4 +91,5 @@
     <string name="_5_geolocalizaci_n">5. Geolocalización</string>
     <string name="direcci_n_del_incidente">Dirección del incidente</string>
     <string name="siguiente">SIGUIENTE</string>
+    <string name="firma_de_infractor">Firma de Infractor</string>
 </resources>

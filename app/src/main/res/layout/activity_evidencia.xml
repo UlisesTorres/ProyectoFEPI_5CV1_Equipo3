@@ -104,7 +104,7 @@
                     android:id="@+id/tvTituloFirma"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/firma_del_oficial"
+                    android:text="@string/firma_de_infractor"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="?attr/colorPrimary" />
