@@ -1,7 +1,8 @@
 package com.example.myapplication.model.corralones
 
-import android.util.Log
+import com.example.myapplication.model.transito.InfraccionData
 import com.example.myapplication.network.RetrofitSecureClient
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -9,7 +10,6 @@ import retrofit2.Response
 class InventarioModel {
     
     fun obtenerAutosAlmacenados(callback: (List<VehiculoInventario>?, Boolean) -> Unit) {
-        // Corregido: populate profundo para obtener el pago de la infracción
         RetrofitSecureClient.infraccionApiService.getInventarioReal()
             .enqueue(object : Callback<InventarioCorralonResponse> {
                 override fun onResponse(
@@ -18,11 +18,9 @@ class InventarioModel {
                 ) {
                     if (response.isSuccessful) {
                         val body = response.body()
-                        
                         val listaMapeada = body?.data?.map { data ->
                             val infraccion = data.infraccion
-                            // El estatus ahora viene anidado en la infracción
-                            val estatusPago = infraccion?.pago?.estatus ?: "pendiente"
+                            val estatusPago = extraerEstatusPago(infraccion)
                             
                             VehiculoInventario(
                                 id = data.id.toString(),
@@ -46,5 +44,36 @@ class InventarioModel {
                     callback(null, false)
                 }
             })
+    }
+
+    private fun extraerEstatusPago(infraccion: InfraccionData?): String {
+        // Buscamos en 'pago' o 'pagos' (plural)
+        val rawPago = infraccion?.pago ?: infraccion?.pagos ?: return "pendiente"
+        return try {
+            val gson = Gson()
+            val jsonPago = gson.toJsonTree(rawPago)
+            
+            val finalObj = if (jsonPago.isJsonObject) {
+                val obj = jsonPago.asJsonObject
+                // Caso Strapi v5 aplanado o con data/attributes
+                if (obj.has("data") && !obj.get("data").isJsonNull) {
+                    val data = obj.get("data")
+                    if (data.isJsonObject) data.asJsonObject.get("attributes")?.asJsonObject ?: data.asJsonObject
+                    else if (data.isJsonArray && data.asJsonArray.size() > 0) data.asJsonArray.get(0).asJsonObject.get("attributes")?.asJsonObject ?: data.asJsonArray.get(0).asJsonObject
+                    else null
+                } else {
+                    obj.get("attributes")?.asJsonObject ?: obj
+                }
+            } else if (jsonPago.isJsonArray && jsonPago.asJsonArray.size() > 0) {
+                val first = jsonPago.asJsonArray.get(0).asJsonObject
+                first.get("attributes")?.asJsonObject ?: first
+            } else {
+                null
+            }
+
+            finalObj?.get("estatus")?.asString ?: "pendiente"
+        } catch (e: Exception) {
+            "pendiente"
+        }
     }
 }

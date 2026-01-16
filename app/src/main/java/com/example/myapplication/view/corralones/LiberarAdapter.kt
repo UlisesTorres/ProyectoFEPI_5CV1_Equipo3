@@ -54,8 +54,8 @@ class LiberarAdapter(
             else -> { // pendiente
                 holder.chipPago.text = "PENDIENTE"
                 holder.chipPago.chipBackgroundColor = ColorStateList.valueOf(Color.parseColor("#FF9800")) // Naranja
-                holder.btnLiberar.isEnabled = false
-                holder.btnLiberar.alpha = 0.5f
+                holder.btnLiberar.isEnabled = true
+                holder.btnLiberar.alpha = 1.0f
             }
         }
 

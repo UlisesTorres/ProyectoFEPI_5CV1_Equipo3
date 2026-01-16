@@ -1,6 +1,5 @@
 package com.example.myapplication.model.transito
 
-import com.example.myapplication.model.corralones.PagoInfo
 import com.google.gson.annotations.SerializedName
 
 data class InfraccionesResponse(
@@ -34,7 +33,10 @@ data class InfraccionData(
     val ubicacion_infraccion: String? = null,
 
     @SerializedName("pago") 
-    val pago: PagoInfo? = null,
+    val pago: Any? = null,
+
+    @SerializedName("pagos") // A veces Strapi pluraliza relaciones
+    val pagos: Any? = null,
 
     @SerializedName("validacion")
     val validacion: Int? = 0,

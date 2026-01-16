@@ -1,6 +1,8 @@
 package com.example.myapplication.model.corralones
 
+import com.example.myapplication.model.transito.InfraccionData
 import com.example.myapplication.network.RetrofitSecureClient
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -15,8 +17,7 @@ class LiberarModel {
                     if (response.isSuccessful) {
                         val lista = response.body()?.data?.map { data ->
                             val infraccion = data.infraccion
-                            // Buscamos el estatus del pago dentro de la infracción
-                            val estatusPago = infraccion?.pago?.estatus ?: "pendiente"
+                            val estatusPago = extraerEstatusPago(infraccion)
                             
                             VehiculoInventario(
                                 id = data.id.toString(),
@@ -39,6 +40,32 @@ class LiberarModel {
                     callback(null, false)
                 }
             })
+    }
+
+    private fun extraerEstatusPago(infraccion: InfraccionData?): String {
+        val rawPago = infraccion?.pago ?: return "pendiente"
+        return try {
+            val gson = Gson()
+            val jsonPago = gson.toJsonTree(rawPago).asJsonObject
+            
+            // Strapi v5 anida las relaciones en un objeto 'data'
+            val data = jsonPago.get("data")
+            if (data != null && !data.isJsonNull) {
+                // Si es un objeto único
+                if (data.isJsonObject) {
+                    data.asJsonObject.get("attributes").asJsonObject.get("estatus").asString
+                } else if (data.isJsonArray && data.asJsonArray.size() > 0) {
+                    // Si viene como array (a veces Strapi lo hace)
+                    data.asJsonArray.get(0).asJsonObject.get("attributes").asJsonObject.get("estatus").asString
+                } else {
+                    "pendiente"
+                }
+            } else {
+                "pendiente"
+            }
+        } catch (e: Exception) {
+            "pendiente"
+        }
     }
 
     fun liberarVehiculo(documentId: String, callback: (Boolean) -> Unit) {
