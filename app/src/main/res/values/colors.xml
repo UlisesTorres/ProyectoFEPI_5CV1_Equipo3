@@ -12,5 +12,8 @@
     <color name="guinda_light">#A00030</color>
     <color name="verde_vigente">#4CAF50</color>
     <color name="rojo_error">#F44336</color>
+    <color name="naranja_precaucion">#db7318</color>
+    <color name="verde_claro">#24a38c</color>
+    <color name="rosa">#a3248a</color>
 
 </resources>

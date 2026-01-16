@@ -13,7 +13,8 @@ interface ParquimetroApiService {
 
 
     @GET("api/consulta-parquimetros")
-    fun consultarEstatusParquimetro( //
-        @Query("filters[placa_vehiculo][\$eq]") placa: String
+    fun consultarEstatusParquimetro(
+        @Query("filters[placa][\$eq]") placa: String,
     ): Call<ParquimetroResponse>
+
 }

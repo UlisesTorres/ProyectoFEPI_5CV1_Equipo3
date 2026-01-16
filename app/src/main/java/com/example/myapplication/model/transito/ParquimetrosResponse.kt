@@ -15,19 +15,16 @@ import com.google.gson.annotations.SerializedName
  * Esta clase AHORA representa cada objeto dentro del array "data".
  */
 data class ParquimetroAttributes(
-    // --- Asegúrate de que todos estos campos estén presentes ---
 
-    @SerializedName("fecha_inicio")
-    val fechaInicio: String,
+    @SerializedName("placa")
+    val placa: String,
 
-    @SerializedName("zona")
-    val zona: String,
+    @SerializedName("fecha")
+    val fecha: String,
 
-    // --- El compilador no encuentra este campo ---
-    @SerializedName("vigente")
-    val vigente: Boolean,
+    @SerializedName("hora_inicio")
+    val horaInicio: String,
 
-    // --- Y tampoco encuentra este campo ---
-    @SerializedName("placa_vehiculo")
-    val placaVehiculo: String
+    @SerializedName("hora_termino")
+    val horaTermino: String
 )

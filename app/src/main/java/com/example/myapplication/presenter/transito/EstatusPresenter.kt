@@ -21,11 +21,11 @@ class EstatusPresenter(
             when (resultado.tipo) {
                 TipoResultado.VIGENTE -> {
                     // Este es el único caso que debe llamar a mostrarEstatus()
-                    view?.mostrarEstatus(resultado.mensaje, true)
+                    view?.mostrarEstatus(resultado.mensaje, resultado.tipo)
                 }
                 // --- INICIO DE LA CORRECCIÓN ---
                 // Agrupamos todos los casos "no válidos" para que llamen a mostrarError()
-                TipoResultado.CADUCADO,
+                TipoResultado.EXPIRADO,
                 TipoResultado.NO_ENCONTRADO,
                 TipoResultado.ERROR_SERVIDOR,
                 TipoResultado.ERROR_RED -> {
