@@ -36,6 +36,11 @@ class EstatusPresenter(
         }
     }
 
+
+
+
+
+
     override fun destruir() {
         view = null
     }

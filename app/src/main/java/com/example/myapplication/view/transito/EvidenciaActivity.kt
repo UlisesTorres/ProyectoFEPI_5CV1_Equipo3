@@ -51,10 +51,19 @@ class EvidenciaActivity : ComponentActivity() {
     private var direccion: String? = null
     private var fechaInfraccion: String? = null
     private var tipoInfraccionesIds: List<Int> = emptyList()
-
     private var articulosSeleccionadosIds: List<Int> = emptyList()
 
-    // Launcher corregido: Solo agrega a la lista si la foto se tomó con éxito
+    // Variables para almacenar los datos recibidos
+    private var tipoVehiculo: String? = null
+    private var marcaVehiculo: String? = null
+    private var modeloVehiculo: String? = null
+    private var colorVehiculo: String? = null
+    private var nombreConductor: String? = null
+
+    private var esVehiculoManual = false
+    private var esConductorManual = false
+
+
     private val cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success) {
             val nombreArchivo = fotoActualUri.lastPathSegment ?: ""
@@ -83,6 +92,9 @@ class EvidenciaActivity : ComponentActivity() {
         articulosSeleccionadosIds = intent.getIntegerArrayListExtra("ARTICULOS_IDS") ?: emptyList()
 
 
+        recibirDatosInfraccion()
+
+
         // Inicializar vistas
         layoutFotos = findViewById(R.id.layoutFotosEvidencia)
         signaturePad = findViewById(R.id.signaturePad)
@@ -91,6 +103,10 @@ class EvidenciaActivity : ComponentActivity() {
         // Configuración de bloqueo de estado (Evita comportamientos extraños en recreación)
         layoutFotos.isSaveEnabled = false
         signaturePad.isSaveEnabled = false
+
+        Log.d("DEPURACION", "Vehiculo Manual: $esVehiculoManual")
+        Log.d("DEPURACION", "Conductor Manual: $esConductorManual")
+        Log.d("DEPURACION", "Marca: $marcaVehiculo")
 
         // Manejo del botón atrás
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -121,6 +137,23 @@ class EvidenciaActivity : ComponentActivity() {
             validarYEnviar()
         }
     }
+
+    private fun recibirDatosInfraccion() {
+
+        // 3. Datos del Vehículo (Vienen de Spinner o TextView según la lógica anterior)
+        tipoVehiculo = intent.getStringExtra("VEHICULO_TIPO")
+        marcaVehiculo = intent.getStringExtra("VEHICULO_MARCA")
+        modeloVehiculo = intent.getStringExtra("VEHICULO_MODELO")
+        colorVehiculo = intent.getStringExtra("VEHICULO_COLOR")
+
+        // 4. Datos del Conductor
+        nombreConductor = intent.getStringExtra("CONDUCTOR_NOMBRE")
+
+        esVehiculoManual = intent.getBooleanExtra("ES_FORANEO", false)
+        esConductorManual = intent.getBooleanExtra("ES_MANUAL_CONDUCTOR", false)
+    }
+
+
 
     private fun crearUriFoto(): Uri {
         val archivo = File(
@@ -191,11 +224,94 @@ class EvidenciaActivity : ComponentActivity() {
     private fun validarYEnviar() {
         if (signaturePad.isEmpty) {
             Toast.makeText(this, "La firma es obligatoria", Toast.LENGTH_LONG).show()
-        } else if (contadorFotos == 0) {
+            return
+        }
+        if (contadorFotos == 0) {
             Toast.makeText(this, "Debes incluir al menos una foto", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (esVehiculoManual || esConductorManual) {
+            // RUTA B: Registra en tablas externas y luego llama a enviarEvidenciaAlServidor
+            registrarDatosNuevosYCrearInfraccion()
         } else {
+            // RUTA A: Usamos los IDs que ya existían (recuperados por el intent)
+            val vehiculoIdExistente = intent.getIntExtra("VEHICULO_ID", -1)
+            val licenciaIdExistente = intent.getIntExtra("LICENCIA_ID", -1)
+
             val archivoFirma = prepararArchivoFirma()
-            enviarEvidenciaAlServidor(placas, direccion, archivoFirma, listaArchivosFotos)
+
+            // Enviamos directamente con los IDs que ya tenemos
+            enviarEvidenciaAlServidor(
+                placas,
+                direccion,
+                archivoFirma,
+                listaArchivosFotos,
+                if (vehiculoIdExistente != -1) vehiculoIdExistente else null,
+                if (licenciaIdExistente != -1) licenciaIdExistente else null
+            )
+        }
+    }
+
+    private fun registrarDatosNuevosYCrearInfraccion() {
+        val progressDialog = AlertDialog.Builder(this)
+            .setTitle("Sincronizando")
+            .setMessage("Registrando datos manuales...")
+            .setCancelable(false)
+            .show()
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            // Ejecutamos las inserciones en paralelo o secuencia
+            if (esVehiculoManual) crearVehiculoEnStrapi()
+            if (esConductorManual) crearLicenciaEnStrapi()
+
+            // Una vez terminadas (exitosas o no), enviamos la infracción
+            withContext(Dispatchers.Main) {
+                progressDialog.dismiss()
+                val archivoFirma = prepararArchivoFirma()
+                // Llamas a tu función original tal cual la tenías
+                enviarEvidenciaAlServidor(placas, direccion, archivoFirma, listaArchivosFotos)
+            }
+        }
+    }
+
+    private suspend fun crearVehiculoEnStrapi(): Boolean {
+        val json = JSONObject().apply {
+            put("data", JSONObject().apply {
+                put("placa_id", placas)
+                put("marca", marcaVehiculo)
+                put("modelo", modeloVehiculo)
+                put("color", colorVehiculo)
+                put("tipo", tipoVehiculo)
+            })
+        }
+        return try {
+            val response = RetrofitSecureClient.vehiculoApiService.crearVehiculo(
+                json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+            ).execute()
+            response.isSuccessful
+        } catch (e: Exception) {
+            Log.e("API_ERROR", "Error Vehiculo: ${e.message}")
+            false
+        }
+    }
+
+    private suspend fun crearLicenciaEnStrapi(): Boolean {
+        val json = JSONObject().apply {
+            put("data", JSONObject().apply {
+                put("num_licencia", "MANUAL-${System.currentTimeMillis()}")
+                put("nombre", nombreConductor)
+                // Según tu captura, podrías agregar apellido si lo tienes
+            })
+        }
+        return try {
+            val response = RetrofitSecureClient.licenciaApiService.crearLicencia(
+                json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+            ).execute()
+            response.isSuccessful
+        } catch (e: Exception) {
+            Log.e("API_ERROR", "Error Licencia: ${e.message}")
+            false
         }
     }
 
@@ -236,7 +352,7 @@ class EvidenciaActivity : ComponentActivity() {
     }
 
 
-    private fun enviarEvidenciaAlServidor(placas: String?, direccion: String?, firma: File, fotos: List<File>) {
+    private fun enviarEvidenciaAlServidor(placas: String?, direccion: String?, firma: File, fotos: List<File>, vehiculoId:Int? =null,licenciaId: Int?=null) {
         val progressDialog = AlertDialog.Builder(this)
             .setView(ProgressBar(this).apply { setPadding(40, 40, 40, 40) })
             .setTitle("Guardando Infracción")
@@ -260,6 +376,14 @@ class EvidenciaActivity : ComponentActivity() {
                 put("medio_infraccion", "policia_transito")
                 put("validacion",0)
                 put("oficial_id", usuarioId.toString())
+
+                if (vehiculoId != null) put("vehiculo", vehiculoId)
+                if (licenciaId != null) put("licencia", licenciaId)
+
+                val tipoInfraccionId = tipoInfraccionesIds.firstOrNull()
+                val articuloId = articulosSeleccionadosIds.firstOrNull()
+                if (tipoInfraccionId != null) put("tipo_infraccion_id", tipoInfraccionId)
+                if (articuloId != null) put("articulo_id", articuloId)
 
                 // Para relaciones de UNO a uno/muchos (usar ID directo)
                 if (tipoInfraccionId != null) {
