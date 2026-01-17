@@ -1,0 +1,43 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pagos",
+  "info": {
+    "singularName": "pago",
+    "pluralName": "pagos",
+    "displayName": "pago"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "linea_captura": {
+      "type": "text",
+      "required": true
+    },
+    "monto": {
+      "type": "decimal",
+      "required": false
+    },
+    "vigencia": {
+      "type": "datetime"
+    },
+    "fecha_pago": {
+      "type": "datetime"
+    },
+    "estatus": {
+      "type": "enumeration",
+      "enum": [
+        "pendiente",
+        "pagado",
+        "vencido"
+      ]
+    },
+    "infraccion_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::infraccion.infraccion",
+      "mappedBy": "pago_id"
+    }
+  }
+}

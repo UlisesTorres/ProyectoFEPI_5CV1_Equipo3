@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "tipo_infraccions",
+  "info": {
+    "singularName": "tipo-infraccion",
+    "pluralName": "tipo-infraccions",
+    "displayName": "tipo_infraccion"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "clave": {
+      "type": "string"
+    },
+    "nombre": {
+      "type": "string"
+    },
+    "descripcion": {
+      "type": "text"
+    },
+    "articulo_id": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::articulo.articulo",
+      "mappedBy": "tipo_infraccion_id"
+    },
+    "precio_uma": {
+      "type": "decimal"
+    }
+  }
+}

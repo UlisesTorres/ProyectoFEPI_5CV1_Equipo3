@@ -1,0 +1,44 @@
+{
+  "kind": "collectionType",
+  "collectionName": "licencias",
+  "info": {
+    "singularName": "licencia",
+    "pluralName": "licencias",
+    "displayName": "licencia"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "num_licencia": {
+      "type": "string"
+    },
+    "nombre": {
+      "type": "string"
+    },
+    "apellido": {
+      "type": "string"
+    },
+    "estado_licencia": {
+      "type": "enumeration",
+      "enum": [
+        "Vigente",
+        "Vencida",
+        "Suspendida",
+        "Cancelada"
+      ]
+    },
+    "tipo_licencia": {
+      "type": "enumeration",
+      "enum": [
+        "Clase A",
+        "Clase B",
+        "Clase C"
+      ]
+    },
+    "fecha_vencimiento": {
+      "type": "date"
+    }
+  }
+}

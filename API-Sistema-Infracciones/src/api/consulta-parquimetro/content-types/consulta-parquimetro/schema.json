@@ -1,0 +1,28 @@
+{
+  "kind": "collectionType",
+  "collectionName": "consulta_parquimetros",
+  "info": {
+    "singularName": "consulta-parquimetro",
+    "pluralName": "consulta-parquimetros",
+    "displayName": "consulta_parquimetro"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "placa": {
+      "type": "string",
+      "required": true
+    },
+    "fecha": {
+      "type": "date"
+    },
+    "hora_inicio": {
+      "type": "time"
+    },
+    "hora_termino": {
+      "type": "time"
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "kind": "collectionType",
+  "collectionName": "orden_arrastres",
+  "info": {
+    "singularName": "orden-arrastre",
+    "pluralName": "orden-arrastres",
+    "displayName": "orden_arrastre"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "fecha_ingreso": {
+      "type": "datetime"
+    },
+    "fecha_liberacion": {
+      "type": "datetime"
+    },
+    "estatus": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "en_corralon",
+        "liberado",
+        "en_transito_por_coche",
+        "en_transito_a_corralon"
+      ]
+    },
+    "operador_grua": {
+      "type": "string",
+      "required": true
+    },
+    "grua_identificador": {
+      "type": "string",
+      "required": true
+    },
+    "infraccion_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::infraccion.infraccion"
+    },
+    "ubicacion_arrastre": {
+      "type": "text"
+    }
+  }
+}

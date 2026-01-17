@@ -1,0 +1,62 @@
+{
+  "kind": "collectionType",
+  "collectionName": "vehiculos",
+  "info": {
+    "singularName": "vehiculo",
+    "pluralName": "vehiculos",
+    "displayName": "vehiculo"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "placa_id": {
+      "type": "string",
+      "unique": true
+    },
+    "marca": {
+      "type": "string"
+    },
+    "modelo": {
+      "type": "string"
+    },
+    "color": {
+      "type": "enumeration",
+      "enum": [
+        "Blanco",
+        "Negro",
+        "Gris",
+        "Plata",
+        "Azul",
+        "Rojo",
+        "Verde",
+        "Amarillo",
+        "Café",
+        "Naranja",
+        "Morado"
+      ]
+    },
+    "tipo": {
+      "type": "enumeration",
+      "enum": [
+        "Automovil",
+        "Camioneta",
+        "Suv",
+        "Pickup",
+        "Motocicleta",
+        "Bicicleta",
+        "Camion",
+        "Tractocamion",
+        "Autobus",
+        "Microbus",
+        "Van",
+        "Minivan",
+        "Remolque",
+        "Trailer",
+        "Cuatrimoto",
+        "Scooter"
+      ]
+    }
+  }
+}

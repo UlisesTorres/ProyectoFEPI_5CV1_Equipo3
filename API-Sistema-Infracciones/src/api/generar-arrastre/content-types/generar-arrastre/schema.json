@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "generar_arrastres",
+  "info": {
+    "singularName": "generar-arrastre",
+    "pluralName": "generar-arrastres",
+    "displayName": "generar_arrastre"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "folio": {
+      "type": "text"
+    },
+    "infraccion_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::infraccion.infraccion"
+    },
+    "observaciones": {
+      "type": "text"
+    },
+    "estatus": {
+      "type": "decimal"
+    },
+    "ubicacion_arrastre": {
+      "type": "text"
+    }
+  }
+}

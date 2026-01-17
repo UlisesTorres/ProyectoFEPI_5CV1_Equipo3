@@ -1,0 +1,7 @@
+/**
+ * inventario-corralon service
+ */
+
+import { factories } from '@strapi/strapi';
+
+export default factories.createCoreService('api::inventario-corralon.inventario-corralon');

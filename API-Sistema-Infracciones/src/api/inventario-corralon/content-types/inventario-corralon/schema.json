@@ -1,0 +1,26 @@
+{
+  "kind": "collectionType",
+  "collectionName": "inventario_corralons",
+  "info": {
+    "singularName": "inventario-corralon",
+    "pluralName": "inventario-corralons",
+    "displayName": "inventario_corralon"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "nombre_corralon": {
+      "type": "string"
+    },
+    "direccion_corralon": {
+      "type": "text"
+    },
+    "infraccion_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::infraccion.infraccion"
+    }
+  }
+}

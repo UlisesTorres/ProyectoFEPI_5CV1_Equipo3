@@ -1,0 +1,7 @@
+/**
+ * generar-arrastre router
+ */
+
+import { factories } from '@strapi/strapi';
+
+export default factories.createCoreRouter('api::generar-arrastre.generar-arrastre');

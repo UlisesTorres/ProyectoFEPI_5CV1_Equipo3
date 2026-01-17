@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "articulos",
+  "info": {
+    "singularName": "articulo",
+    "pluralName": "articulos",
+    "displayName": "articulo"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "ordenamiento": {
+      "type": "string"
+    },
+    "articulo_numero": {
+      "type": "integer"
+    },
+    "contenido": {
+      "type": "text"
+    },
+    "ambito": {
+      "type": "text"
+    },
+    "fecha_publicacion": {
+      "type": "date"
+    },
+    "fecha_ultima_reforma": {
+      "type": "date"
+    },
+    "tipo_infraccion_id": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::tipo-infraccion.tipo-infraccion",
+      "inversedBy": "articulo_id"
+    }
+  }
+}

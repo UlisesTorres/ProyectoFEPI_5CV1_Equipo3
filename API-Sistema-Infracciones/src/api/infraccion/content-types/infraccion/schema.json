@@ -1,0 +1,71 @@
+{
+  "kind": "collectionType",
+  "collectionName": "infraccions",
+  "info": {
+    "singularName": "infraccion",
+    "pluralName": "infraccions",
+    "displayName": "infraccion"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "folio": {
+      "type": "string"
+    },
+    "tipo_infraccion_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::tipo-infraccion.tipo-infraccion"
+    },
+    "articulo_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::articulo.articulo"
+    },
+    "placa_vehiculo": {
+      "type": "string",
+      "required": true
+    },
+    "fecha_infraccion": {
+      "type": "datetime",
+      "required": true
+    },
+    "ubicacion_infraccion": {
+      "type": "text",
+      "required": true
+    },
+    "evidencia_infraccion": {
+      "type": "media",
+      "multiple": true,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "firma_infractor": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "oficial_id": {
+      "type": "text"
+    },
+    "medio_infraccion": {
+      "type": "string"
+    },
+    "validacion": {
+      "type": "decimal"
+    },
+    "pago_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::pago.pago",
+      "inversedBy": "infraccion_id"
+    }
+  }
+}

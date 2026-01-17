@@ -1,0 +1,26 @@
+{
+  "kind": "collectionType",
+  "collectionName": "solicitud_reimpresions",
+  "info": {
+    "singularName": "solicitud-reimpresion",
+    "pluralName": "solicitud-reimpresions",
+    "displayName": "solicitud_reimpresion"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "linea_captura": {
+      "type": "text"
+    },
+    "infraccion_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::infraccion.infraccion"
+    },
+    "fecha_pago": {
+      "type": "datetime"
+    }
+  }
+}
